@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BODIED SJ · Concept 03 · Sweat Zine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Caveat:wght@500;700&family=Special+Elite&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper: oklch(15.5% 0.012 340);
+  --paper-2: oklch(19% 0.015 345);
+  --pink: oklch(67% 0.21 350);
+  --pale: oklch(86% 0.07 350);
+  --ink: oklch(96.5% 0.008 90);
+  --inkdim: oklch(72% 0.025 60);
+  --tape: oklch(93% 0.02 90 / 0.2);
+  --marker:'Permanent Marker', cursive;
+  --hand:'Caveat', cursive;
+  --type:'Special Elite', monospace;
+  --cut:'Archivo Black', sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --torn: polygon(0 3%, 6% 0, 15% 2%, 24% 0, 33% 3%, 44% 1%, 55% 3%, 64% 0, 75% 2%, 86% 0, 94% 3%, 100% 1%, 100% 97%, 95% 100%, 84% 98%, 73% 100%, 62% 97%, 50% 100%, 38% 98%, 27% 100%, 16% 97%, 7% 100%, 0 98%);
+  --torn2: polygon(0 1%, 8% 3%, 18% 0, 29% 2%, 41% 0, 52% 3%, 63% 1%, 74% 3%, 85% 0, 93% 2%, 100% 0, 100% 98%, 93% 100%, 81% 97%, 70% 100%, 58% 98%, 47% 100%, 35% 97%, 23% 100%, 12% 98%, 0 100%);
+  --sketchy: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --sketchy2: 15px 225px 15px 255px / 225px 15px 255px 15px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:oklch(11% 0.012 340); font-family:var(--type); color:var(--ink); overflow:hidden}
+
+/* ============ STAGE ============ */
+.stage{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 112%, oklch(28% 0.09 350 / 0.55), transparent 65%),
+    oklch(11% 0.012 340);
+}
+.stage-doodle{position:absolute; opacity:0.3; pointer-events:none}
+.stage-note{position:absolute; color:var(--inkdim)}
+.stage-note.tl{top:22px;left:28px; font-family:var(--hand); font-size:23px; color:var(--pink); transform:rotate(-2deg)}
+.stage-note.bl{bottom:22px;left:28px; font-family:var(--type); font-size:11px; letter-spacing:0.1em}
+.stage-note.br{bottom:20px;right:28px; font-family:var(--hand); font-size:21px; transform:rotate(1.5deg)}
+
+/* ============ PHONE ============ */
+.phone{
+  position:relative; width:390px; height:844px; flex:none;
+  background:oklch(8% 0.01 340);
+  border-radius:54px; padding:10px;
+  box-shadow:0 60px 110px -20px oklch(0% 0 0 / 0.8), 0 30px 60px -30px oklch(67% 0.21 350 / 0.3);
+}
+.viewport{
+  position:relative; width:100%; height:100%;
+  background:var(--paper); border-radius:44px; overflow:hidden; isolation:isolate;
+}
+/* construction paper grain */
+.viewport::after{
+  content:""; position:absolute; inset:0; z-index:99; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:0.07; mix-blend-mode:screen; border-radius:44px;
+}
+.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:oklch(8% 0.01 340); border-radius:20px; z-index:60}
+.statusbar{
+  position:absolute; top:0; left:0; right:0; height:54px; z-index:75;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 30px 0;
+  font-family:var(--type); font-size:14px; color:var(--ink);
+  pointer-events:none;
+}
+.statusbar svg{display:block}
+.home-pill{position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:130px; height:5px; border-radius:3px; background:var(--ink); opacity:0.3; z-index:60}
+
+/* ============ APP ============ */
+.app{position:absolute; inset:0; overflow:hidden}
+.screen{
+  position:absolute; inset:0; padding:62px 0 96px;
+  overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
+  opacity:0; transform:rotate(0.4deg) scale(0.995);
+  pointer-events:none;
+  transition:opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1; transform:none; pointer-events:auto}
+.pad{padding-left:22px; padding-right:22px}
+
+/* ============ SHARED PIECES ============ */
+.hand{font-family:var(--hand)}
+.tape{
+  position:absolute; width:72px; height:23px; background:var(--tape);
+  pointer-events:none; z-index:3;
+}
+.scrap{
+  position:relative; clip-path:var(--torn);
+  color:oklch(16% 0.03 340);
+}
+.scrap.pink{background:var(--pink)}
+.scrap.pale{background:var(--pale)}
+.scrap.white{background:var(--ink)}
+.sketchy-btn{
+  font-family:var(--marker); cursor:pointer; background:transparent;
+  border:2.5px solid currentColor; border-radius:var(--sketchy);
+  padding:10px 18px; color:inherit;
+  transition:transform 0.12s var(--ease);
+}
+.sketchy-btn:active{transform:rotate(-1.5deg) scale(0.96)}
+.sketchy-btn:focus-visible{outline:3px solid var(--pink); outline-offset:3px}
+.doodle{display:inline-block; vertical-align:middle}
+
+/* ============ HOME ============ */
+.hi-row{display:flex; align-items:flex-start; justify-content:space-between; margin-top:10px}
+.hi-row h1{font-family:var(--hand); font-weight:700; font-size:46px; line-height:0.9; color:var(--pink); transform:rotate(-1.5deg)}
+.hi-row .date{font-family:var(--type); font-size:12px; color:var(--inkdim); margin-top:8px; letter-spacing:0.06em}
+.next-wrap{margin:22px 22px 0; position:relative}
+.next-label{
+  position:absolute; top:-14px; left:6px; z-index:4;
+  font-family:var(--hand); font-weight:700; font-size:24px; color:var(--ink);
+  transform:rotate(-3deg);
+}
+.next-scrap{
+  padding:26px 20px 20px; transform:rotate(-1.2deg);
+}
+.next-scrap .big{font-family:var(--marker); font-size:30px; line-height:1.05}
+.next-scrap .when{font-family:var(--type); font-size:13px; margin-top:8px; letter-spacing:0.04em}
+.next-scrap .note{font-family:var(--hand); font-weight:700; font-size:22px; margin-top:6px; transform:rotate(-1deg)}
+.next-scrap .row{display:flex; align-items:center; justify-content:space-between; margin-top:12px; gap:10px}
+.checkin{font-size:17px}
+.checkin.done{background:oklch(16% 0.03 340); color:var(--pink); border-color:oklch(16% 0.03 340)}
+.tape.tl{top:-10px; left:-14px; transform:rotate(-42deg)}
+.tape.tr{top:-10px; right:-14px; transform:rotate(42deg)}
+
+.week-wrap{margin:34px 22px 0}
+.week-label{font-family:var(--hand); font-weight:700; font-size:26px; color:var(--ink); transform:rotate(-1deg); display:inline-block}
+.week-row{display:flex; gap:8px; margin-top:12px}
+.wday{
+  flex:1; aspect-ratio:0.92; position:relative;
+  border:2px solid oklch(96.5% 0.008 90 / 0.75); border-radius:var(--sketchy);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+}
+.wday .l{font-family:var(--type); font-size:9.5px; color:var(--inkdim)}
+.wday .n{font-family:var(--marker); font-size:15px; color:var(--ink)}
+.wday svg.mark{position:absolute; inset:4px; width:calc(100% - 8px); height:calc(100% - 8px)}
+.wday svg.ring{position:absolute; inset:-7px; width:calc(100% + 14px); height:calc(100% + 14px); overflow:visible}
+
+.pile-label{margin:34px 22px 0; display:flex; align-items:baseline; gap:12px}
+.pile-label .big{font-family:var(--marker); font-size:21px; color:var(--ink); transform:rotate(-0.5deg)}
+.pile-label .sub{font-family:var(--hand); font-weight:500; font-size:20px; color:var(--inkdim)}
+.pile{display:flex; gap:16px; overflow-x:auto; padding:18px 24px 18px; scrollbar-width:none}
+.pile::-webkit-scrollbar{display:none}
+.pile-scrap{
+  flex:none; width:142px; min-height:170px; padding:18px 14px 14px;
+  border:none; cursor:pointer; text-align:left;
+  display:flex; flex-direction:column; justify-content:space-between; gap:8px;
+  transition:transform 0.15s var(--ease);
+}
+.pile-scrap:active{transform:scale(0.96) rotate(0deg) !important}
+.pile-scrap:focus-visible{outline:3px solid var(--pink); outline-offset:3px}
+.pile-scrap .t{font-family:var(--marker); font-size:21px; line-height:1.08}
+.pile-scrap .w{font-family:var(--type); font-size:11px; letter-spacing:0.04em}
+.pile-scrap .c{font-family:var(--hand); font-weight:700; font-size:19px}
+
+.coupon{
+  margin:14px 22px 30px; position:relative;
+  border:2.5px dashed oklch(96.5% 0.008 90 / 0.65); border-radius:6px;
+  padding:20px 18px 18px; transform:rotate(0.6deg);
+}
+.coupon .scissors{
+  position:absolute; top:-13px; left:26px; font-size:18px; color:var(--ink);
+  background:var(--paper); padding:0 8px;
+}
+.coupon .hey{font-family:var(--hand); font-weight:700; font-size:23px; color:var(--ink)}
+.coupon .deal{font-family:var(--marker); font-size:33px; color:var(--pink); margin-top:4px; transform:rotate(-1deg)}
+.coupon .fine{font-family:var(--type); font-size:11px; color:var(--inkdim); margin-top:8px; letter-spacing:0.05em}
+.xoxo{margin:0 22px 10px; text-align:center; font-family:var(--hand); font-weight:500; font-size:22px; color:var(--inkdim)}
+
+/* ============ PLAN ============ */
+.ransom{display:inline-block; line-height:1; transform:rotate(-0.5deg)}
+.ransom .rl{
+  display:inline-block; padding:3px 7px; margin:0 1px;
+  font-size:30px; line-height:1.15;
+}
+.ransom .rl.sp{padding:0 7px}
+.plan-head{margin-top:14px}
+.plan-sub{font-family:var(--hand); font-weight:500; font-size:22px; color:var(--inkdim); margin-top:10px; transform:rotate(-1deg); display:inline-block}
+.daytabs{display:flex; gap:7px; overflow-x:auto; padding:20px 22px 8px; scrollbar-width:none}
+.daytabs::-webkit-scrollbar{display:none}
+.daytab{
+  flex:none; font-family:var(--type); font-size:12px; letter-spacing:0.06em;
+  background:transparent; color:var(--ink); cursor:pointer;
+  border:2px solid oklch(96.5% 0.008 90 / 0.7); border-radius:var(--sketchy2);
+  padding:8px 13px;
+  transition:background 0.15s, color 0.15s;
+}
+.daytab:nth-child(odd){transform:rotate(-1.2deg)}
+.daytab:nth-child(even){transform:rotate(1deg)}
+.daytab.sel{background:var(--pink); color:oklch(16% 0.03 340); border-color:var(--pink); font-weight:bold}
+.daytab:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+.plan-list{margin-top:10px}
+.prow{
+  position:relative;
+  display:grid; grid-template-columns:34px 1fr auto; gap:14px; align-items:center;
+  padding:17px 22px;
+  border-bottom:1.5px dashed oklch(96.5% 0.008 90 / 0.22);
+  cursor:pointer;
+}
+.prow:active{background:var(--paper-2)}
+.cbox{position:relative; width:30px; height:30px; background:none; border:none; cursor:pointer; padding:0}
+.cbox svg{position:absolute; inset:0; overflow:visible}
+.cbox:focus-visible{outline:3px solid var(--pink); outline-offset:3px}
+.prow .nm{display:block; font-family:var(--marker); font-size:19px; color:var(--ink); line-height:1.1}
+.prow .tm{display:block; font-family:var(--type); font-size:11px; color:var(--inkdim); margin-top:4px; letter-spacing:0.05em}
+.prow .co{display:block; font-family:var(--hand); font-weight:700; font-size:19px; color:var(--pink); margin-top:1px}
+.prow .tally-box{text-align:right}
+.prow .tally-lbl{font-family:var(--hand); font-size:16px; color:var(--inkdim); display:block; margin-top:3px}
+.going-tag{
+  position:absolute; right:14px; top:8px;
+  font-family:var(--hand); font-weight:700; font-size:21px; color:var(--pink);
+  transform:rotate(4deg);
+}
+.full-tag{font-family:var(--hand); font-weight:700; font-size:19px; color:var(--inkdim); transform:rotate(-2deg); display:inline-block}
+.scribble-ring{position:absolute; inset:2px 8px; pointer-events:none; overflow:visible}
+.scribble-ring path{
+  fill:none; stroke:var(--pink); stroke-width:3.5; stroke-linecap:round;
+  stroke-dasharray:100; stroke-dashoffset:100;
+}
+.scribble-ring.drawn path{stroke-dashoffset:0}
+.scribble-ring.animate path{transition:stroke-dashoffset 0.55s ease-out}
+.strike{position:absolute; left:54px; right:120px; top:50%; height:10px; pointer-events:none; overflow:visible}
+.rest-state{padding:80px 40px; text-align:center}
+.rest-state .big{font-family:var(--hand); font-weight:700; font-size:44px; color:var(--pink); transform:rotate(-2deg); display:inline-block; margin-top:16px}
+.rest-state p{font-family:var(--type); font-size:13px; color:var(--inkdim); margin-top:14px; letter-spacing:0.08em; line-height:2}
+
+/* ============ DETAIL ============ */
+.detail{
+  position:absolute; inset:0; z-index:70;
+  background:var(--pink); color:oklch(16% 0.03 340);
+  clip-path:polygon(0 1.4%, 4% 0.6%, 10% 1.6%, 17% 0.5%, 25% 1.5%, 33% 0.6%, 42% 1.7%, 51% 0.6%, 60% 1.6%, 68% 0.5%, 77% 1.5%, 85% 0.6%, 93% 1.6%, 100% 0.8%, 100% 100%, 0 100%);
+  transform:translateY(103%); transition:transform 0.3s var(--ease);
+  display:flex; flex-direction:column;
+  padding:74px 24px 30px; overflow-y:auto; scrollbar-width:none;
+}
+.detail::-webkit-scrollbar{display:none}
+.detail.open{transform:translateY(0)}
+.d-back{
+  align-self:flex-start; background:none; border:none; cursor:pointer;
+  font-family:var(--hand); font-weight:700; font-size:24px; color:inherit;
+  display:flex; align-items:center; gap:8px; padding:4px 0;
+}
+.d-back:focus-visible{outline:3px solid oklch(16% 0.03 340); outline-offset:3px}
+.d-head{display:flex; gap:16px; align-items:flex-start; justify-content:space-between; margin-top:18px}
+.d-title-wrap{flex:1; min-width:0}
+.d-title{font-family:var(--marker); font-size:40px; line-height:1.02}
+.d-title-wrap svg.underline{display:block; margin-top:6px}
+.d-when{font-family:var(--type); font-size:13px; margin-top:14px; letter-spacing:0.05em}
+.polaroid{
+  flex:none; width:104px; padding:7px 7px 6px; background:var(--ink);
+  transform:rotate(2.5deg); position:relative;
+  box-shadow:0 10px 24px -8px oklch(0% 0 0 / 0.45);
+}
+.polaroid .photo{
+  aspect-ratio:0.92; display:flex; align-items:center; justify-content:center;
+  font-family:var(--marker); font-size:42px;
+}
+.polaroid .cap{font-family:var(--hand); font-weight:700; font-size:17px; text-align:center; color:oklch(16% 0.03 340); margin-top:4px}
+.d-spice{margin-top:22px; display:flex; align-items:center; gap:10px}
+.d-spice .q{font-family:var(--hand); font-weight:700; font-size:23px}
+.d-vibe{font-family:var(--hand); font-weight:500; font-size:26px; line-height:1.2; margin-top:18px; max-width:24ch}
+.d-bring{font-family:var(--type); font-size:12px; margin-top:18px; letter-spacing:0.05em}
+.d-spacer{flex:1; min-height:26px}
+.d-book{
+  width:100%; font-size:21px; padding:15px;
+  background:var(--ink); color:oklch(16% 0.03 340);
+  border-color:oklch(16% 0.03 340);
+}
+.d-book.booked{background:oklch(16% 0.03 340); color:var(--pink); border-color:oklch(16% 0.03 340)}
+.d-note{margin-top:12px; text-align:center; font-family:var(--type); font-size:10px; letter-spacing:0.06em; opacity:0.75}
+.going-stamp{
+  position:absolute; top:40%; left:50%; z-index:80;
+  transform:translate(-50%,-50%) rotate(-10deg);
+  font-family:var(--hand); font-weight:700; font-size:74px;
+  color:oklch(16% 0.03 340);
+  opacity:0; pointer-events:none; white-space:nowrap;
+}
+.going-stamp.show{animation:stampin 0.5s var(--ease) forwards}
+@keyframes stampin{
+  0%{opacity:0; transform:translate(-50%,-50%) rotate(-18deg) scale(1.7)}
+  65%{opacity:1; transform:translate(-50%,-50%) rotate(-10deg) scale(0.95)}
+  100%{opacity:1; transform:translate(-50%,-50%) rotate(-10deg) scale(1)}
+}
+
+/* ============ GIRLS ============ */
+.girls-grid{display:grid; grid-template-columns:1fr 1fr; gap:26px 18px; padding:26px 24px 8px}
+.gcard{position:relative; background:var(--ink); padding:9px 9px 8px; border:none; cursor:default; text-align:left}
+.gcard:nth-child(odd){transform:rotate(-2deg)}
+.gcard:nth-child(even){transform:rotate(1.8deg)}
+.gcard .photo{
+  aspect-ratio:0.88; display:flex; align-items:center; justify-content:center;
+  font-family:var(--marker); font-size:56px; position:relative;
+}
+.gcard .cap{font-family:var(--hand); font-weight:700; font-size:21px; color:oklch(16% 0.03 340); text-align:center; margin-top:6px; line-height:1}
+.gcard .spec{font-family:var(--type); font-size:9.5px; color:oklch(38% 0.03 340); text-align:center; margin-top:4px; letter-spacing:0.04em}
+.gheart{
+  position:absolute; top:13px; right:13px; z-index:4;
+  background:none; border:none; cursor:pointer; padding:2px;
+}
+.gheart svg path{fill:transparent; stroke:oklch(16% 0.03 340); stroke-width:2.5; transition:fill 0.15s}
+.gheart.on svg path{fill:var(--pink); stroke:oklch(16% 0.03 340)}
+.gheart:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+.hugo-note{
+  margin:18px 22px 26px; padding:18px 18px 16px; position:relative;
+  transform:rotate(-0.8deg);
+}
+.hugo-note .tx{font-family:var(--hand); font-weight:700; font-size:22px; line-height:1.15}
+
+/* ============ ME ============ */
+.me-head{margin-top:12px}
+.me-pre{font-family:var(--hand); font-weight:700; font-size:27px; color:var(--pink); transform:rotate(-2deg); display:inline-block; margin-bottom:4px}
+.gymcard{
+  margin:24px 22px 0; position:relative;
+  background:var(--ink); color:oklch(16% 0.03 340);
+  padding:18px 18px 16px; transform:rotate(0.8deg);
+  box-shadow:0 14px 30px -12px oklch(0% 0 0 / 0.5);
+}
+.gymcard .rowline{display:flex; justify-content:space-between; font-family:var(--type); font-size:12px; padding:5px 0; letter-spacing:0.04em}
+.gymcard .rowline .v{font-weight:bold}
+.gymcard .bigname{font-family:var(--marker); font-size:25px; margin-bottom:8px}
+.gymcard .barcode{
+  height:30px; margin-top:10px;
+  background:repeating-linear-gradient(90deg,
+    oklch(16% 0.03 340) 0 2px, transparent 2px 5px,
+    oklch(16% 0.03 340) 5px 9px, transparent 9px 11px,
+    oklch(16% 0.03 340) 11px 12px, transparent 12px 16px);
+}
+.gymcard .gc-star{position:absolute; top:-12px; right:14px}
+.tally-wall{margin:32px 22px 0}
+.tally-wall .lbl{font-family:var(--hand); font-weight:700; font-size:25px; color:var(--ink); transform:rotate(-1deg); display:inline-block}
+.tally-rows{display:flex; flex-wrap:wrap; gap:10px 12px; margin-top:14px; align-items:center}
+.tally-rows .total{font-family:var(--marker); font-size:27px; color:var(--pink); transform:rotate(-2deg)}
+.badge-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px 12px; margin:18px 22px 0}
+.badge{
+  padding:16px 8px; text-align:center; min-height:74px;
+  display:flex; align-items:center; justify-content:center;
+}
+.badge .t{font-family:var(--marker); font-size:13.5px; line-height:1.15}
+.badge.empty{
+  border:2px dashed oklch(96.5% 0.008 90 / 0.4); border-radius:6px;
+  color:var(--inkdim); font-family:var(--type); font-size:10.5px; letter-spacing:0.05em;
+}
+.badge:nth-child(1){transform:rotate(-2.5deg)}
+.badge:nth-child(2){transform:rotate(1.6deg)}
+.badge:nth-child(3){transform:rotate(-1.2deg)}
+.badge:nth-child(4){transform:rotate(2.2deg)}
+.badge:nth-child(5){transform:rotate(-1.8deg)}
+.badge:nth-child(6){transform:rotate(0.8deg)}
+.set-list{margin:30px 22px 0}
+.set-row{
+  display:flex; align-items:center; gap:12px; width:100%;
+  padding:14px 2px; background:none; border:none; cursor:pointer; color:var(--ink);
+  border-bottom:1.5px dashed oklch(96.5% 0.008 90 / 0.22);
+  font-family:var(--type); font-size:13.5px; letter-spacing:0.06em; text-align:left;
+}
+.set-row .grow{flex:1}
+.set-row:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+.me-foot{margin:30px 22px 12px; text-align:center}
+.me-foot .bye{font-family:var(--hand); font-weight:700; font-size:29px; color:var(--pink); transform:rotate(-1.5deg); display:inline-block}
+.me-foot .addr{font-family:var(--type); font-size:10.5px; color:var(--inkdim); margin-top:10px; letter-spacing:0.07em; line-height:1.9}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute; left:0; right:0; bottom:0; z-index:50;
+  height:86px; padding:12px 12px 24px;
+  background:oklch(13% 0.012 340);
+  border-top:1.5px dashed oklch(96.5% 0.008 90 / 0.25);
+  display:flex; gap:8px; align-items:center;
+}
+.tab{
+  flex:1; background:var(--tape); border:none; cursor:pointer;
+  font-family:var(--type); font-size:12.5px; color:var(--ink);
+  padding:11px 0; letter-spacing:0.04em;
+  transition:background 0.15s, color 0.15s;
+}
+.tab:nth-child(odd){transform:rotate(-1.4deg)}
+.tab:nth-child(even){transform:rotate(1.2deg)}
+.tab.active{background:var(--pink); color:oklch(16% 0.03 340); font-weight:bold}
+.tab:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+
+/* ============ MOBILE ============ */
+@media (max-width:560px){
+  .stage{display:block; background:var(--paper)}
+  .stage-note,.stage-doodle{display:none}
+  .phone{width:100%; height:100%; border-radius:0; padding:0; box-shadow:none; transform:none !important}
+  .viewport{border-radius:0}
+  .viewport::after{border-radius:0}
+  .notch{display:none}
+  .statusbar{display:none}
+  .screen{padding-top:max(18px, env(safe-area-inset-top))}
+  .detail{padding-top:max(30px, env(safe-area-inset-top))}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:0.01ms !important; animation-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <svg class="stage-doodle" style="top:14%;left:12%" width="40" height="40" viewBox="0 0 40 40"><path d="M20 4 L24 16 L36 17 L26 24 L30 36 L20 28 L10 36 L14 24 L4 17 L16 16 Z" fill="none" stroke="oklch(67% 0.21 350)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+  <svg class="stage-doodle" style="bottom:20%;right:10%" width="46" height="42" viewBox="0 0 46 42"><path d="M23 38 C8 28 2 18 6 10 C9 4 17 4 23 12 C29 4 37 4 40 10 C44 18 38 28 23 38 Z" fill="none" stroke="oklch(67% 0.21 350)" stroke-width="2.5"/></svg>
+  <svg class="stage-doodle" style="top:22%;right:16%" width="60" height="24" viewBox="0 0 60 24"><path d="M3 14 C13 6 23 20 33 11 C40 5 48 13 57 8" fill="none" stroke="oklch(96.5% 0.008 90)" stroke-width="2.5" stroke-linecap="round"/></svg>
+  <div class="stage-note tl">option 03: the sweat zine!!</div>
+  <div class="stage-note bl">strength · power · sisterhood</div>
+  <div class="stage-note br">tap around, everything works</div>
+
+  <div class="phone" id="phone">
+    <div class="viewport">
+      <div class="app" id="app">
+
+        <div class="notch" aria-hidden="true"></div>
+        <div class="statusbar" aria-hidden="true">
+          <span>9:41</span>
+          <svg width="64" height="13" viewBox="0 0 64 13" fill="none">
+            <rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/>
+            <rect x="5" y="4" width="3" height="8" rx="1" fill="currentColor"/>
+            <rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/>
+            <rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+            <path d="M26 4.5C28.5 2 32.5 2 35 4.5M27.8 7C29.3 5.6 31.7 5.6 33.2 7M29.6 9.4C30.3 8.8 30.7 8.8 31.4 9.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="41" y="1.5" width="20" height="10" rx="3" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="43" y="3.5" width="13" height="6" rx="1.5" fill="currentColor"/>
+            <rect x="62" y="4.5" width="2" height="4" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="home-pill" aria-hidden="true"></div>
+
+        <!-- ============ HOME ============ -->
+        <section class="screen active" id="screen-home">
+          <div class="pad hi-row">
+            <div>
+              <h1>hey maya!!</h1>
+              <div class="date">thurs, june 12</div>
+            </div>
+            <svg class="doodle" width="44" height="44" viewBox="0 0 40 40" aria-hidden="true">
+              <path d="M20 4 L24 16 L36 17 L26 24 L30 36 L20 28 L10 36 L14 24 L4 17 L16 16 Z" fill="var(--pink)" stroke="none" transform="rotate(12 20 20)"/>
+            </svg>
+          </div>
+
+          <div class="next-wrap">
+            <span class="next-label">ur next class ↓</span>
+            <div class="scrap pink next-scrap">
+              <div class="big">BOOTY &amp; ABS</div>
+              <div class="when">6:00 AM · 45 min · w/ valeria</div>
+              <div class="note hand">spot #7. dont u dare flake!!</div>
+              <div class="row">
+                <svg width="58" height="26" viewBox="0 0 58 26" aria-hidden="true"><path d="M4 16 C18 8 34 20 50 10 M44 6 L51 10 L45 16" fill="none" stroke="oklch(16% 0.03 340)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <button class="sketchy-btn checkin" id="checkin">check in</button>
+              </div>
+            </div>
+            <span class="tape tl" aria-hidden="true"></span>
+            <span class="tape tr" aria-hidden="true"></span>
+          </div>
+
+          <div class="week-wrap">
+            <span class="week-label">this week so far:</span>
+            <div class="week-row" id="week-row"></div>
+          </div>
+
+          <div class="pile-label">
+            <span class="big">ON THE WALL</span>
+            <span class="sub">(tap one!!)</span>
+          </div>
+          <div class="pile" id="pile"></div>
+
+          <div class="coupon">
+            <span class="scissors">✂</span>
+            <div class="hey">know someone who needs this?</div>
+            <div class="deal">7 DAYS FOR $7</div>
+            <div class="fine">all levels. no judgment. cut this out &amp; send it to ur girl.</div>
+          </div>
+
+          <div class="xoxo">xoxo, bodied ♡</div>
+        </section>
+
+        <!-- ============ PLAN ============ -->
+        <section class="screen" id="screen-plan">
+          <div class="pad plan-head">
+            <span class="ransom" id="ransom-plan" aria-label="The plan"></span><br>
+            <span class="plan-sub">(dont overthink it babe)</span>
+          </div>
+          <div class="daytabs" id="daytabs"></div>
+          <div class="plan-list" id="plan-list"></div>
+        </section>
+
+        <!-- ============ GIRLS ============ -->
+        <section class="screen" id="screen-girls">
+          <div class="pad plan-head">
+            <span class="ransom" id="ransom-girls" aria-label="The girls"></span><br>
+            <span class="plan-sub">ur coaches. they're the best.</span>
+          </div>
+          <div class="girls-grid" id="girls-grid"></div>
+          <div class="hugo-note scrap white">
+            <span class="tx">ps. coach hugo teaches the kiddos soccer on saturdays!! bring ur little one ⚽</span>
+          </div>
+        </section>
+
+        <!-- ============ ME ============ -->
+        <section class="screen" id="screen-me">
+          <div class="pad me-head">
+            <span class="me-pre">maya's</span><br>
+            <span class="ransom" id="ransom-me" aria-label="Sweat log"></span>
+          </div>
+
+          <div class="gymcard">
+            <svg class="gc-star" width="34" height="34" viewBox="0 0 40 40" aria-hidden="true">
+              <path d="M20 4 L24 16 L36 17 L26 24 L30 36 L20 28 L10 36 L14 24 L4 17 L16 16 Z" fill="var(--pink)" transform="rotate(-10 20 20)"/>
+            </svg>
+            <div class="bigname">MAYA R.</div>
+            <div class="rowline"><span>plan</span><span class="v">unlimited</span></div>
+            <div class="rowline"><span>member no.</span><span class="v">0214</span></div>
+            <div class="rowline"><span>since</span><span class="v">feb 2026</span></div>
+            <div class="barcode" aria-hidden="true"></div>
+          </div>
+
+          <div class="tally-wall">
+            <span class="lbl">every class so far:</span>
+            <div class="tally-rows" id="tally-wall"></div>
+          </div>
+
+          <div class="pad" style="margin-top:30px">
+            <span class="week-label">brag wall:</span>
+          </div>
+          <div class="badge-grid">
+            <div class="badge scrap pink"><span class="t">1st CLASS!</span></div>
+            <div class="badge scrap pale"><span class="t">5AM CLUB</span></div>
+            <div class="badge scrap white"><span class="t">25 DOWN</span></div>
+            <div class="badge scrap pale"><span class="t">+1 FRIEND</span></div>
+            <div class="badge scrap pink"><span class="t">PILATES ERA</span></div>
+            <div class="badge empty"><span>50 soon...<br>3 to go!!</span></div>
+          </div>
+
+          <div class="set-list">
+            <button class="set-row"><span>notifications</span><span class="grow"></span><span>on</span><svg width="20" height="12" viewBox="0 0 24 12" aria-hidden="true"><path d="M2 7 C8 4 14 9 21 6 M16 2 L22 6 L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="set-row"><span>payment</span><span class="grow"></span><span>···· 4417</span><svg width="20" height="12" viewBox="0 0 24 12" aria-hidden="true"><path d="M2 7 C8 4 14 9 21 6 M16 2 L22 6 L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="set-row"><span>help &amp; contact</span><span class="grow"></span><span>(408) 337-2160</span><svg width="20" height="12" viewBox="0 0 24 12" aria-hidden="true"><path d="M2 7 C8 4 14 9 21 6 M16 2 L22 6 L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+
+          <div class="me-foot">
+            <span class="bye">see u on the floor mami ♡</span>
+            <div class="addr">BODIED SJ · 2293 lincoln ave, san jose<br>txt us: 408-539-1264</div>
+          </div>
+        </section>
+
+        <!-- ============ DETAIL ============ -->
+        <section class="detail" id="detail" aria-hidden="true">
+          <button class="d-back" id="d-back">
+            <svg width="26" height="14" viewBox="0 0 26 14" aria-hidden="true"><path d="M24 8 C16 4 10 10 3 7 M8 2 L2 7 L8 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            back
+          </button>
+          <div class="d-head">
+            <div class="d-title-wrap">
+              <div class="d-title" id="d-title"></div>
+              <svg class="underline" width="150" height="12" viewBox="0 0 150 12" aria-hidden="true"><path d="M3 8 C28 3 52 11 78 6 C103 2 128 9 147 5" fill="none" stroke="oklch(16% 0.03 340)" stroke-width="3" stroke-linecap="round"/></svg>
+              <div class="d-when" id="d-when"></div>
+            </div>
+            <div class="polaroid">
+              <div class="photo" id="d-photo"></div>
+              <div class="cap" id="d-cap"></div>
+              <span class="tape" style="top:-12px;left:50%;margin-left:-36px;transform:rotate(-4deg)" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="d-spice">
+            <span class="q">how spicy?</span>
+            <span id="d-spice-chilis"></span>
+          </div>
+          <div class="d-vibe" id="d-vibe"></div>
+          <div class="d-bring" id="d-bring"></div>
+          <div class="d-spacer"></div>
+          <button class="sketchy-btn d-book" id="d-book">I'M IN!!!</button>
+          <div class="d-note">cancel free up to 2 hrs before. we'll miss u tho</div>
+        </section>
+        <div class="going-stamp" id="going-stamp" aria-hidden="true">GOING!!!</div>
+
+        <!-- ============ TAB BAR ============ -->
+        <nav class="tabbar" aria-label="Main">
+          <button class="tab active" data-screen="home">home</button>
+          <button class="tab" data-screen="plan">plan</button>
+          <button class="tab" data-screen="girls">girls</button>
+          <button class="tab" data-screen="me">me</button>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const CLASSES = {
+  'booty-abs':{name:'BOOTY & ABS', effort:3, coach:'Valeria',
+    vibe:'reggaeton up LOUD. ur glutes will know about it mañana, promise.',
+    bring:'bring: water + mat (we got u) + all levels'},
+  'full-body-hiit':{name:'FULL BODY HIIT', effort:4, coach:'Gabi',
+    vibe:'cardio AND strength in one sweaty hour. the fan favorite, always packed.',
+    bring:'bring: water + towel + all levels'},
+  'arms-abs':{name:'ARMS & ABS', effort:3, coach:'Bri',
+    vibe:'upper body dayyy. tank top season is every season here.',
+    bring:'bring: water. dumbbells provided!'},
+  'pilates-sculpt':{name:'PILATES SCULPT', effort:2, coach:'Kimber',
+    vibe:'slow burn, deep core, shaky legs. in the best way, trust.',
+    bring:'bring: grip socks + mat provided + low impact'},
+  'mommy-me':{name:'MOMMY & ME', effort:1, coach:'Kimber',
+    vibe:'move with ur little one!! chaos welcome, strollers too.',
+    bring:'kids welcome + stroller friendly'},
+  'muscle-mami':{name:'MUSCLE MAMI', effort:4, coach:'Valeria',
+    vibe:'THE signature. full body hiit with the volume at eleven.',
+    bring:'bring: water + towel + brave face'},
+};
+
+const SCHEDULE = {
+  'thu 12':[
+    {id:'booty-abs', t:'6:00 am', coach:'valeria', dur:45, left:0, booked:true},
+    {id:'pilates-sculpt', t:'9:30 am', coach:'kimber', dur:50, left:3},
+    {id:'mommy-me', t:'12:00 pm', coach:'kimber', dur:40, left:5},
+    {id:'arms-abs', t:'4:30 pm', coach:'bri', dur:45, left:-1},
+    {id:'muscle-mami', t:'5:45 pm', coach:'valeria', dur:60, left:2},
+    {id:'full-body-hiit', t:'7:00 pm', coach:'gabi', dur:60, left:6},
+  ],
+  'fri 13':[
+    {id:'full-body-hiit', t:'6:00 am', coach:'gabi', dur:60, left:4},
+    {id:'booty-abs', t:'9:30 am', coach:'valeria', dur:45, left:7},
+    {id:'pilates-sculpt', t:'12:00 pm', coach:'kimber', dur:50, left:2},
+    {id:'arms-abs', t:'5:45 pm', coach:'bri', dur:45, left:5},
+    {id:'muscle-mami', t:'7:00 pm', coach:'valeria', dur:60, left:-1},
+  ],
+  'sat 14':[
+    {id:'muscle-mami', t:'8:00 am', coach:'valeria', dur:60, left:3},
+    {id:'mommy-me', t:'9:30 am', coach:'kimber', dur:40, left:8},
+    {id:'full-body-hiit', t:'11:00 am', coach:'gabi', dur:60, left:5},
+  ],
+  'sun 15':'rest',
+  'mon 16':[
+    {id:'full-body-hiit', t:'6:00 am', coach:'gabi', dur:60, left:9},
+    {id:'booty-abs', t:'5:45 pm', coach:'valeria', dur:45, left:6},
+    {id:'pilates-sculpt', t:'7:00 pm', coach:'kimber', dur:50, left:4},
+  ],
+};
+
+const GIRLS = [
+  {name:'valeria', initial:'V', photo:'var(--pink)', cap:'valeria · the boss', spec:'core · glutes · ex-dancer · nasm'},
+  {name:'gabi', initial:'G', photo:'var(--pale)', cap:'gabi · the hype', spec:'strength · d1 hooper · zero judgment'},
+  {name:'bri', initial:'B', photo:'oklch(30% 0.06 350)', cap:'coach bri · the form police', spec:'functional · youth + adults'},
+  {name:'kimber', initial:'K', photo:'var(--pale)', cap:'kimber · the safe space', spec:'pilates · confidence · mom power'},
+];
+
+const $ = s => document.querySelector(s);
+const INK_DARK = 'oklch(16% 0.03 340)';
+
+/* ============ DOODLE HELPERS ============ */
+function xMark(color){
+  return `<svg class="mark" viewBox="0 0 30 30" aria-hidden="true">
+    <path d="M6 5 C12 12 18 19 25 26 M24 6 C18 12 11 19 5 25" fill="none" stroke="${color}" stroke-width="3.5" stroke-linecap="round"/>
+  </svg>`;
+}
+function ringMark(){
+  return `<svg class="ring" viewBox="0 0 60 60" aria-hidden="true">
+    <path d="M30 6 C14 4 4 14 5 30 C6 47 18 56 32 55 C48 54 57 42 55 28 C53 13 41 5 28 7" fill="none" stroke="var(--pink)" stroke-width="3" stroke-linecap="round"/>
+  </svg>`;
+}
+function chili(filled){
+  const f = filled ? INK_DARK : 'transparent';
+  return `<svg width="22" height="26" viewBox="0 0 22 26" style="margin-right:4px" aria-hidden="true">
+    <path d="M12 6 C16 9 16 17 11 21 C7 24 3 21 4 17 C6 13 9 9 12 6 Z" fill="${f}" stroke="${INK_DARK}" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M12 6 C13 3 16 2 18 3" fill="none" stroke="${INK_DARK}" stroke-width="2" stroke-linecap="round"/>
+  </svg>`;
+}
+function tallySVG(n, color, scale){
+  /* groups of 5: four strokes + one diagonal */
+  const s = scale || 1;
+  const groups = Math.floor(n/5), rem = n%5;
+  let out = '';
+  const w = 34*s, h = 30*s;
+  const group = (count, slash) => {
+    let bars = '';
+    for(let i=0;i<count;i++){
+      const x = 5 + i*7;
+      const tilt = (i%2 ? 1.4 : -1.2);
+      bars += `<path d="M${x+tilt} 4 C${x-1} 12 ${x+1.5} 20 ${x-tilt} 26" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round"/>`;
+    }
+    if(slash) bars += `<path d="M1 22 C9 16 20 12 31 7" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round"/>`;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 34 30" aria-hidden="true">${bars}</svg>`;
+  };
+  for(let g=0; g<groups; g++) out += group(4, true);
+  if(rem) out += group(rem, false);
+  return out;
+}
+
+/* ============ RANSOM HEADLINES ============ */
+const RANSOM_STYLES = [
+  {ff:'var(--cut)', bg:'var(--pink)', col:INK_DARK, rot:-3, clip:'var(--torn)'},
+  {ff:'var(--marker)', bg:'none', col:'var(--pink)', rot:2},
+  {ff:'var(--cut)', bg:'var(--pale)', col:INK_DARK, rot:1.5, clip:'var(--torn2)'},
+  {ff:'var(--type)', bg:'none', col:'var(--ink)', rot:-2},
+  {ff:'var(--cut)', bg:'var(--ink)', col:INK_DARK, rot:2.5, clip:'var(--torn)'},
+  {ff:'var(--marker)', bg:'none', col:'var(--ink)', rot:-1.5},
+];
+function ransom(el, text){
+  let i = 0;
+  el.innerHTML = [...text].map(ch=>{
+    if(ch===' ') return `<span class="rl sp"> </span>`;
+    const st = RANSOM_STYLES[i++ % RANSOM_STYLES.length];
+    const clip = st.clip ? `clip-path:${st.clip};` : '';
+    const bg = st.bg==='none' ? '' : `background:${st.bg};${clip}`;
+    return `<span class="rl" style="font-family:${st.ff};color:${st.col};${bg}transform:rotate(${st.rot}deg)">${ch}</span>`;
+  }).join('');
+}
+ransom($('#ransom-plan'), 'THE PLAN');
+ransom($('#ransom-girls'), 'THE GIRLS');
+ransom($('#ransom-me'), 'SWEAT LOG');
+
+/* ============ TABS ============ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    $('#screen-'+tab.dataset.screen).classList.add('active');
+    closeDetail();
+  });
+});
+
+/* ============ WEEK ROW ============ */
+const weekDays = [
+  {l:'mon', n:9, done:true},{l:'tue', n:10, done:true},{l:'wed', n:11},
+  {l:'thu', n:12, today:true},{l:'fri', n:13},{l:'sat', n:14},{l:'sun', n:15},
+];
+$('#week-row').innerHTML = weekDays.map(w=>`
+  <div class="wday">
+    ${w.done ? xMark('var(--pink)') : ''}
+    ${w.today ? ringMark() : ''}
+    <span class="l">${w.l}</span><span class="n">${w.n}</span>
+  </div>`).join('');
+
+/* ============ PILE ============ */
+const pileOrder = ['muscle-mami','full-body-hiit','arms-abs','pilates-sculpt','mommy-me'];
+const pileTimes = {'muscle-mami':'today 5:45pm','full-body-hiit':'today 7pm','arms-abs':'today 4:30pm','pilates-sculpt':'fri 12pm','mommy-me':'sat 9:30am'};
+const pileSkins = ['pink','white','pale','pink','pale'];
+const pileRots = [-2.2, 1.8, -1.4, 2.4, -1.8];
+$('#pile').innerHTML = pileOrder.map((id,i)=>{
+  const c = CLASSES[id];
+  return `<button class="pile-scrap scrap ${pileSkins[i]}" style="transform:rotate(${pileRots[i]}deg)" data-class="${id}" data-when="${pileTimes[id]}">
+    <span class="w">${pileTimes[id]}</span>
+    <span>
+      <span class="t">${c.name}</span>
+      <span class="c" style="display:block;margin-top:5px">w/ ${c.coach.toLowerCase()}</span>
+    </span>
+  </button>`;
+}).join('');
+document.querySelectorAll('.pile-scrap').forEach(p=>{
+  p.addEventListener('click', ()=> openDetail(p.dataset.class, p.dataset.when, null));
+});
+
+/* ============ PLAN ============ */
+const bookedSet = new Set(['thu 12|booty-abs|6:00 am']);
+let currentDay = 'thu 12';
+
+function renderDays(){
+  $('#daytabs').innerHTML = Object.keys(SCHEDULE).map(d=>
+    `<button class="daytab ${d===currentDay?'sel':''}" data-day="${d}">${d}</button>`
+  ).join('');
+  document.querySelectorAll('.daytab').forEach(b=>{
+    b.addEventListener('click', ()=>{ currentDay=b.dataset.day; renderDays(); renderPlan(); });
+  });
+}
+
+function renderPlan(){
+  const day = SCHEDULE[currentDay];
+  const list = $('#plan-list');
+  if(day === 'rest'){
+    list.innerHTML = `<div class="rest-state">
+      <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+        <path d="M36 6 C22 8 14 20 18 33 C22 46 36 51 47 45 C38 48 28 43 25 32 C22 21 28 10 36 6 Z" fill="none" stroke="var(--pale)" stroke-width="2.8" stroke-linejoin="round"/>
+        <path d="M10 14 L13 17 M44 12 L46 15 M8 38 L11 40" stroke="var(--pale)" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      <br><span class="big">rest day!!</span>
+      <p>stretch. hydrate.<br>text ur gym bestie.</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = day.map((s,i)=>{
+    const c = CLASSES[s.id];
+    const key = `${currentDay}|${s.id}|${s.t}`;
+    const booked = bookedSet.has(key);
+    const full = s.left === -1;
+    return `<div class="prow" data-class="${s.id}" data-when="${currentDay} · ${s.t}" data-key="${key}" role="button" tabindex="0">
+      ${booked ? `<svg class="scribble-ring drawn" viewBox="0 0 340 64" preserveAspectRatio="none" aria-hidden="true">
+        <path pathLength="100" d="M170 6 C60 2 12 12 10 32 C8 54 80 62 180 60 C290 58 332 46 330 28 C328 8 240 2 130 8"/>
+      </svg>` : ''}
+      <button class="cbox" data-key="${key}" data-full="${full?1:0}" aria-label="${booked?'Booked':'Book'} ${c.name}">
+        <svg viewBox="0 0 30 30" aria-hidden="true">
+          <path d="M5 4 C13 2 22 3 26 5 C28 12 27 20 26 25 C18 27 9 26 4 25 C3 17 3 9 5 4 Z" fill="none" stroke="${full?'oklch(96.5% 0.008 90 / 0.35)':'var(--ink)'}" stroke-width="2.4" stroke-linejoin="round"/>
+          ${booked ? `<path d="M7 6 C12 12 18 19 24 25 M23 7 C17 13 11 19 6 24" fill="none" stroke="var(--pink)" stroke-width="3.4" stroke-linecap="round"/>` : ''}
+        </svg>
+      </button>
+      <span style="${full?'opacity:0.45':''}; position:relative">
+        <span class="nm">${c.name}</span>
+        ${full ? `<svg class="strike" style="left:-4px;right:auto;width:100%" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 6 C50 2 120 9 198 4" fill="none" stroke="var(--ink)" stroke-width="2.6" stroke-linecap="round"/></svg>` : ''}
+        <span class="tm">${s.t} · ${s.dur} min</span>
+        <span class="co">w/ ${s.coach}</span>
+      </span>
+      <span class="tally-box">
+        ${booked ? `<span class="going-tag">GOING!!</span>` :
+          full ? `<span class="full-tag">full :(</span>` :
+          `${tallySVG(s.left, 'var(--ink)', 0.8)}<span class="tally-lbl">${s.left} spots</span>`}
+      </span>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.cbox').forEach(b=>{
+    b.addEventListener('click', e=>{
+      e.stopPropagation();
+      if(b.dataset.full === '1') return;
+      if(bookedSet.has(b.dataset.key)) return;
+      bookCell(b);
+    });
+  });
+  list.querySelectorAll('.prow').forEach(row=>{
+    row.addEventListener('click', ()=> openDetail(row.dataset.class, row.dataset.when, row.dataset.key));
+    row.addEventListener('keydown', e=>{ if(e.key==='Enter') row.click(); });
+  });
+}
+
+function bookCell(b){
+  bookedSet.add(b.dataset.key);
+  const row = b.closest('.prow');
+  /* draw scribble live, then re-render */
+  const ring = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  ring.setAttribute('class','scribble-ring animate');
+  ring.setAttribute('viewBox','0 0 340 64');
+  ring.setAttribute('preserveAspectRatio','none');
+  ring.innerHTML = `<path pathLength="100" d="M170 6 C60 2 12 12 10 32 C8 54 80 62 180 60 C290 58 332 46 330 28 C328 8 240 2 130 8"/>`;
+  row.prepend(ring);
+  requestAnimationFrame(()=> requestAnimationFrame(()=> ring.classList.add('drawn')));
+  setTimeout(renderPlan, 700);
+}
+renderDays(); renderPlan();
+
+/* ============ DETAIL ============ */
+const detail = $('#detail');
+let currentKey = null;
+
+function openDetail(id, when, key){
+  const c = CLASSES[id];
+  currentKey = key || null;
+  $('#d-title').textContent = c.name;
+  $('#d-when').textContent = `${when} · 45 min-ish · all levels`;
+  $('#d-photo').textContent = c.coach[0];
+  $('#d-photo').style.background = c.coach==='Gabi' ? 'var(--pale)' : (c.coach==='Bri' ? 'oklch(30% 0.06 350)' : 'var(--pale)');
+  $('#d-photo').style.color = c.coach==='Bri' ? 'var(--pale)' : INK_DARK;
+  $('#d-cap').textContent = `coach ${c.coach.toLowerCase()} ♡`;
+  $('#d-spice-chilis').innerHTML = Array.from({length:4}, (_,i)=>chili(i < c.effort)).join('');
+  $('#d-vibe').textContent = c.vibe;
+  $('#d-bring').textContent = c.bring;
+  setBookBtn(currentKey && bookedSet.has(currentKey));
+  detail.classList.add('open');
+  detail.setAttribute('aria-hidden','false');
+  detail.scrollTop = 0;
+}
+function setBookBtn(booked){
+  const btn = $('#d-book');
+  if(booked){
+    btn.textContent = "UR IN!! · spot 12";
+    btn.classList.add('booked');
+  } else {
+    btn.textContent = "I'M IN!!!";
+    btn.classList.remove('booked');
+  }
+}
+function closeDetail(){
+  detail.classList.remove('open');
+  detail.setAttribute('aria-hidden','true');
+}
+$('#d-back').addEventListener('click', closeDetail);
+$('#d-book').addEventListener('click', ()=>{
+  if($('#d-book').classList.contains('booked')) return;
+  if(currentKey) bookedSet.add(currentKey);
+  setBookBtn(true);
+  renderPlan();
+  const st = $('#going-stamp');
+  st.classList.remove('show');
+  void st.offsetWidth;
+  st.classList.add('show');
+  setTimeout(()=>st.classList.remove('show'), 1600);
+});
+
+/* ============ CHECK IN ============ */
+$('#checkin').addEventListener('click', function(){
+  this.textContent = 'checked in ♡';
+  this.classList.add('done');
+});
+
+/* ============ GIRLS ============ */
+const heartSVG = `<svg width="26" height="24" viewBox="0 0 26 24"><path d="M13 21 C5 15 1.5 9.5 4 5.5 C6 2.5 10 3 13 7 C16 3 20 2.5 22 5.5 C24.5 9.5 21 15 13 21 Z"/></svg>`;
+$('#girls-grid').innerHTML = GIRLS.map(g=>`
+  <div class="gcard">
+    <button class="gheart" aria-label="Fave ${g.name}">${heartSVG}</button>
+    <div class="photo" style="background:${g.photo}; color:${g.name==='bri'?'var(--pale)':INK_DARK}">${g.initial}</div>
+    <div class="cap">${g.cap}</div>
+    <div class="spec">${g.spec}</div>
+    <span class="tape" style="top:-11px;left:50%;margin-left:-36px;transform:rotate(${Math.cos(g.name.length)>0?3:-4}deg)" aria-hidden="true"></span>
+  </div>`).join('');
+document.querySelectorAll('.gheart').forEach(h=>h.addEventListener('click', ()=>h.classList.toggle('on')));
+
+/* ============ TALLY WALL (47) ============ */
+$('#tally-wall').innerHTML = tallySVG(47, 'var(--pink)', 1) + `<span class="total">= 47!!!</span>`;
+
+/* ============ FIT + HASH ============ */
+function fitPhone(){
+  if(window.innerWidth <= 560){ $('#phone').style.transform=''; return; }
+  const scale = Math.min(1, (window.innerHeight - 120) / 844, (window.innerWidth - 80) / 390);
+  $('#phone').style.transform = `scale(${scale})`;
+}
+fitPhone();
+window.addEventListener('resize', fitPhone);
+
+(function(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(!h) return;
+  const [main, q] = h.split('&');
+  const scr = main.split('=')[0];
+  if(['home','plan','girls','me'].includes(scr)){
+    document.querySelector(`.tab[data-screen="${scr}"]`).click();
+  }
+  if(main.startsWith('detail=')){
+    const id = main.split('=')[1];
+    if(CLASSES[id]) openDetail(id, 'today 5:45pm', null);
+  }
+  const sm = (q||'').match(/s=(\d+)/);
+  if(sm) document.querySelector('.screen.active').scrollTop = +sm[1];
+})();
+</script>
+</body>
+</html>

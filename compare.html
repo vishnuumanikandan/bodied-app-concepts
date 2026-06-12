@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BODIED SJ · Five Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: oklch(12% 0.01 340);
+  --tx: oklch(92% 0.01 90);
+  --dim: oklch(62% 0.02 340);
+  --pink: oklch(67% 0.21 350);
+  --hair: oklch(92% 0.01 90 / 0.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--tx);
+  font-family:'Hanken Grotesk', sans-serif;
+  min-height:100vh; padding:34px 30px 40px;
+}
+header{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; max-width:1180px; margin:0 auto}
+h1{font-size:21px; font-weight:700; letter-spacing:-0.01em}
+h1 .dot{color:var(--pink)}
+header .hint{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.12em; color:var(--dim); text-transform:uppercase}
+.row{
+  display:flex; gap:28px; justify-content:center; align-items:flex-start; flex-wrap:wrap;
+  max-width:1300px; margin:30px auto 0;
+}
+.option{width:216px}
+.cap{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px}
+.cap .name{font-size:15px; font-weight:700}
+.cap .name .no{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--pink); margin-right:8px}
+.cap a{
+  font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.1em;
+  color:var(--dim); text-decoration:none; text-transform:uppercase;
+  border-bottom:1px solid var(--hair); padding-bottom:2px;
+}
+.cap a:hover{color:var(--pink); border-color:var(--pink)}
+.desc{font-size:12px; line-height:1.5; color:var(--dim); margin-bottom:14px; min-height:72px}
+.shell{
+  width:216px; height:467px; border-radius:30px; overflow:hidden;
+  background:oklch(8% 0.01 340);
+  outline:1px solid var(--hair);
+  box-shadow:0 40px 70px -25px oklch(0% 0 0 / 0.7);
+  position:relative;
+}
+.shell iframe{
+  width:390px; height:844px; border:0;
+  transform:scale(0.5538); transform-origin:0 0;
+  position:absolute; top:0; left:0;
+}
+footer{
+  max-width:1180px; margin:36px auto 0; padding-top:16px;
+  border-top:1px solid var(--hair);
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+}
+footer span{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.14em; color:var(--dim); text-transform:uppercase}
+@media (max-width:1000px){
+  .row{gap:30px}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>BODIED SJ <span class="dot">·</span> five directions</h1>
+  <span class="hint">Every phone is live. Tap around inside them.</span>
+</header>
+
+<div class="row">
+  <div class="option">
+    <div class="cap">
+      <span class="name"><span class="no">01</span>Club Poster</span>
+      <a href="index.html" target="_blank">open full ↗</a>
+    </div>
+    <p class="desc">Riso-print poster energy on cream paper: tickets, stamps, a sticker book. Has a black-and-pink "after dark" mode (toggle inside, You tab → Appearance).</p>
+    <div class="shell"><iframe src="index.html" title="Concept 01 · Club Poster" loading="lazy"></iframe></div>
+  </div>
+
+  <div class="option">
+    <div class="cap">
+      <span class="name"><span class="no">02</span>Backstage</span>
+      <a href="concept-02.html" target="_blank">open full ↗</a>
+    </div>
+    <p class="desc">A fashion issue on matte black. The home screen is a magazine cover, the schedule is a production call sheet, your membership is an all-access laminate.</p>
+    <div class="shell"><iframe src="concept-02.html" title="Concept 02 · Backstage" loading="lazy"></iframe></div>
+  </div>
+
+  <div class="option">
+    <div class="cap">
+      <span class="name"><span class="no">03</span>Sweat Zine</span>
+      <a href="concept-03.html" target="_blank">open full ↗</a>
+    </div>
+    <p class="desc">Your gym bestie's scrapbook: torn pink scraps, tape, marker scribbles, polaroid coaches, tally marks. Booking a class circles it in marker.</p>
+    <div class="shell"><iframe src="concept-03.html" title="Concept 03 · Sweat Zine" loading="lazy"></iframe></div>
+  </div>
+
+  <div class="option">
+    <div class="cap">
+      <span class="name"><span class="no">04</span>Daybreak</span>
+      <a href="concept-04.html" target="_blank">open full ↗</a>
+    </div>
+    <p class="desc">Warm, calm, and effortless for every generation: big type, plain language, huge buttons, and a one-tap text-size control. Set in Atkinson Hyperlegible, the typeface designed for low-vision readers.</p>
+    <div class="shell"><iframe src="concept-04.html" title="Concept 04 · Daybreak" loading="lazy"></iframe></div>
+  </div>
+
+  <div class="option">
+    <div class="cap">
+      <span class="name"><span class="no">05</span>True to Site</span>
+      <a href="concept-05.html" target="_blank">open full ↗</a>
+    </div>
+    <p class="desc">bodiedsj.com, translated 1:1 into an app: same Switzer headlines, same cream, same pink buttons, same dark section with chartreuse highlights, real testimonials and the exact pricing table.</p>
+    <div class="shell"><iframe src="concept-05.html" title="Concept 05 · True to Site" loading="lazy"></iframe></div>
+  </div>
+</div>
+
+<footer>
+  <span>Strength · Power · Sisterhood</span>
+  <span>bodiedsj.com → app concepts · Jun 2026</span>
+</footer>
+</body>
+</html>

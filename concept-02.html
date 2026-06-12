@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BODIED SJ · Concept 02 · Backstage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=IBM+Plex+Mono:wght@400;500;600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --black: oklch(14% 0.012 350);
+  --black-2: oklch(17.5% 0.015 350);
+  --ivory: oklch(93% 0.018 85);
+  --dusty: oklch(66% 0.045 355);
+  --pink: oklch(67% 0.21 350);
+  --pink-deep: oklch(58% 0.21 352);
+  --hair: oklch(93% 0.018 85 / 0.16);
+  --hair-soft: oklch(93% 0.018 85 / 0.09);
+  --serif: 'Bodoni Moda', serif;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Hanken Grotesk', sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:oklch(10% 0.015 345); font-family:var(--sans); color:var(--ivory); overflow:hidden}
+
+/* ============ STAGE ============ */
+.stage{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 115%, oklch(24% 0.07 350 / 0.6), transparent 65%),
+    oklch(10% 0.015 345);
+}
+.stage-word{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(160px, 30vw, 460px);
+  color:oklch(93% 0.018 85 / 0.04);
+  user-select:none; pointer-events:none; white-space:nowrap;
+}
+.stage-note{position:absolute; font-family:var(--mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--dusty)}
+.stage-note.tl{top:26px;left:30px}
+.stage-note.bl{bottom:24px;left:30px}
+.stage-note.br{bottom:24px;right:30px; font-family:var(--serif); font-style:italic; text-transform:none; letter-spacing:0; font-size:16px}
+.stage-note .px{color:var(--pink)}
+
+/* ============ PHONE ============ */
+.phone{
+  position:relative; width:390px; height:844px; flex:none;
+  background:oklch(7% 0.01 345);
+  border-radius:54px; padding:10px;
+  outline:1px solid oklch(93% 0.018 85 / 0.12);
+  box-shadow:0 60px 110px -20px oklch(0% 0 0 / 0.8), 0 30px 60px -30px oklch(67% 0.21 350 / 0.25);
+}
+.viewport{
+  position:relative; width:100%; height:100%;
+  background:var(--black); border-radius:44px; overflow:hidden; isolation:isolate;
+}
+.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:oklch(7% 0.01 345); border-radius:20px; z-index:60}
+.statusbar{
+  position:absolute; top:0; left:0; right:0; height:54px; z-index:75;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 30px 0;
+  font-family:var(--mono); font-size:13px; font-weight:500; color:var(--ivory);
+  pointer-events:none;
+}
+.statusbar svg{display:block}
+.home-pill{position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:130px; height:5px; border-radius:3px; background:var(--ivory); opacity:0.3; z-index:60}
+
+/* ============ APP ============ */
+.app{position:absolute; inset:0; overflow:hidden}
+.screen{
+  position:absolute; inset:0; padding:60px 0 92px;
+  overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.28s var(--ease);
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1; pointer-events:auto}
+.pad{padding-left:26px; padding-right:26px}
+
+/* type helpers */
+.k{font-family:var(--mono); font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--dusty)}
+.k.pink{color:var(--pink)}
+.hairline{border:none; border-top:1px solid var(--hair); margin:0}
+.pagefoot{
+  margin:34px 26px 8px; padding-top:12px; border-top:1px solid var(--hair-soft);
+  font-family:var(--mono); font-size:9px; letter-spacing:0.22em; color:var(--dusty);
+  display:flex; justify-content:space-between; text-transform:uppercase;
+}
+
+/* ============ COVER ============ */
+.masthead{margin-top:14px; text-align:center}
+.masthead h1{
+  font-family:var(--serif); font-weight:800; font-size:62px; line-height:1;
+  letter-spacing:0.04em; color:var(--ivory);
+}
+.issue-line{
+  display:flex; justify-content:center; gap:14px;
+  margin:12px 26px 0; padding:9px 0;
+  border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
+}
+.issue-line span{font-family:var(--mono); font-size:9.5px; letter-spacing:0.2em; color:var(--dusty); text-transform:uppercase}
+.issue-line .px{color:var(--pink)}
+.cover-story{
+  position:relative; margin:0 26px; padding:38px 0 30px;
+  cursor:pointer; text-align:left;
+  background:none; border:none; color:inherit; width:calc(100% - 52px); display:block;
+}
+.cover-story:focus-visible{outline:2px solid var(--pink); outline-offset:4px}
+.ghost-num{
+  position:absolute; right:-12px; top:2px;
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:150px; line-height:1; color:oklch(93% 0.018 85 / 0.05);
+  pointer-events:none;
+}
+.cover-story .k{margin-bottom:14px}
+.cover-story h2{
+  font-family:var(--serif); font-style:italic; font-weight:600;
+  font-size:46px; line-height:1.02; color:var(--ivory);
+}
+.cover-story .dek{
+  font-family:var(--serif); font-style:italic; font-size:18px;
+  color:var(--dusty); margin-top:12px;
+}
+.cover-story .slug{margin-top:18px}
+.coverlines{margin:0 26px; padding:20px 0 4px; border-top:1px solid var(--hair)}
+.coverline{
+  display:flex; gap:14px; align-items:baseline; padding:11px 0;
+  background:none; border:none; width:100%; text-align:left; cursor:pointer; color:inherit;
+}
+.coverline:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.coverline .no{font-family:var(--serif); font-style:italic; font-size:15px; color:var(--pink); flex:none; width:22px}
+.coverline .tx{font-family:var(--serif); font-size:16.5px; line-height:1.3; color:var(--ivory)}
+.coverline .tx em{font-style:italic; color:var(--dusty)}
+.cover-bottom{
+  margin:18px 26px 0; padding-top:16px; border-top:1px solid var(--hair);
+  display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+}
+.cover-bottom .price{font-family:var(--mono); font-size:9px; letter-spacing:0.18em; color:var(--dusty); text-transform:uppercase; line-height:1.7}
+.barcode{
+  width:96px; height:30px; border-radius:1px;
+  background:repeating-linear-gradient(90deg,
+    var(--ivory) 0 2px, transparent 2px 5px,
+    var(--ivory) 5px 8px, transparent 8px 10px,
+    var(--ivory) 10px 11px, transparent 11px 15px);
+  opacity:0.85;
+}
+
+/* ============ CALL SHEET ============ */
+.sheet-head{margin-top:16px}
+.sheet-head h2{font-family:var(--serif); font-style:italic; font-weight:600; font-size:42px; color:var(--ivory); margin-top:8px}
+.daystrip{
+  display:flex; gap:0; overflow-x:auto; scrollbar-width:none;
+  margin:18px 0 0; padding:0 26px 14px;
+}
+.daystrip::-webkit-scrollbar{display:none}
+.daybtn{
+  flex:none; background:none; border:none; cursor:pointer;
+  font-family:var(--mono); font-size:11px; letter-spacing:0.16em;
+  color:var(--dusty); padding:6px 14px 6px 0; text-transform:uppercase;
+  transition:color 0.15s;
+}
+.daybtn::after{content:"/"; margin-left:14px; color:var(--hair); }
+.daybtn:last-child::after{content:""}
+.daybtn.sel{color:var(--pink)}
+.daybtn.sel .ast{margin-right:5px}
+.daybtn:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.sheet-cols{
+  display:grid; grid-template-columns:64px 1fr auto; gap:12px;
+  padding:8px 26px; border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
+}
+.sheet-cols span{font-family:var(--mono); font-size:8.5px; letter-spacing:0.24em; color:var(--dusty); text-transform:uppercase}
+.srow{
+  display:grid; grid-template-columns:64px 1fr auto; gap:12px; align-items:center;
+  padding:17px 26px; border-bottom:1px solid var(--hair-soft);
+  cursor:pointer; transition:background 0.15s;
+}
+.srow:active{background:var(--black-2)}
+.srow .time{font-family:var(--mono); font-size:14px; font-weight:500; color:var(--ivory)}
+.srow.is-booked .time{color:var(--pink)}
+.srow .cname{font-family:var(--serif); font-size:21px; font-weight:600; color:var(--ivory); line-height:1.1}
+.srow .cmeta{font-family:var(--mono); font-size:9.5px; letter-spacing:0.14em; color:var(--dusty); margin-top:5px; text-transform:uppercase}
+.rsvp{
+  background:none; border:none; cursor:pointer;
+  font-family:var(--mono); font-size:11px; letter-spacing:0.18em; color:var(--pink);
+  text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px;
+  padding:6px 0 6px 6px; text-transform:uppercase;
+}
+.rsvp:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.st-confirmed{font-family:var(--mono); font-size:10px; letter-spacing:0.16em; color:var(--pink); text-transform:uppercase}
+.st-wait{font-family:var(--mono); font-size:10px; letter-spacing:0.16em; color:var(--dusty); text-transform:uppercase; text-align:right; line-height:1.6}
+.dark-state{padding:90px 40px; text-align:center}
+.dark-state h3{font-family:var(--serif); font-style:italic; font-weight:600; font-size:64px; color:var(--ivory)}
+.dark-state p{font-family:var(--mono); font-size:10px; letter-spacing:0.22em; color:var(--dusty); margin-top:16px; text-transform:uppercase}
+
+/* ============ DETAIL ============ */
+.detail{
+  position:absolute; inset:0; z-index:70; background:var(--black);
+  transform:translateY(102%); transition:transform 0.32s var(--ease);
+  display:flex; flex-direction:column;
+  padding:64px 26px 30px; overflow-y:auto; scrollbar-width:none;
+}
+.detail::-webkit-scrollbar{display:none}
+.detail.open{transform:translateY(0)}
+.d-back{
+  background:none; border:none; cursor:pointer; align-self:flex-start;
+  font-family:var(--mono); font-size:11px; letter-spacing:0.18em; color:var(--pink);
+  padding:6px 0; text-transform:uppercase;
+}
+.d-back:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.d-ghost{
+  position:absolute; right:-10px; top:46px;
+  font-family:var(--serif); font-style:italic; font-size:170px; line-height:1;
+  color:oklch(93% 0.018 85 / 0.05); pointer-events:none;
+}
+.d-kicker{margin-top:26px}
+.d-title{
+  font-family:var(--serif); font-style:italic; font-weight:600;
+  font-size:54px; line-height:0.98; color:var(--ivory); margin-top:12px;
+}
+.d-rule{border:none; border-top:1px solid var(--hair); margin:26px 0 0}
+.d-meta{display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:4px}
+.d-meta .cell{padding:13px 0; border-bottom:1px solid var(--hair-soft)}
+.d-meta .cell .k{display:block; margin-bottom:5px}
+.d-meta .cell .v{font-family:var(--mono); font-size:13px; color:var(--ivory); letter-spacing:0.04em}
+.d-meta .v .dot{color:var(--pink)}
+.d-quote{margin-top:30px; position:relative; padding-left:18px}
+.d-quote::before{
+  content:"“"; position:absolute; left:-6px; top:-12px;
+  font-family:var(--serif); font-size:54px; color:var(--pink); font-style:italic;
+}
+.d-quote p{font-family:var(--serif); font-style:italic; font-size:23px; line-height:1.3; color:var(--ivory); max-width:28ch}
+.d-quote .att{margin-top:12px}
+.d-bring{margin-top:24px}
+.d-spacer{flex:1; min-height:30px}
+.d-book{
+  width:100%; padding:18px; cursor:pointer;
+  background:var(--pink); color:oklch(14% 0.03 350); border:1px solid var(--pink);
+  font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:0.24em; text-transform:uppercase;
+  transition:background 0.18s, color 0.18s, transform 0.12s var(--ease);
+}
+.d-book:active{transform:scale(0.985)}
+.d-book:focus-visible{outline:2px solid var(--ivory); outline-offset:3px}
+.d-book.confirmed{background:transparent; color:var(--pink)}
+.d-note{margin-top:12px; text-align:center; font-family:var(--mono); font-size:9px; letter-spacing:0.18em; color:var(--dusty); text-transform:uppercase}
+.watermark{
+  position:absolute; top:42%; left:50%; z-index:80;
+  transform:translate(-50%,-50%) rotate(-8deg);
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:72px; color:transparent;
+  -webkit-text-stroke:1.5px var(--pink);
+  opacity:0; pointer-events:none; white-space:nowrap;
+}
+.watermark.show{animation:wm 0.6s var(--ease) forwards}
+@keyframes wm{
+  from{opacity:0; transform:translate(-50%,-50%) rotate(-8deg) scale(1.3)}
+  to{opacity:1; transform:translate(-50%,-50%) rotate(-8deg) scale(1)}
+}
+
+/* ============ TALENT ============ */
+.talent-row{
+  display:grid; grid-template-columns:52px 1fr auto; gap:14px; align-items:start;
+  padding:24px 26px; border-bottom:1px solid var(--hair-soft);
+}
+.talent-row .no{font-family:var(--serif); font-style:italic; font-size:26px; color:var(--pink); padding-top:4px}
+.talent-row h3{font-family:var(--serif); font-weight:700; font-size:31px; color:var(--ivory); line-height:1}
+.talent-row .role{margin-top:7px}
+.talent-row .bio{font-family:var(--serif); font-style:italic; font-size:15.5px; line-height:1.45; color:var(--dusty); margin-top:10px; max-width:36ch}
+.talent-row .specs{font-family:var(--mono); font-size:9.5px; letter-spacing:0.16em; color:var(--ivory); margin-top:12px; text-transform:uppercase}
+.talent-row .specs i{font-style:normal; color:var(--pink); margin:0 7px}
+.admire{
+  background:none; border:none; cursor:pointer; padding:4px 0;
+  font-family:var(--mono); font-size:10px; letter-spacing:0.14em; color:var(--dusty);
+  text-transform:uppercase; transition:color 0.15s; white-space:nowrap;
+}
+.admire.on{color:var(--pink)}
+.admire:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.talent-foot{margin:22px 26px 0; padding-top:18px; border-top:1px solid var(--hair)}
+.talent-foot p{font-family:var(--mono); font-size:10px; letter-spacing:0.18em; line-height:2; color:var(--dusty); text-transform:uppercase}
+.talent-foot .px{color:var(--pink)}
+
+/* ============ PASS ============ */
+.lanyard{
+  width:36px; height:78px; margin:0 auto;
+  background:var(--pink);
+  position:relative;
+}
+.lanyard::after{
+  content:""; position:absolute; bottom:-9px; left:50%; transform:translateX(-50%);
+  width:14px; height:14px; border-radius:50%;
+  background:var(--black); border:3px solid var(--pink);
+}
+.pass-card{
+  margin:16px 30px 0; padding:22px;
+  background:var(--ivory); color:oklch(16% 0.02 350);
+  border-radius:10px;
+  box-shadow:0 24px 50px -18px oklch(0% 0 0 / 0.7);
+}
+.pass-card .topline{display:flex; justify-content:space-between}
+.pass-card .topline span{font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase}
+.pass-card .topline .px{color:var(--pink-deep)}
+.pass-card h3{font-family:var(--serif); font-weight:700; font-size:38px; margin-top:14px}
+.pass-grid{display:flex; justify-content:space-between; margin-top:20px}
+.pass-grid .k{color:oklch(45% 0.03 350)}
+.pass-grid .v{font-family:var(--mono); font-size:12px; margin-top:4px; letter-spacing:0.04em}
+.pass-card .barcode{
+  width:100%; height:36px; margin-top:18px; opacity:0.92;
+  background:repeating-linear-gradient(90deg,
+    oklch(16% 0.02 350) 0 2px, transparent 2px 5px,
+    oklch(16% 0.02 350) 5px 9px, transparent 9px 11px,
+    oklch(16% 0.02 350) 11px 12px, transparent 12px 16px);
+}
+.appearances{margin:26px 26px 0}
+.appearances p{font-family:var(--serif); font-style:italic; font-size:19px; color:var(--ivory); line-height:1.4}
+.appearances .k{display:block; margin-top:8px}
+.archive{display:flex; gap:12px; overflow-x:auto; scrollbar-width:none; padding:14px 26px 6px}
+.archive::-webkit-scrollbar{display:none}
+.arch-card{
+  flex:none; width:104px; padding:14px 12px 12px;
+  border:1px solid var(--hair); border-radius:2px;
+}
+.arch-card .num{font-family:var(--serif); font-style:italic; font-size:30px; color:var(--pink); line-height:1}
+.arch-card .cap{font-family:var(--mono); font-size:8.5px; letter-spacing:0.16em; color:var(--ivory); margin-top:10px; text-transform:uppercase; line-height:1.7}
+.arch-card.locked{border-style:dashed; opacity:0.55}
+.arch-card.locked .num{color:var(--dusty)}
+.index-list{margin:6px 26px 0}
+.index-row{
+  display:flex; align-items:baseline; gap:8px; width:100%;
+  padding:15px 0; background:none; border:none; border-bottom:1px solid var(--hair-soft);
+  cursor:pointer; color:inherit; text-align:left;
+}
+.index-row:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.index-row .lbl{font-family:var(--mono); font-size:11px; letter-spacing:0.16em; color:var(--ivory); text-transform:uppercase; flex:none}
+.index-row .leader{flex:1; border-bottom:1px dotted var(--hair); transform:translateY(-3px)}
+.index-row .val{font-family:var(--mono); font-size:10px; letter-spacing:0.12em; color:var(--dusty); text-transform:uppercase}
+.exeunt{margin:30px 26px 6px; text-align:center}
+.exeunt .big{font-family:var(--serif); font-style:italic; font-size:26px; color:var(--ivory)}
+.exeunt .k{display:block; margin-top:10px; line-height:1.8}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute; left:0; right:0; bottom:0; z-index:50;
+  height:80px; padding:0 10px 22px;
+  background:var(--black);
+  border-top:1px solid var(--hair);
+  display:flex;
+}
+.tab{
+  flex:1; background:none; border:none; cursor:pointer;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:0.18em;
+  color:var(--dusty); text-transform:uppercase;
+  position:relative; padding-top:4px;
+  transition:color 0.18s;
+}
+.tab::before{
+  content:""; position:absolute; top:-1px; left:18%; right:18%;
+  height:1px; background:transparent; transition:background 0.18s;
+}
+.tab.active{color:var(--pink)}
+.tab.active::before{background:var(--pink)}
+.tab:focus-visible{outline:2px solid var(--pink); outline-offset:-4px}
+
+/* ============ MOBILE ============ */
+@media (max-width:560px){
+  .stage{display:block; background:var(--black)}
+  .stage-word,.stage-note{display:none}
+  .phone{width:100%; height:100%; border-radius:0; padding:0; outline:none; box-shadow:none; transform:none !important}
+  .viewport{border-radius:0}
+  .notch{display:none}
+  .statusbar{display:none}
+  .screen{padding-top:max(18px, env(safe-area-inset-top))}
+  .detail{padding-top:max(24px, env(safe-area-inset-top))}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:0.01ms !important; animation-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="stage-word" aria-hidden="true">№ 02</div>
+  <div class="stage-note tl"><span class="px">✻</span> BODIED SJ · concept 02 · backstage</div>
+  <div class="stage-note bl">strength · power · sisterhood</div>
+  <div class="stage-note br">tap around, everything works</div>
+
+  <div class="phone" id="phone">
+    <div class="viewport">
+      <div class="app" id="app">
+
+        <div class="notch" aria-hidden="true"></div>
+        <div class="statusbar" aria-hidden="true">
+          <span>9:41</span>
+          <svg width="64" height="13" viewBox="0 0 64 13" fill="none">
+            <rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/>
+            <rect x="5" y="4" width="3" height="8" rx="1" fill="currentColor"/>
+            <rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/>
+            <rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+            <path d="M26 4.5C28.5 2 32.5 2 35 4.5M27.8 7C29.3 5.6 31.7 5.6 33.2 7M29.6 9.4C30.3 8.8 30.7 8.8 31.4 9.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="41" y="1.5" width="20" height="10" rx="3" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="43" y="3.5" width="13" height="6" rx="1.5" fill="currentColor"/>
+            <rect x="62" y="4.5" width="2" height="4" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="home-pill" aria-hidden="true"></div>
+
+        <!-- ============ COVER ============ -->
+        <section class="screen active" id="screen-cover">
+          <div class="masthead">
+            <h1>BODIED</h1>
+          </div>
+          <div class="issue-line">
+            <span>San Jose</span><span class="px">✻</span>
+            <span>Issue № 47</span><span class="px">✻</span>
+            <span>Thu 12 Jun</span>
+          </div>
+
+          <button class="cover-story" id="cover-story">
+            <div class="ghost-num" aria-hidden="true">06</div>
+            <span class="k pink">✻ Maya's next call · 06:00</span>
+            <h2>Booty<br>&amp; Abs.</h2>
+            <div class="dek">with Valeria, at first light.</div>
+            <div class="slug k">Spot 07 · confirmed · 45 min</div>
+          </button>
+
+          <div class="coverlines">
+            <button class="coverline" data-go="classes">
+              <span class="no">i.</span>
+              <span class="tx">Eighteen classes on the bill this week. <em>The call sheet, p. 02</em></span>
+            </button>
+            <button class="coverline" data-go="talent">
+              <span class="no">ii.</span>
+              <span class="tx">Valeria on glutes, discipline, and reggaeton. <em>The talent, p. 03</em></span>
+            </button>
+            <button class="coverline" data-go="pass">
+              <span class="no">iii.</span>
+              <span class="tx">Seven days, seven dollars: the open invitation. <em>New faces welcome</em></span>
+            </button>
+          </div>
+
+          <div class="cover-bottom">
+            <div class="price">Free for members<br>2293 Lincoln Ave</div>
+            <div class="barcode" aria-hidden="true"></div>
+          </div>
+          <div class="pagefoot"><span>The Bodied Journal</span><span>p. 01 · Cover</span></div>
+        </section>
+
+        <!-- ============ CALL SHEET ============ -->
+        <section class="screen" id="screen-classes">
+          <div class="pad sheet-head">
+            <span class="k">Production schedule</span>
+            <h2>The Call Sheet</h2>
+          </div>
+          <div class="daystrip" id="daystrip"></div>
+          <div class="sheet-cols"><span>Time</span><span>Class / Talent</span><span style="text-align:right">RSVP</span></div>
+          <div id="sheet-body"></div>
+          <div class="pagefoot"><span>The Bodied Journal</span><span>p. 02 · Call Sheet</span></div>
+        </section>
+
+        <!-- ============ TALENT ============ -->
+        <section class="screen" id="screen-talent">
+          <div class="pad sheet-head">
+            <span class="k">In order of appearance</span>
+            <h2>The Talent</h2>
+          </div>
+          <div id="talent-list" style="margin-top:10px"></div>
+          <div class="talent-foot">
+            <p>And introducing <span class="px">Coach Hugo</span> · youth soccer · Saturdays</p>
+          </div>
+          <div class="pagefoot"><span>The Bodied Journal</span><span>p. 03 · Talent</span></div>
+        </section>
+
+        <!-- ============ PASS ============ -->
+        <section class="screen" id="screen-pass">
+          <div class="lanyard" aria-hidden="true"></div>
+          <div class="pass-card">
+            <div class="topline"><span>Bodied SJ <i class="px" style="font-style:normal">✻</i> All access</span><span>Since Feb 2026</span></div>
+            <h3>Maya R.</h3>
+            <div class="pass-grid">
+              <div><span class="k">Access</span><div class="v">Unlimited</div></div>
+              <div><span class="k">№</span><div class="v">0214</div></div>
+              <div><span class="k">House</span><div class="v">Lincoln Ave</div></div>
+            </div>
+            <div class="barcode" aria-hidden="true"></div>
+          </div>
+
+          <div class="appearances">
+            <p>Forty-seven appearances since February. The house expects you.</p>
+          </div>
+
+          <div class="pad" style="margin-top:26px"><span class="k">The archive</span></div>
+          <div class="archive">
+            <div class="arch-card"><div class="num">№1</div><div class="cap">First call · Feb</div></div>
+            <div class="arch-card"><div class="num">№25</div><div class="cap">Quarter century</div></div>
+            <div class="arch-card"><div class="num">05:00</div><div class="cap">Dawn chorus club</div></div>
+            <div class="arch-card"><div class="num">+1</div><div class="cap">Brought a guest</div></div>
+            <div class="arch-card locked"><div class="num">№50</div><div class="cap">Three to go</div></div>
+          </div>
+
+          <div class="pad" style="margin-top:22px"><span class="k">Account</span></div>
+          <div class="index-list">
+            <button class="index-row"><span class="lbl">Plan</span><span class="leader"></span><span class="val">Unlimited · $215/mo ›</span></button>
+            <button class="index-row"><span class="lbl">Notifications</span><span class="leader"></span><span class="val">On ›</span></button>
+            <button class="index-row"><span class="lbl">Payment</span><span class="leader"></span><span class="val">···· 4417 ›</span></button>
+            <button class="index-row"><span class="lbl">Help</span><span class="leader"></span><span class="val">(408) 337-2160 ›</span></button>
+          </div>
+
+          <div class="exeunt">
+            <div class="big">exeunt.</div>
+            <span class="k">See you on the floor<br>2293 Lincoln Ave, San Jose</span>
+          </div>
+          <div class="pagefoot"><span>The Bodied Journal</span><span>p. 04 · Pass</span></div>
+        </section>
+
+        <!-- ============ DETAIL ============ -->
+        <section class="detail" id="detail" aria-hidden="true">
+          <div class="d-ghost" id="d-ghost" aria-hidden="true"></div>
+          <button class="d-back" id="d-back">← Call sheet</button>
+          <div class="d-kicker k pink" id="d-kicker"></div>
+          <h2 class="d-title" id="d-title"></h2>
+          <hr class="d-rule">
+          <div class="d-meta" id="d-meta"></div>
+          <div class="d-quote">
+            <p id="d-quote"></p>
+            <div class="att k" id="d-att"></div>
+          </div>
+          <div class="d-bring k" id="d-bring"></div>
+          <div class="d-spacer"></div>
+          <button class="d-book" id="d-book">Reserve your call</button>
+          <div class="d-note" id="d-note">Cancellations close two hours prior</div>
+        </section>
+        <div class="watermark" id="watermark" aria-hidden="true">confirmed.</div>
+
+        <!-- ============ TAB BAR ============ -->
+        <nav class="tabbar" aria-label="Main">
+          <button class="tab active" data-screen="cover">Cover</button>
+          <button class="tab" data-screen="classes">Call Sheet</button>
+          <button class="tab" data-screen="talent">Talent</button>
+          <button class="tab" data-screen="pass">Pass</button>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const CLASSES = {
+  'booty-abs':{name:'Booty & Abs', effort:3,
+    quote:'Reggaeton up loud. Your glutes will know about it mañana.', by:'Valeria',
+    bring:'Bring: water · mat provided · all levels'},
+  'full-body-hiit':{name:'Full Body HIIT', effort:4,
+    quote:'Cardio and strength in one sweaty hour. The fan favorite.', by:'Gabi',
+    bring:'Bring: water · towel · all levels'},
+  'arms-abs':{name:'Arms & Abs', effort:3,
+    quote:'Upper body day. Tank top season is every season here.', by:'Bri',
+    bring:'Bring: water · dumbbells provided'},
+  'pilates-sculpt':{name:'Pilates Sculpt', effort:2,
+    quote:'Slow burn, deep core, shaky legs. In the best way.', by:'Kimber',
+    bring:'Bring: grip socks · mat provided · low impact'},
+  'mommy-me':{name:'Mommy & Me', effort:1,
+    quote:'Move with your little one. Chaos welcome, strollers too.', by:'Kimber',
+    bring:'Kids welcome · stroller friendly'},
+  'muscle-mami':{name:'Muscle Mami', effort:4,
+    quote:'The signature. Full body HIIT with the volume at eleven.', by:'Valeria',
+    bring:'Bring: water · towel · brave face'},
+};
+
+const SCHEDULE = {
+  'THU 12':[
+    {id:'booty-abs', t:'06:00', coach:'Valeria', dur:45, left:0, booked:true},
+    {id:'pilates-sculpt', t:'09:30', coach:'Kimber', dur:50, left:3},
+    {id:'mommy-me', t:'12:00', coach:'Kimber', dur:40, left:5},
+    {id:'arms-abs', t:'16:30', coach:'Bri', dur:45, left:-1},
+    {id:'muscle-mami', t:'17:45', coach:'Valeria', dur:60, left:2},
+    {id:'full-body-hiit', t:'19:00', coach:'Gabi', dur:60, left:6},
+  ],
+  'FRI 13':[
+    {id:'full-body-hiit', t:'06:00', coach:'Gabi', dur:60, left:4},
+    {id:'booty-abs', t:'09:30', coach:'Valeria', dur:45, left:7},
+    {id:'pilates-sculpt', t:'12:00', coach:'Kimber', dur:50, left:2},
+    {id:'arms-abs', t:'17:45', coach:'Bri', dur:45, left:5},
+    {id:'muscle-mami', t:'19:00', coach:'Valeria', dur:60, left:-1},
+  ],
+  'SAT 14':[
+    {id:'muscle-mami', t:'08:00', coach:'Valeria', dur:60, left:3},
+    {id:'mommy-me', t:'09:30', coach:'Kimber', dur:40, left:8},
+    {id:'full-body-hiit', t:'11:00', coach:'Gabi', dur:60, left:5},
+  ],
+  'SUN 15':'dark',
+  'MON 16':[
+    {id:'full-body-hiit', t:'06:00', coach:'Gabi', dur:60, left:9},
+    {id:'booty-abs', t:'17:45', coach:'Valeria', dur:45, left:6},
+    {id:'pilates-sculpt', t:'19:00', coach:'Kimber', dur:50, left:4},
+  ],
+};
+
+const TALENT = [
+  {name:'Valeria', role:'Head trainer · Studio ops', bio:'Former competitive dancer, NASM certified. Core and glutes are her love language.', specs:['Core','Glutes','Personal training']},
+  {name:'Gabi', role:'Strength & conditioning', bio:'Ex Division 1 basketball. Brings the competitive fire, leaves the judgment at the door.', specs:['Strength','Weightlifting','Hype']},
+  {name:'Bri', role:'Fitness coach', bio:'Functional movement specialist. Coaches youth and adults to feel strong and capable.', specs:['Functional','Youth','Form']},
+  {name:'Kimber', role:'Trainer', bio:'Dancer, mom, NASM certified. Built a safe space for women to fall in love with fitness.', specs:['Confidence','Pilates','Moms']},
+];
+
+const $ = s => document.querySelector(s);
+
+/* ============ TABS ============ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    $('#screen-'+tab.dataset.screen).classList.add('active');
+    closeDetail();
+  });
+});
+function goTab(name){ document.querySelector(`.tab[data-screen="${name}"]`).click(); }
+document.querySelectorAll('.coverline').forEach(b=>{
+  b.addEventListener('click', ()=> goTab(b.dataset.go === 'pass' ? 'pass' : b.dataset.go));
+});
+
+/* ============ CALL SHEET ============ */
+const bookedSet = new Set(['THU 12|booty-abs|06:00']);
+let currentDay = 'THU 12';
+
+function renderDays(){
+  $('#daystrip').innerHTML = Object.keys(SCHEDULE).map(d=>
+    `<button class="daybtn ${d===currentDay?'sel':''}" data-day="${d}">${d===currentDay?'<span class="ast">✻</span>':''}${d}</button>`
+  ).join('');
+  document.querySelectorAll('.daybtn').forEach(b=>{
+    b.addEventListener('click', ()=>{ currentDay=b.dataset.day; renderDays(); renderSheet(); });
+  });
+}
+
+function renderSheet(){
+  const day = SCHEDULE[currentDay];
+  const body = $('#sheet-body');
+  if(day === 'dark'){
+    body.innerHTML = `<div class="dark-state">
+      <h3>Dark.</h3>
+      <p>No calls today · rest, talent</p>
+    </div>`;
+    return;
+  }
+  body.innerHTML = day.map(s=>{
+    const c = CLASSES[s.id];
+    const key = `${currentDay}|${s.id}|${s.t}`;
+    const booked = bookedSet.has(key);
+    const full = s.left === -1;
+    let status;
+    if(booked) status = `<span class="st-confirmed">✻ Conf.</span>`;
+    else if(full) status = `<span class="st-wait">House full<br>waitlist</span>`;
+    else status = `<button class="rsvp" data-key="${key}">RSVP</button>`;
+    const seats = full ? '' : (booked ? ' · confirmed' : ` · ${s.left} seats`);
+    return `<div class="srow ${booked?'is-booked':''}" data-class="${s.id}" data-key="${key}" data-when="${currentDay} · ${s.t}" data-time="${s.t}" role="button" tabindex="0">
+      <span class="time">${s.t}</span>
+      <span>
+        <div class="cname">${c.name}</div>
+        <div class="cmeta">${s.coach} · ${s.dur} min${seats}</div>
+      </span>
+      ${status}
+    </div>`;
+  }).join('');
+
+  body.querySelectorAll('.rsvp').forEach(b=>{
+    b.addEventListener('click', e=>{ e.stopPropagation(); bookedSet.add(b.dataset.key); renderSheet(); });
+  });
+  body.querySelectorAll('.srow').forEach(row=>{
+    row.addEventListener('click', ()=> openDetail(row.dataset.class, row.dataset.when, row.dataset.time, row.dataset.key));
+    row.addEventListener('keydown', e=>{ if(e.key==='Enter') row.click(); });
+  });
+}
+renderDays(); renderSheet();
+
+/* ============ DETAIL ============ */
+const detail = $('#detail');
+let currentKey = null;
+
+function openDetail(id, when, time, key){
+  const c = CLASSES[id];
+  currentKey = key || null;
+  const sched = SCHEDULE[currentDay];
+  const entry = Array.isArray(sched) ? sched.find(s=>s.id===id && s.t===time) : null;
+  const dur = entry ? entry.dur : 45;
+  const coach = entry ? entry.coach : c.by;
+  $('#d-ghost').textContent = time.slice(0,2);
+  $('#d-kicker').textContent = `✻ Call № ${time.replace(':','')} · ${when.split(' ·')[0]}`;
+  $('#d-title').innerHTML = c.name.toLowerCase().replace(' & ','<br>&amp; ') + '.';
+  $('#d-meta').innerHTML = `
+    <div class="cell"><span class="k">Call time</span><span class="v">${time}</span></div>
+    <div class="cell"><span class="k">Running time</span><span class="v">${dur} min</span></div>
+    <div class="cell"><span class="k">Director</span><span class="v">${coach}</span></div>
+    <div class="cell"><span class="k">Intensity</span><span class="v">${'<span class="dot">●</span>'.repeat(c.effort)}${'○'.repeat(4-c.effort)}</span></div>`;
+  $('#d-quote').textContent = c.quote;
+  $('#d-att').textContent = `· ${c.by}.`;
+  $('#d-bring').textContent = c.bring;
+  setBookBtn(currentKey && bookedSet.has(currentKey));
+  detail.classList.add('open');
+  detail.setAttribute('aria-hidden','false');
+  detail.scrollTop = 0;
+}
+function setBookBtn(booked){
+  const btn = $('#d-book');
+  if(booked){
+    btn.textContent = 'Confirmed ✻ Spot 12';
+    btn.classList.add('confirmed');
+    $('#d-note').textContent = 'The house expects you';
+  } else {
+    btn.textContent = 'Reserve your call';
+    btn.classList.remove('confirmed');
+    $('#d-note').textContent = 'Cancellations close two hours prior';
+  }
+}
+function closeDetail(){
+  detail.classList.remove('open');
+  detail.setAttribute('aria-hidden','true');
+}
+$('#d-back').addEventListener('click', closeDetail);
+$('#d-book').addEventListener('click', ()=>{
+  if($('#d-book').classList.contains('confirmed')) return;
+  if(currentKey) bookedSet.add(currentKey);
+  setBookBtn(true);
+  renderSheet();
+  const wm = $('#watermark');
+  wm.classList.remove('show');
+  void wm.offsetWidth;
+  wm.classList.add('show');
+  setTimeout(()=>wm.classList.remove('show'), 1800);
+});
+$('#cover-story').addEventListener('click', ()=> openDetail('booty-abs', 'THU 12 · 06:00', '06:00', 'THU 12|booty-abs|06:00'));
+
+/* ============ TALENT ============ */
+$('#talent-list').innerHTML = TALENT.map((t,i)=>`
+  <div class="talent-row">
+    <span class="no">0${i+1}</span>
+    <div>
+      <h3>${t.name}</h3>
+      <div class="role k">${t.role}</div>
+      <div class="bio">${t.bio}</div>
+      <div class="specs">${t.specs.join('<i>·</i>')}</div>
+    </div>
+    <button class="admire" aria-label="Admire ${t.name}">☆ admire</button>
+  </div>`).join('');
+document.querySelectorAll('.admire').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    b.classList.toggle('on');
+    b.textContent = b.classList.contains('on') ? '★ admired' : '☆ admire';
+  });
+});
+
+/* ============ FIT + HASH ============ */
+function fitPhone(){
+  if(window.innerWidth <= 560){ $('#phone').style.transform=''; return; }
+  const scale = Math.min(1, (window.innerHeight - 120) / 844, (window.innerWidth - 80) / 390);
+  $('#phone').style.transform = `scale(${scale})`;
+}
+fitPhone();
+window.addEventListener('resize', fitPhone);
+
+(function(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(!h) return;
+  const [main, q] = h.split('&');
+  const scr = main.split('=')[0];
+  if(['cover','classes','talent','pass'].includes(scr)) goTab(scr);
+  if(main.startsWith('detail=')){
+    const id = main.split('=')[1];
+    if(CLASSES[id]) openDetail(id, 'THU 12 · 17:45', '17:45', null);
+  }
+  const sm = (q||'').match(/s=(\d+)/);
+  if(sm) document.querySelector('.screen.active').scrollTop = +sm[1];
+})();
+</script>
+</body>
+</html>

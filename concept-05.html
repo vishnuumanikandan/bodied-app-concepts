@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BODIED SJ · Concept 05 · True to Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS (extracted from bodiedsj.com CSS) ============ */
+:root{
+  --cream: #FBF9EE;              /* site page background */
+  --card-grey: #EDEBE8;          /* site light card token */
+  --ink: rgb(36, 32, 25);        /* site heading token */
+  --grey: rgb(99, 93, 84);       /* warm body grey on light */
+  --grey-cool: rgb(155, 161, 165);/* site secondary grey */
+  --pink: rgb(253, 71, 172);     /* site primary CTA token */
+  --pink-press: #e33f9a;         /* site darker pink token */
+  --blue: rgb(21, 53, 142);      /* site link/accent token */
+  --chartreuse: rgb(227, 242, 35);/* site highlight token */
+  --charcoal: rgb(34, 36, 38);   /* site dark section token */
+  --salmon: #DB998B;             /* site photo-adjacent token */
+  --teal: #16D5CC;               /* site accent token */
+  --line: rgba(36, 32, 25, 0.1);
+  --head:'Switzer','Inter',sans-serif;
+  --body:'Inter','Hanken Grotesk',sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#f1efe2; font-family:var(--body); color:var(--ink); overflow:hidden}
+
+/* ============ STAGE ============ */
+.stage{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 112%, rgba(253, 71, 172, 0.13), transparent 65%),
+    #f1efe2;
+}
+.stage-word{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-family:var(--head); font-weight:600; letter-spacing:-0.03em;
+  font-size:clamp(150px, 28vw, 420px);
+  color:rgba(36, 32, 25, 0.045); user-select:none; pointer-events:none; white-space:nowrap;
+}
+.stage-note{position:absolute; font-size:13px; font-weight:500; color:var(--grey)}
+.stage-note.tl{top:24px;left:28px; font-weight:600}
+.stage-note.bl{bottom:22px;left:28px}
+.stage-note.br{bottom:22px;right:28px; font-style:italic}
+.stage-note .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pink);margin-right:7px}
+
+/* ============ PHONE ============ */
+.phone{
+  position:relative; width:390px; height:844px; flex:none;
+  background:#191713; border-radius:54px; padding:10px;
+  box-shadow:0 60px 100px -25px rgba(36, 32, 25, 0.45);
+}
+.viewport{
+  position:relative; width:100%; height:100%;
+  background:var(--cream); border-radius:44px; overflow:hidden; isolation:isolate;
+}
+.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:#191713; border-radius:20px; z-index:60}
+.statusbar{
+  position:absolute; top:0; left:0; right:0; height:54px; z-index:75;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 30px 0; font-size:15px; font-weight:600; color:var(--ink); pointer-events:none;
+}
+.statusbar svg{display:block}
+.home-pill{position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:130px; height:5px; border-radius:3px; background:var(--ink); opacity:0.3; z-index:60}
+
+/* ============ APP ============ */
+.app{position:absolute; inset:0; overflow:hidden}
+.screen{
+  position:absolute; inset:0; padding:58px 0 96px;
+  overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  transition:opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1; transform:none; pointer-events:auto}
+.pad{padding-left:22px; padding-right:22px}
+
+/* type */
+.eyebrow{font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--grey-cool)}
+h1.hero{
+  font-family:var(--head); font-weight:600; letter-spacing:-0.03em; line-height:1.02;
+  font-size:44px; color:var(--ink);
+}
+h2.sect{
+  font-family:var(--head); font-weight:600; letter-spacing:-0.02em;
+  font-size:24px; color:var(--ink);
+}
+.lead{font-size:16px; line-height:1.55; color:var(--grey); font-weight:400}
+
+/* buttons (site: solid pink, small radius) */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:50px; padding:0 22px; border-radius:10px;
+  background:var(--pink); color:var(--cream);
+  border:none; cursor:pointer;
+  font-family:var(--body); font-size:15px; font-weight:600;
+  transition:background 0.15s, transform 0.1s var(--ease);
+}
+.btn:active{background:var(--pink-press); transform:scale(0.985)}
+.btn:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+.btn.ghost{background:transparent; color:var(--ink); border:1.5px solid var(--ink)}
+.btn.ghost:active{background:rgba(36,32,25,0.05)}
+.btn.sm{min-height:42px; padding:0 16px; font-size:14px; border-radius:8px}
+.btn.wide{width:100%}
+.link{
+  background:none; border:none; cursor:pointer; padding:4px 0;
+  font-family:var(--body); font-size:14px; font-weight:600; color:var(--blue);
+  text-decoration:underline; text-underline-offset:3px;
+}
+.link:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+
+/* ============ HOME ============ */
+.topbar{display:flex; align-items:baseline; justify-content:space-between; padding:10px 22px 0}
+.wordmark{font-family:var(--head); font-weight:700; letter-spacing:-0.02em; font-size:22px}
+.topbar .loc{font-size:12px; font-weight:500; color:var(--grey-cool)}
+.hero-wrap{margin-top:26px}
+.hero-wrap .eyebrow{display:block; margin-bottom:12px}
+.hero-sub{margin-top:14px; font-size:16px; line-height:1.55; color:var(--grey)}
+.hero-ctas{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap}
+.next-card{
+  margin:30px 22px 0; padding:18px;
+  background:var(--card-grey); border-radius:12px;
+}
+.next-card .row1{display:flex; justify-content:space-between; align-items:baseline}
+.next-card h3{font-family:var(--head); font-weight:600; font-size:20px; letter-spacing:-0.01em; margin-top:8px}
+.next-card .meta{font-size:14px; color:var(--grey); margin-top:4px}
+.next-card .row2{display:flex; gap:10px; margin-top:14px; align-items:center}
+.badge-blue{font-size:13px; font-weight:600; color:var(--blue)}
+.dark-sect{
+  margin:30px 22px 0; padding:24px 22px 22px;
+  background:var(--charcoal); border-radius:14px; color:#fff;
+}
+.dark-sect .eyebrow{color:var(--grey-cool)}
+.dark-sect p{
+  font-family:var(--head); font-weight:500; letter-spacing:-0.02em;
+  font-size:22px; line-height:1.3; margin-top:12px; color:#fff;
+}
+.dark-sect p strong{font-weight:500; color:var(--chartreuse)}
+.dark-stats{display:flex; gap:24px; margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.14)}
+.dark-stats .st .n{font-family:var(--head); font-weight:600; font-size:20px}
+.dark-stats .st .l{font-size:11px; color:var(--grey-cool); margin-top:3px; letter-spacing:0.04em; text-transform:uppercase}
+.sect-head{margin:32px 22px 14px; display:flex; justify-content:space-between; align-items:baseline}
+.testi-rail{display:flex; gap:12px; overflow-x:auto; padding:2px 22px 8px; scrollbar-width:none; scroll-snap-type:x mandatory}
+.testi-rail::-webkit-scrollbar{display:none}
+.testi{
+  flex:none; width:250px; padding:18px;
+  background:#fff; border:1px solid var(--line); border-radius:12px;
+  scroll-snap-align:start;
+}
+.testi .stars{color:var(--pink); font-size:13px; letter-spacing:2px}
+.testi p{font-size:14px; line-height:1.55; color:var(--ink); margin-top:10px}
+.testi .who{font-size:13px; font-weight:600; color:var(--grey); margin-top:12px}
+.trial-band{
+  margin:30px 22px 0; padding:22px; border-radius:14px;
+  background:var(--pink); color:var(--cream);
+}
+.trial-band h3{font-family:var(--head); font-weight:600; font-size:24px; letter-spacing:-0.02em}
+.trial-band p{font-size:14px; line-height:1.5; margin-top:6px; opacity:0.95}
+.trial-band .btn{background:var(--cream); color:var(--ink); margin-top:14px}
+.trial-band .btn:active{background:#ece9d8}
+.footer{margin:34px 22px 10px; padding-top:18px; border-top:1px solid var(--line); text-align:center}
+.footer .fm{font-family:var(--head); font-weight:700; font-size:16px}
+.footer p{font-size:12.5px; color:var(--grey-cool); line-height:1.8; margin-top:6px}
+
+/* ============ SCHEDULE ============ */
+.page-head{margin-top:14px}
+.page-head .lead{margin-top:8px}
+.daychips{display:flex; gap:8px; overflow-x:auto; padding:18px 22px 6px; scrollbar-width:none}
+.daychips::-webkit-scrollbar{display:none}
+.daychip{
+  flex:none; min-height:44px; padding:0 16px; border-radius:8px;
+  background:transparent; border:1.5px solid var(--line); cursor:pointer;
+  font-family:var(--body); font-size:14px; font-weight:600; color:var(--ink);
+  transition:background 0.15s, border-color 0.15s, color 0.15s;
+}
+.daychip.sel{background:var(--ink); border-color:var(--ink); color:var(--cream)}
+.daychip:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+.class-row{
+  margin:12px 22px 0; padding:14px;
+  background:#fff; border:1px solid var(--line); border-radius:12px;
+  display:flex; gap:14px; align-items:center; width:calc(100% - 44px);
+  cursor:pointer; text-align:left; font-family:var(--body); color:var(--ink);
+}
+.class-row:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+.thumb{
+  flex:none; width:58px; height:58px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--head); font-weight:600; font-size:18px; color:rgba(255,255,255,0.95);
+}
+.class-row .mid{flex:1; min-width:0}
+.class-row h3{font-family:var(--head); font-weight:600; font-size:17px; letter-spacing:-0.01em}
+.class-row .meta{font-size:13px; color:var(--grey); margin-top:3px; line-height:1.45}
+.class-row .act{flex:none}
+.full-txt{font-size:12.5px; font-weight:600; color:var(--grey-cool); text-align:right; line-height:1.45}
+.closed-state{margin:60px 40px; text-align:center}
+.closed-state h3{font-family:var(--head); font-weight:600; font-size:22px}
+.closed-state p{font-size:15px; color:var(--grey); margin-top:8px; line-height:1.55}
+
+/* ============ DETAIL ============ */
+.detail{
+  position:absolute; inset:0; z-index:70; background:var(--cream);
+  transform:translateX(102%); transition:transform 0.26s var(--ease);
+  display:flex; flex-direction:column;
+  padding:56px 0 24px; overflow-y:auto; scrollbar-width:none;
+}
+.detail::-webkit-scrollbar{display:none}
+.detail.open{transform:translateX(0)}
+.d-back{
+  display:inline-flex; align-items:center; gap:8px; align-self:flex-start;
+  margin:6px 14px 0; padding:10px 12px; border-radius:8px;
+  background:none; border:none; cursor:pointer;
+  font-family:var(--body); font-size:14px; font-weight:600; color:var(--blue);
+}
+.d-back:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+.d-photo{
+  margin:8px 22px 0; height:170px; border-radius:14px;
+  display:flex; align-items:flex-end; padding:16px;
+}
+.d-photo .tag{
+  background:var(--cream); color:var(--ink); border-radius:6px;
+  font-size:12px; font-weight:600; padding:6px 10px; letter-spacing:0.04em; text-transform:uppercase;
+}
+.d-title{margin:18px 22px 0; font-family:var(--head); font-weight:600; letter-spacing:-0.025em; font-size:32px; line-height:1.05}
+.d-meta{margin:8px 22px 0; font-size:14.5px; color:var(--grey)}
+.d-desc{margin:16px 22px 0; font-size:15.5px; line-height:1.6; color:var(--ink)}
+.d-info{
+  margin:18px 22px 0; background:#fff; border:1px solid var(--line); border-radius:12px; padding:4px 16px;
+}
+.d-irow{display:flex; justify-content:space-between; gap:14px; padding:13px 0; border-bottom:1px solid var(--line); font-size:14.5px}
+.d-irow:last-child{border-bottom:none}
+.d-irow .l{color:var(--grey); font-weight:500}
+.d-irow .v{font-weight:600; text-align:right}
+.d-confirm{
+  margin:18px 22px 0; padding:16px 18px; border-radius:12px;
+  background:var(--blue); color:#fff; display:none;
+}
+.d-confirm.show{display:block}
+.d-confirm .t{font-family:var(--head); font-weight:600; font-size:18px}
+.d-confirm .s{font-size:14px; margin-top:4px; opacity:0.9; line-height:1.5}
+.d-cta{margin:auto 22px 0; padding-top:18px}
+.d-fine{margin:12px 22px 0; text-align:center; font-size:12.5px; color:var(--grey-cool)}
+
+/* ============ TEAM ============ */
+.team-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:18px 22px 0}
+.team-card{background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden}
+.team-card .photo{
+  height:120px; display:flex; align-items:center; justify-content:center;
+  font-family:var(--head); font-weight:600; font-size:34px; color:rgba(255,255,255,0.95);
+}
+.team-card .inf{padding:12px 14px 14px}
+.team-card h3{font-family:var(--head); font-weight:600; font-size:17px}
+.team-card .role{font-size:12px; font-weight:600; color:var(--pink-press); margin-top:3px; letter-spacing:0.03em; text-transform:uppercase}
+.team-card p{font-size:13px; color:var(--grey); line-height:1.5; margin-top:7px}
+.soccer-card{
+  margin:18px 22px 0; padding:18px; border-radius:12px;
+  background:var(--card-grey); display:flex; gap:12px; align-items:center;
+}
+.soccer-card .ic{flex:none; width:44px; height:44px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:20px}
+.soccer-card .t{font-weight:600; font-size:15px}
+.soccer-card .s{font-size:13px; color:var(--grey); margin-top:2px}
+
+/* ============ PRICING ============ */
+.trial-hero{
+  margin:18px 22px 0; padding:22px; border-radius:14px;
+  background:var(--pink); color:var(--cream);
+}
+.trial-hero .eyebrow{color:var(--cream); opacity:0.85}
+.trial-hero h3{font-family:var(--head); font-weight:600; font-size:32px; letter-spacing:-0.02em; margin-top:8px}
+.trial-hero p{font-size:14px; margin-top:6px; opacity:0.95; line-height:1.5}
+.trial-hero .btn{background:var(--cream); color:var(--ink); margin-top:16px}
+.price-row{
+  margin:12px 22px 0; padding:16px;
+  background:#fff; border:1px solid var(--line); border-radius:12px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.price-row .nm{font-weight:600; font-size:15.5px}
+.price-row .sb{font-size:13px; color:var(--grey); margin-top:3px}
+.price-row .pr{font-family:var(--head); font-weight:600; font-size:19px; white-space:nowrap}
+.price-row .pr .per{font-family:var(--body); font-size:12px; font-weight:500; color:var(--grey-cool)}
+.price-row.feature{border:2px solid var(--ink)}
+.policy{margin:20px 22px 0; font-size:12.5px; color:var(--grey-cool); line-height:1.7}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute; left:0; right:0; bottom:0; z-index:50;
+  height:88px; padding:8px 8px 22px;
+  background:var(--cream); border-top:1px solid var(--line);
+  display:flex;
+}
+.tab{
+  flex:1; background:none; border:none; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  font-family:var(--body); font-size:11px; font-weight:600; color:var(--grey-cool);
+  transition:color 0.15s;
+}
+.tab svg{display:block}
+.tab .ic{stroke:var(--grey-cool); transition:stroke 0.15s}
+.tab.active{color:var(--ink)}
+.tab.active .ic{stroke:var(--pink)}
+.tab:focus-visible{outline:3px solid var(--blue); outline-offset:-3px}
+
+/* ============ MOBILE ============ */
+@media (max-width:560px){
+  .stage{display:block; background:var(--cream)}
+  .stage-word,.stage-note{display:none}
+  .phone{width:100%; height:100%; border-radius:0; padding:0; box-shadow:none; transform:none !important}
+  .viewport{border-radius:0}
+  .notch,.statusbar{display:none}
+  .screen{padding-top:max(16px, env(safe-area-inset-top))}
+  .detail{padding-top:max(20px, env(safe-area-inset-top))}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:0.01ms !important; animation-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="stage-word" aria-hidden="true">BODIED</div>
+  <div class="stage-note tl"><span class="dot"></span>BODIED SJ · concept 05 · true to site</div>
+  <div class="stage-note bl">strength · power · sisterhood</div>
+  <div class="stage-note br">tap around, everything works</div>
+
+  <div class="phone" id="phone">
+    <div class="viewport">
+      <div class="app" id="app">
+
+        <div class="notch" aria-hidden="true"></div>
+        <div class="statusbar" aria-hidden="true">
+          <span>9:41</span>
+          <svg width="64" height="13" viewBox="0 0 64 13" fill="none">
+            <rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/>
+            <rect x="5" y="4" width="3" height="8" rx="1" fill="currentColor"/>
+            <rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/>
+            <rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+            <path d="M26 4.5C28.5 2 32.5 2 35 4.5M27.8 7C29.3 5.6 31.7 5.6 33.2 7M29.6 9.4C30.3 8.8 30.7 8.8 31.4 9.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="41" y="1.5" width="20" height="10" rx="3" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="43" y="3.5" width="13" height="6" rx="1.5" fill="currentColor"/>
+            <rect x="62" y="4.5" width="2" height="4" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="home-pill" aria-hidden="true"></div>
+
+        <!-- ============ HOME ============ -->
+        <section class="screen active" id="screen-home">
+          <div class="topbar">
+            <span class="wordmark">BODIED</span>
+            <span class="loc">San Jose, CA</span>
+          </div>
+
+          <div class="pad hero-wrap">
+            <span class="eyebrow">Women's fitness studio</span>
+            <h1 class="hero">Strength.<br>Power.<br>Sisterhood.</h1>
+            <p class="hero-sub">The best women's fitness studio in San Jose. Coach-led group classes for every level.</p>
+            <div class="hero-ctas">
+              <button class="btn" data-go="schedule">Book a Class</button>
+              <button class="btn ghost" data-go="pricing">Try 7 days for $7</button>
+            </div>
+          </div>
+
+          <div class="next-card">
+            <div class="row1">
+              <span class="eyebrow">Your next class</span>
+              <span class="badge-blue">Spot 7 reserved</span>
+            </div>
+            <h3>Booty &amp; Abs</h3>
+            <div class="meta">Tomorrow 6:00 AM · 45 min · with Valeria</div>
+            <div class="row2">
+              <button class="btn sm" id="checkin-btn">Check in</button>
+              <button class="link">View details</button>
+            </div>
+          </div>
+
+          <div class="dark-sect">
+            <span class="eyebrow">Why BODIED SJ?</span>
+            <p>A supportive and inclusive <strong>community</strong> where every woman feels <strong>strong</strong>, at every level.</p>
+            <div class="dark-stats">
+              <div class="st"><div class="n">6</div><div class="l">Classes</div></div>
+              <div class="st"><div class="n">4</div><div class="l">Coaches</div></div>
+              <div class="st"><div class="n">1000s</div><div class="l">Of members</div></div>
+            </div>
+          </div>
+
+          <div class="sect-head">
+            <h2 class="sect">Why thousands love it</h2>
+          </div>
+          <div class="testi-rail" id="testi-rail"></div>
+
+          <div class="trial-band">
+            <h3>Try 7 days for $7</h3>
+            <p>Unlimited classes for a week. All levels, zero judgment.</p>
+            <button class="btn" data-go="pricing">Get started</button>
+          </div>
+
+          <div class="footer">
+            <div class="fm">BODIED</div>
+            <p>2293 Lincoln Ave, San Jose, CA 95125<br>(408) 337-2160 · hello@bodiedsj.com</p>
+            <button class="link">Get directions</button>
+          </div>
+        </section>
+
+        <!-- ============ SCHEDULE ============ -->
+        <section class="screen" id="screen-schedule">
+          <div class="pad page-head">
+            <h1 class="hero" style="font-size:34px">Classes &amp;<br>Schedule</h1>
+            <p class="lead">Tap a class for details, or book in one tap.</p>
+          </div>
+          <div class="daychips" id="daychips"></div>
+          <div id="class-list"></div>
+        </section>
+
+        <!-- ============ TEAM ============ -->
+        <section class="screen" id="screen-team">
+          <div class="pad page-head">
+            <h1 class="hero" style="font-size:34px">Meet Our<br>Team</h1>
+            <p class="lead">Certified coaches who know your name, your goals, and your playlist requests.</p>
+          </div>
+          <div class="team-grid" id="team-grid"></div>
+          <div class="soccer-card">
+            <span class="ic">⚽</span>
+            <span>
+              <div class="t">Youth soccer with Coach Hugo</div>
+              <div class="s">Saturdays · for the little ones</div>
+            </span>
+          </div>
+          <div class="footer">
+            <p>Want to join the team?<br>hello@bodiedsj.com</p>
+          </div>
+        </section>
+
+        <!-- ============ PRICING ============ -->
+        <section class="screen" id="screen-pricing">
+          <div class="pad page-head">
+            <h1 class="hero" style="font-size:34px">Pricing</h1>
+            <p class="lead">Simple memberships. Pause or cancel by email, anytime.</p>
+          </div>
+
+          <div class="trial-hero">
+            <span class="eyebrow">New members</span>
+            <h3>7 days for $7</h3>
+            <p>Unlimited classes for your first week. See if we're your people.</p>
+            <button class="btn">Get started</button>
+          </div>
+
+          <div class="sect-head"><h2 class="sect">Memberships</h2></div>
+          <div class="price-row feature">
+            <span><div class="nm">Unlimited · month to month</div><div class="sb">Every class, every week</div></span>
+            <span class="pr">$215<span class="per">/mo</span></span>
+          </div>
+          <div class="price-row">
+            <span><div class="nm">6 months unlimited</div><div class="sb">Commit a little, save a little</div></span>
+            <span class="pr">$199<span class="per">/mo</span></span>
+          </div>
+          <div class="price-row">
+            <span><div class="nm">12 months unlimited</div><div class="sb">Best value all year</div></span>
+            <span class="pr">$184<span class="per">/mo</span></span>
+          </div>
+          <div class="price-row">
+            <span><div class="nm">10 classes / month</div><div class="sb">For the regulars</div></span>
+            <span class="pr">$170<span class="per">/mo</span></span>
+          </div>
+          <div class="price-row">
+            <span><div class="nm">5 classes / month</div><div class="sb">Ease into it</div></span>
+            <span class="pr">$110<span class="per">/mo</span></span>
+          </div>
+          <div class="price-row">
+            <span><div class="nm">20-class pack</div><div class="sb">3 month expiry</div></span>
+            <span class="pr">$399</span>
+          </div>
+          <p class="policy">All sales are final. Cancellations or pauses for recurring monthly memberships: email us at hello@bodiedsj.com.</p>
+        </section>
+
+        <!-- ============ DETAIL ============ -->
+        <section class="detail" id="detail" aria-hidden="true">
+          <button class="d-back" id="d-back">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M11 3L5 9l6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to schedule
+          </button>
+          <div class="d-photo" id="d-photo"><span class="tag" id="d-tag"></span></div>
+          <h2 class="d-title" id="d-title"></h2>
+          <div class="d-meta" id="d-meta"></div>
+          <p class="d-desc" id="d-desc"></p>
+          <div class="d-info" id="d-info"></div>
+          <div class="d-confirm" id="d-confirm">
+            <div class="t">You're in!</div>
+            <div class="s" id="d-confirm-s">Spot 12 is yours. We'll see you on the floor.</div>
+          </div>
+          <div class="d-cta">
+            <button class="btn wide" id="d-book">Book a Class</button>
+          </div>
+          <div class="d-fine">Free cancellation up to 2 hours before class.</div>
+        </section>
+
+        <!-- ============ TAB BAR ============ -->
+        <nav class="tabbar" aria-label="Main">
+          <button class="tab active" data-screen="home">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><path class="ic" d="M4 10.5L12 4l8 6.5V19a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19z" stroke-width="2" stroke-linejoin="round"/></svg>
+            Home
+          </button>
+          <button class="tab" data-screen="schedule">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><rect class="ic" x="3.5" y="5" width="17" height="15.5" rx="3" stroke-width="2"/><path class="ic" d="M3.5 10h17M8 2.8V7M16 2.8V7" stroke-width="2" stroke-linecap="round"/></svg>
+            Schedule
+          </button>
+          <button class="tab" data-screen="team">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><circle class="ic" cx="8.5" cy="8" r="3.4" stroke-width="2"/><circle class="ic" cx="16.5" cy="9.5" r="2.6" stroke-width="2"/><path class="ic" d="M2.5 20c.8-3.6 3.1-5.6 6-5.6s5.2 2 6 5.6M14.5 14.9c2.5.2 4.3 1.9 5 4.6" stroke-width="2" stroke-linecap="round"/></svg>
+            Team
+          </button>
+          <button class="tab" data-screen="pricing">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><path class="ic" d="M12 3v18M16.5 6.5c-1-1.2-2.7-1.7-4.5-1.7-2.2 0-4 1.2-4 3.2 0 4.4 8.7 2 8.7 6.6 0 2-1.9 3.3-4.2 3.3-2 0-3.7-.7-4.7-2" stroke-width="2" stroke-linecap="round"/></svg>
+            Pricing
+          </button>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const CLASSES = {
+  'booty-abs':{name:'Booty & Abs', color:'var(--pink)', intensity:'Energetic',
+    desc:'One of our signature classes. Focused sculpting and toning for your core and lower body, set to a loud, great playlist.',
+    bring:'Water · mats provided'},
+  'full-body-hiit':{name:'Full Body HIIT', color:'var(--blue)', intensity:'High energy',
+    desc:'A comprehensive workout that combines cardio and strength training. The fan favorite, and the friendliest hour of your week.',
+    bring:'Water · towel'},
+  'arms-abs':{name:'Arms & Abs', color:'var(--salmon)', intensity:'Energetic',
+    desc:'Get ready to sculpt and strengthen your upper body. This high-intensity workout focuses on toning arms and core.',
+    bring:'Water · dumbbells provided'},
+  'pilates-sculpt':{name:'Pilates Sculpt', color:'var(--teal)', intensity:'Moderate',
+    desc:'Slow, controlled movement for deep core strength. Low impact, easy on the joints, harder than it looks.',
+    bring:'Grip socks · mats provided'},
+  'mommy-me':{name:'Mommy & Me', color:'var(--charcoal)', intensity:'Gentle',
+    desc:'A fun, dynamic class where moms and kids move together. Designed to move with every phase of your life.',
+    bring:'Kids welcome · strollers too'},
+  'muscle-mami':{name:'Muscle Mami', color:'var(--pink-press)', intensity:'High energy',
+    desc:'Our signature Full Body HIIT with the volume turned all the way up. Strength, cardio, and community in one hour.',
+    bring:'Water · towel'},
+};
+
+const SCHEDULE = {
+  'Today, Thu 12':[
+    {id:'booty-abs', t:'6:00 AM', coach:'Valeria', dur:45, left:0, booked:true},
+    {id:'pilates-sculpt', t:'9:30 AM', coach:'Kimber', dur:50, left:3},
+    {id:'mommy-me', t:'12:00 PM', coach:'Kimber', dur:40, left:5},
+    {id:'arms-abs', t:'4:30 PM', coach:'Bri', dur:45, left:-1},
+    {id:'muscle-mami', t:'5:45 PM', coach:'Valeria', dur:60, left:2},
+    {id:'full-body-hiit', t:'7:00 PM', coach:'Gabi', dur:60, left:6},
+  ],
+  'Fri 13':[
+    {id:'full-body-hiit', t:'6:00 AM', coach:'Gabi', dur:60, left:4},
+    {id:'booty-abs', t:'9:30 AM', coach:'Valeria', dur:45, left:7},
+    {id:'pilates-sculpt', t:'12:00 PM', coach:'Kimber', dur:50, left:2},
+    {id:'arms-abs', t:'5:45 PM', coach:'Bri', dur:45, left:5},
+  ],
+  'Sat 14':[
+    {id:'muscle-mami', t:'8:00 AM', coach:'Valeria', dur:60, left:3},
+    {id:'mommy-me', t:'9:30 AM', coach:'Kimber', dur:40, left:8},
+    {id:'full-body-hiit', t:'11:00 AM', coach:'Gabi', dur:60, left:5},
+  ],
+  'Sun 15':'closed',
+  'Mon 16':[
+    {id:'full-body-hiit', t:'6:00 AM', coach:'Gabi', dur:60, left:9},
+    {id:'booty-abs', t:'5:45 PM', coach:'Valeria', dur:45, left:6},
+    {id:'pilates-sculpt', t:'7:00 PM', coach:'Kimber', dur:50, left:4},
+  ],
+};
+
+const TEAM = [
+  {name:'Valeria', role:'Head Trainer', color:'var(--pink)', bio:'Former competitive dancer, NASM certified. Core and glutes specialist.'},
+  {name:'Gabi', role:'Strength & Conditioning', color:'var(--blue)', bio:'Ex Division 1 basketball. Competitive fire, zero judgment.'},
+  {name:'Bri', role:'Fitness Coach', color:'var(--teal)', bio:'Functional movement specialist for youth and adult athletes.'},
+  {name:'Kimber', role:'Trainer', color:'var(--salmon)', bio:'NASM certified, mom, and builder of safe spaces for women in fitness.'},
+];
+
+const TESTIMONIALS = [
+  {who:'Lupita', txt:'I tried every gym in San Jose. This is the first one where I actually wanted to come back the next day.'},
+  {who:'Abby', txt:'Valeria knows everyone’s name by week one. The community here is unreal.'},
+  {who:'Ramona', txt:'I started at the 7-day trial and never left. Three years now.'},
+  {who:'Pooja', txt:'As a new mom, Mommy & Me saved me. My daughter loves it as much as I do.'},
+  {who:'Jasmine', txt:'Strong, supported, never judged. Exactly what it says on the door.'},
+];
+
+const $ = s => document.querySelector(s);
+
+/* ============ TABS ============ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    $('#screen-'+tab.dataset.screen).classList.add('active');
+    closeDetail();
+  });
+});
+document.querySelectorAll('[data-go]').forEach(b=>{
+  b.addEventListener('click', ()=> document.querySelector(`.tab[data-screen="${b.dataset.go}"]`).click());
+});
+
+/* ============ HOME ============ */
+$('#testi-rail').innerHTML = TESTIMONIALS.map(t=>`
+  <div class="testi">
+    <div class="stars">★★★★★</div>
+    <p>“${t.txt}”</p>
+    <div class="who">${t.who} · member</div>
+  </div>`).join('');
+$('#checkin-btn').addEventListener('click', function(){
+  this.textContent = '✓ Checked in';
+  this.style.background = 'var(--blue)';
+});
+
+/* ============ SCHEDULE ============ */
+const bookedSet = new Set(['Today, Thu 12|booty-abs|6:00 AM']);
+let currentDay = 'Today, Thu 12';
+
+function renderDays(){
+  $('#daychips').innerHTML = Object.keys(SCHEDULE).map(d=>
+    `<button class="daychip ${d===currentDay?'sel':''}" data-day="${d}">${d}</button>`
+  ).join('');
+  document.querySelectorAll('.daychip').forEach(b=>{
+    b.addEventListener('click', ()=>{ currentDay=b.dataset.day; renderDays(); renderList(); });
+  });
+}
+
+function renderList(){
+  const day = SCHEDULE[currentDay];
+  const list = $('#class-list');
+  if(day === 'closed'){
+    list.innerHTML = `<div class="closed-state">
+      <h3>Closed Sundays</h3>
+      <p>Rest, recover, hydrate. We'll see you Monday at 6 AM sharp.</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = day.map(s=>{
+    const c = CLASSES[s.id];
+    const key = `${currentDay}|${s.id}|${s.t}`;
+    const booked = bookedSet.has(key);
+    const full = s.left === -1;
+    let act;
+    if(booked) act = `<span class="badge-blue">✓ Booked</span>`;
+    else if(full) act = `<span class="full-txt">Full<br>Tap for waitlist</span>`;
+    else act = `<span class="btn sm bk" data-key="${key}" role="button">Book</span>`;
+    const spots = (full || booked) ? '' : ` · ${s.left} spots left`;
+    return `<button class="class-row" data-class="${s.id}" data-key="${key}" data-when="${currentDay}" data-time="${s.t}" data-coach="${s.coach}" data-dur="${s.dur}">
+      <span class="thumb" style="background:${c.color}">${c.name.split(' ').map(w=>w[0]).join('').replace('&','').slice(0,2)}</span>
+      <span class="mid">
+        <h3>${c.name}</h3>
+        <span class="meta">${s.t} · ${s.dur} min · with ${s.coach}${spots}</span>
+      </span>
+      <span class="act">${act}</span>
+    </button>`;
+  }).join('');
+
+  list.querySelectorAll('.bk').forEach(b=>{
+    b.addEventListener('click', e=>{ e.stopPropagation(); bookedSet.add(b.dataset.key); renderList(); });
+  });
+  list.querySelectorAll('.class-row').forEach(row=>{
+    row.addEventListener('click', ()=> openDetail(row.dataset));
+  });
+}
+renderDays(); renderList();
+
+/* ============ DETAIL ============ */
+const detail = $('#detail');
+let currentKey = null;
+
+function openDetail(d){
+  const c = CLASSES[d.class];
+  currentKey = d.key || null;
+  $('#d-photo').style.background = c.color;
+  $('#d-tag').textContent = c.intensity;
+  $('#d-title').textContent = c.name;
+  $('#d-meta').textContent = `${d.when.replace('Today, ','Today · ')} · ${d.time} · ${d.dur} min · with ${d.coach}`;
+  $('#d-desc').textContent = c.desc;
+  $('#d-info').innerHTML = `
+    <div class="d-irow"><span class="l">Coach</span><span class="v">${d.coach}</span></div>
+    <div class="d-irow"><span class="l">Length</span><span class="v">${d.dur} minutes</span></div>
+    <div class="d-irow"><span class="l">Intensity</span><span class="v">${c.intensity}</span></div>
+    <div class="d-irow"><span class="l">Bring</span><span class="v">${c.bring}</span></div>`;
+  setBooked(currentKey && bookedSet.has(currentKey));
+  detail.classList.add('open');
+  detail.setAttribute('aria-hidden','false');
+  detail.scrollTop = 0;
+}
+function setBooked(b){
+  $('#d-confirm').classList.toggle('show', !!b);
+  $('#d-book').style.display = b ? 'none' : 'inline-flex';
+}
+function closeDetail(){
+  detail.classList.remove('open');
+  detail.setAttribute('aria-hidden','true');
+}
+$('#d-back').addEventListener('click', closeDetail);
+$('#d-book').addEventListener('click', ()=>{
+  if(currentKey) bookedSet.add(currentKey);
+  setBooked(true);
+  renderList();
+});
+
+/* ============ TEAM ============ */
+$('#team-grid').innerHTML = TEAM.map(t=>`
+  <div class="team-card">
+    <div class="photo" style="background:${t.color}">${t.name[0]}</div>
+    <div class="inf">
+      <h3>${t.name}</h3>
+      <div class="role">${t.role}</div>
+      <p>${t.bio}</p>
+    </div>
+  </div>`).join('');
+
+/* ============ FIT + HASH ============ */
+function fitPhone(){
+  if(window.innerWidth <= 560){ $('#phone').style.transform=''; return; }
+  const scale = Math.min(1, (window.innerHeight - 120) / 844, (window.innerWidth - 80) / 390);
+  $('#phone').style.transform = `scale(${scale})`;
+}
+fitPhone();
+window.addEventListener('resize', fitPhone);
+
+(function(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(!h) return;
+  const [main, q] = h.split('&');
+  const scr = main.split('=')[0];
+  if(['home','schedule','team','pricing'].includes(scr)){
+    document.querySelector(`.tab[data-screen="${scr}"]`).click();
+  }
+  if(main.startsWith('detail=')){
+    const id = main.split('=')[1];
+    if(CLASSES[id]) openDetail({class:id, key:null, when:'Today, Thu 12', time:'5:45 PM', coach:'Valeria', dur:'60'});
+  }
+  const sm = (q||'').match(/s=(\d+)/);
+  if(sm) document.querySelector('.screen.active').scrollTop = +sm[1];
+})();
+</script>
+</body>
+</html>

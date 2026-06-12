@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BODIED SJ · Concept 04 · Daybreak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg: oklch(96.5% 0.013 80);
+  --card: oklch(99% 0.006 85);
+  --ink: oklch(27% 0.025 345);
+  --sub: oklch(47% 0.03 345);
+  --line: oklch(27% 0.025 345 / 0.11);
+  --action: oklch(51% 0.2 356);
+  --action-press: oklch(45% 0.19 356);
+  --tint: oklch(93.5% 0.04 350);
+  --good: oklch(44% 0.11 155);
+  --good-tint: oklch(94% 0.04 155);
+  --font: 'Atkinson Hyperlegible Next','Atkinson Hyperlegible', sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:oklch(93% 0.018 78); font-family:var(--font); color:var(--ink); overflow:hidden}
+
+/* ============ STAGE ============ */
+.stage{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 112%, oklch(90% 0.05 40 / 0.7), transparent 65%),
+    oklch(93% 0.018 78);
+}
+.stage-word{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-weight:800; font-size:clamp(150px, 28vw, 420px); letter-spacing:-0.04em;
+  color:oklch(27% 0.025 345 / 0.04); user-select:none; pointer-events:none; white-space:nowrap;
+}
+.stage-note{position:absolute; font-size:13px; font-weight:600; color:var(--sub); letter-spacing:0.02em}
+.stage-note.tl{top:24px;left:28px}
+.stage-note.bl{bottom:22px;left:28px}
+.stage-note.br{bottom:22px;right:28px; font-weight:400; font-style:italic}
+.stage-note .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--action);margin-right:7px;vertical-align:0}
+
+/* ============ PHONE ============ */
+.phone{
+  position:relative; width:390px; height:844px; flex:none;
+  background:oklch(22% 0.02 345); border-radius:54px; padding:10px;
+  box-shadow:0 60px 100px -25px oklch(27% 0.04 345 / 0.45);
+}
+.viewport{
+  position:relative; width:100%; height:100%;
+  background:var(--bg); border-radius:44px; overflow:hidden; isolation:isolate;
+}
+.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:oklch(22% 0.02 345); border-radius:20px; z-index:60}
+.statusbar{
+  position:absolute; top:0; left:0; right:0; height:54px; z-index:75;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 30px 0; font-size:15px; font-weight:700; color:var(--ink); pointer-events:none;
+}
+.statusbar svg{display:block}
+.home-pill{position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:130px; height:5px; border-radius:3px; background:var(--ink); opacity:0.3; z-index:60}
+
+/* ============ APP ============ */
+.app{position:absolute; inset:0; overflow:hidden; font-size:17px}
+.app.bigtext{font-size:19.5px}
+.screen{
+  position:absolute; inset:0; padding:62px 0 100px;
+  overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  transition:opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1; transform:none; pointer-events:auto}
+.pad{padding-left:22px; padding-right:22px}
+
+/* sunrise */
+.sunrise{
+  position:absolute; top:-130px; right:-110px; width:330px; height:330px;
+  border-radius:50%; pointer-events:none;
+  background:radial-gradient(circle, oklch(90% 0.07 25 / 0.55), oklch(93.5% 0.04 350 / 0.35) 55%, transparent 72%);
+}
+
+/* type */
+h1{font-size:1.7em; font-weight:800; letter-spacing:-0.015em; line-height:1.12}
+.sub{color:var(--sub); font-weight:500}
+.section-t{font-size:0.82em; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:var(--sub); margin:28px 22px 12px}
+
+/* cards & buttons */
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:20px;
+  box-shadow:0 8px 28px -16px oklch(27% 0.04 345 / 0.25);
+}
+.btn{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; min-height:54px; padding:0.7em 1em;
+  background:var(--action); color:oklch(99% 0.005 85);
+  border:none; border-radius:14px; cursor:pointer;
+  font-family:var(--font); font-size:1.05em; font-weight:700;
+  transition:background 0.15s, transform 0.1s var(--ease);
+}
+.btn:active{background:var(--action-press); transform:scale(0.985)}
+.btn:focus-visible{outline:3px solid var(--ink); outline-offset:3px}
+.btn.quiet{background:transparent; color:var(--action); border:1.5px solid var(--line)}
+.btn.quiet:active{background:var(--tint)}
+.btn.done{background:var(--good-tint); color:var(--good); pointer-events:none}
+.btn.small{min-height:46px; width:auto; padding:0 1.1em; font-size:0.95em}
+
+/* ============ HOME ============ */
+.home-head{display:flex; align-items:flex-start; justify-content:space-between; margin-top:12px; position:relative}
+.home-head .date{margin-top:6px; font-size:1em}
+.aa-btn{
+  flex:none; width:52px; height:52px; border-radius:50%;
+  background:var(--card); border:1.5px solid var(--line); cursor:pointer;
+  font-family:var(--font); font-weight:800; font-size:17px; color:var(--ink);
+  transition:background 0.15s;
+}
+.aa-btn[aria-pressed="true"]{background:var(--ink); color:var(--card); border-color:var(--ink)}
+.aa-btn:focus-visible{outline:3px solid var(--action); outline-offset:3px}
+.aa-btn .big{font-size:1.25em}
+.next-card{margin:22px 22px 0; padding:20px}
+.next-card .when{display:flex; align-items:baseline; gap:10px}
+.next-card .time{font-size:2em; font-weight:800; letter-spacing:-0.02em}
+.next-card .ampm{font-size:1.1em; font-weight:700; color:var(--sub)}
+.next-card h2{font-size:1.35em; font-weight:800; margin-top:6px}
+.next-card .meta{margin-top:6px; font-size:1em; line-height:1.5}
+.next-card .div{border-top:1px solid var(--line); margin:16px 0}
+.cancel-link{
+  display:block; width:100%; margin-top:6px; padding:12px;
+  background:none; border:none; cursor:pointer;
+  font-family:var(--font); font-size:0.93em; font-weight:600; color:var(--sub);
+  text-decoration:underline; text-underline-offset:3px;
+}
+.week-card{margin:14px 22px 0; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+.week-card .txt{font-size:1em; font-weight:600; line-height:1.45}
+.week-dots{display:flex; gap:7px}
+.week-dots i{
+  width:13px; height:13px; border-radius:50%;
+  background:var(--line);
+}
+.week-dots i.on{background:var(--action)}
+.week-dots i.today{background:transparent; border:2px solid var(--action)}
+.action-row{
+  margin:14px 22px 0; padding:18px 20px;
+  display:flex; align-items:center; gap:14px; width:calc(100% - 44px);
+  cursor:pointer; font-family:var(--font); text-align:left; color:var(--ink);
+}
+.action-row .ic{
+  flex:none; width:46px; height:46px; border-radius:50%;
+  background:var(--tint); display:flex; align-items:center; justify-content:center;
+}
+.action-row .ic svg{stroke:var(--action)}
+.action-row .tx{flex:1}
+.action-row .tx .t{font-size:1.1em; font-weight:700}
+.action-row .tx .s{font-size:0.93em; color:var(--sub); margin-top:2px}
+.action-row .chev{color:var(--sub); font-size:1.3em; font-weight:700}
+.action-row:focus-visible{outline:3px solid var(--action); outline-offset:2px}
+.trial-card{margin:26px 22px 0; padding:20px; background:var(--tint); border:none}
+.trial-card h3{font-size:1.15em; font-weight:800}
+.trial-card p{font-size:0.97em; line-height:1.5; margin-top:6px; color:var(--ink)}
+.foot-note{margin:26px 22px 14px; text-align:center; font-size:0.88em; color:var(--sub); line-height:1.7}
+
+/* ============ SCHEDULE ============ */
+.daypick{display:flex; gap:9px; overflow-x:auto; padding:18px 22px 6px; scrollbar-width:none}
+.daypick::-webkit-scrollbar{display:none}
+.daybtn{
+  flex:none; min-height:52px; padding:0 18px; border-radius:999px;
+  background:var(--card); border:1.5px solid var(--line); cursor:pointer;
+  font-family:var(--font); font-size:0.98em; font-weight:700; color:var(--ink);
+  transition:background 0.15s, color 0.15s;
+}
+.daybtn.sel{background:var(--ink); color:var(--card); border-color:var(--ink)}
+.daybtn:focus-visible{outline:3px solid var(--action); outline-offset:2px}
+.class-card{
+  margin:12px 22px 0; padding:18px 20px;
+  display:flex; align-items:center; gap:16px;
+  cursor:pointer; width:calc(100% - 44px); text-align:left; font-family:var(--font); color:var(--ink);
+}
+.class-card .when{flex:none; width:4.6em}
+.class-card .t{font-size:1.3em; font-weight:800; letter-spacing:-0.01em; line-height:1.05}
+.class-card .ap{font-size:0.85em; font-weight:700; color:var(--sub)}
+.class-card .mid{flex:1; min-width:0}
+.class-card h3{font-size:1.12em; font-weight:800}
+.class-card .meta{font-size:0.92em; color:var(--sub); margin-top:3px; line-height:1.45}
+.class-card .bk{flex:none}
+.badge-booked{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:0.9em; font-weight:700; color:var(--good);
+  background:var(--good-tint); border-radius:999px; padding:9px 14px;
+}
+.badge-full{font-size:0.88em; font-weight:700; color:var(--sub); text-align:right; line-height:1.4}
+.closed-state{margin:60px 40px; text-align:center}
+.closed-state .sun{margin:0 auto 18px}
+.closed-state h3{font-size:1.3em; font-weight:800}
+.closed-state p{font-size:1em; color:var(--sub); margin-top:8px; line-height:1.55}
+
+/* ============ DETAIL ============ */
+.detail{
+  position:absolute; inset:0; z-index:70; background:var(--bg);
+  transform:translateX(102%); transition:transform 0.28s var(--ease);
+  display:flex; flex-direction:column;
+  padding:62px 0 26px; overflow-y:auto; scrollbar-width:none;
+}
+.detail::-webkit-scrollbar{display:none}
+.detail.open{transform:translateX(0)}
+.back-btn{
+  display:inline-flex; align-items:center; gap:8px; align-self:flex-start;
+  margin:8px 14px 0; padding:10px 14px; border-radius:12px;
+  background:none; border:none; cursor:pointer;
+  font-family:var(--font); font-size:1.05em; font-weight:700; color:var(--action);
+}
+.back-btn:focus-visible{outline:3px solid var(--action); outline-offset:2px}
+.d-body{flex:1; display:flex; flex-direction:column}
+.d-title{margin:10px 22px 0; font-size:1.8em; font-weight:800; letter-spacing:-0.015em}
+.d-lead{margin:10px 22px 0; font-size:1.05em; line-height:1.55; color:var(--sub)}
+.info-card{margin:20px 22px 0; padding:6px 20px}
+.info-row{
+  display:flex; justify-content:space-between; gap:16px; padding:14px 0;
+  border-bottom:1px solid var(--line); font-size:1em;
+}
+.info-row:last-child{border-bottom:none}
+.info-row .l{color:var(--sub); font-weight:600}
+.info-row .v{font-weight:700; text-align:right}
+.confirm-card{
+  margin:20px 22px 0; padding:18px 20px;
+  background:var(--good-tint); border-radius:16px;
+  display:none; align-items:flex-start; gap:12px;
+}
+.confirm-card.show{display:flex}
+.confirm-card svg{flex:none; margin-top:2px}
+.confirm-card .t{font-size:1.05em; font-weight:800; color:var(--good)}
+.confirm-card .s{font-size:0.95em; color:var(--ink); margin-top:3px; line-height:1.5}
+.d-actions{margin:auto 22px 0; padding-top:20px}
+.d-actions .btn + .btn{margin-top:10px}
+.d-smallprint{margin:14px 22px 0; text-align:center; font-size:0.85em; color:var(--sub)}
+
+/* ============ COACHES ============ */
+.coach-card{margin:12px 22px 0; padding:20px; display:flex; gap:16px; align-items:flex-start}
+.coach-ava{
+  flex:none; width:64px; height:64px; border-radius:50%;
+  background:var(--tint); color:var(--action);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5em; font-weight:800;
+}
+.coach-card h3{font-size:1.18em; font-weight:800}
+.coach-card .role{font-size:0.9em; font-weight:700; color:var(--action); margin-top:2px}
+.coach-card p{font-size:0.97em; color:var(--sub); line-height:1.55; margin-top:8px}
+.intro{margin:14px 22px 0; font-size:1.02em; line-height:1.6; color:var(--sub)}
+
+/* ============ ACCOUNT ============ */
+.me-card{margin:18px 22px 0; padding:6px 20px}
+.stat-line{margin:22px 22px 0; padding:18px 20px; font-size:1.04em; line-height:1.55}
+.stat-line strong{font-weight:800}
+.settings{margin:8px 22px 0}
+.set-row{
+  display:flex; align-items:center; gap:14px; width:100%;
+  min-height:60px; padding:10px 2px;
+  background:none; border:none; border-bottom:1px solid var(--line);
+  cursor:pointer; font-family:var(--font); color:var(--ink); text-align:left;
+}
+.set-row .t{flex:1; font-size:1.05em; font-weight:700}
+.set-row .v{font-size:0.92em; color:var(--sub); font-weight:600}
+.set-row .chev{color:var(--sub); font-size:1.2em; font-weight:700}
+.set-row:focus-visible{outline:3px solid var(--action); outline-offset:2px}
+.call-card{margin:22px 22px 0; padding:20px; text-align:center}
+.call-card .q{font-size:1em; color:var(--sub); font-weight:600}
+.call-card .num{font-size:1.5em; font-weight:800; margin-top:6px; letter-spacing:0.01em}
+.call-card .btn{margin-top:14px}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute; left:0; right:0; bottom:0; z-index:50;
+  height:92px; padding:8px 8px 24px;
+  background:var(--card); border-top:1px solid var(--line);
+  display:flex;
+}
+.tab{
+  flex:1; background:none; border:none; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  font-family:var(--font); font-size:0.74em; font-weight:700; color:var(--sub);
+  border-radius:14px; transition:color 0.15s;
+}
+.tab svg{display:block}
+.tab .ic{stroke:var(--sub); transition:stroke 0.15s}
+.tab.active{color:var(--action)}
+.tab.active .ic{stroke:var(--action)}
+.tab:focus-visible{outline:3px solid var(--action); outline-offset:-3px}
+
+/* ============ MOBILE ============ */
+@media (max-width:560px){
+  .stage{display:block; background:var(--bg)}
+  .stage-word,.stage-note{display:none}
+  .phone{width:100%; height:100%; border-radius:0; padding:0; box-shadow:none; transform:none !important}
+  .viewport{border-radius:0}
+  .notch{display:none}
+  .statusbar{display:none}
+  .screen{padding-top:max(18px, env(safe-area-inset-top))}
+  .detail{padding-top:max(24px, env(safe-area-inset-top))}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:0.01ms !important; animation-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="stage-word" aria-hidden="true">04</div>
+  <div class="stage-note tl"><span class="dot"></span>BODIED SJ · concept 04 · daybreak</div>
+  <div class="stage-note bl">strength · power · sisterhood</div>
+  <div class="stage-note br">tap around, everything works · try the Aa button</div>
+
+  <div class="phone" id="phone">
+    <div class="viewport">
+      <div class="app" id="app">
+
+        <div class="notch" aria-hidden="true"></div>
+        <div class="statusbar" aria-hidden="true">
+          <span>9:41</span>
+          <svg width="64" height="13" viewBox="0 0 64 13" fill="none">
+            <rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/>
+            <rect x="5" y="4" width="3" height="8" rx="1" fill="currentColor"/>
+            <rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/>
+            <rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+            <path d="M26 4.5C28.5 2 32.5 2 35 4.5M27.8 7C29.3 5.6 31.7 5.6 33.2 7M29.6 9.4C30.3 8.8 30.7 8.8 31.4 9.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="41" y="1.5" width="20" height="10" rx="3" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="43" y="3.5" width="13" height="6" rx="1.5" fill="currentColor"/>
+            <rect x="62" y="4.5" width="2" height="4" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="home-pill" aria-hidden="true"></div>
+
+        <!-- ============ HOME ============ -->
+        <section class="screen active" id="screen-home">
+          <div class="sunrise" aria-hidden="true"></div>
+          <div class="pad home-head">
+            <div>
+              <h1>Good morning,<br>Maya</h1>
+              <div class="date sub">Thursday, June 12</div>
+            </div>
+            <button class="aa-btn" id="aa-btn" aria-pressed="false" aria-label="Make text larger">
+              A<span class="big">a</span>
+            </button>
+          </div>
+
+          <div class="section-t">Your next class</div>
+          <div class="card next-card">
+            <div class="when"><span class="time">6:00</span><span class="ampm">AM tomorrow</span></div>
+            <h2>Booty &amp; Abs</h2>
+            <div class="meta sub">45 minutes · with Valeria · your spot is saved</div>
+            <div class="div"></div>
+            <button class="btn" id="checkin-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10.5l4.5 4.5L17 5.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              I'm here, check me in
+            </button>
+            <button class="cancel-link">Cancel this booking</button>
+          </div>
+
+          <div class="card week-card">
+            <span class="txt">You've been twice<br>this week. Lovely.</span>
+            <span class="week-dots" aria-label="Attended Monday and Tuesday">
+              <i class="on"></i><i class="on"></i><i></i><i class="today"></i><i></i><i></i><i></i>
+            </span>
+          </div>
+
+          <div class="section-t">Quick actions</div>
+          <button class="card action-row" data-go="schedule">
+            <span class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="16" height="15" rx="3" stroke="currentColor" stroke-width="2"/><path d="M3 9h16M7.5 2v4M14.5 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <span class="tx"><span class="t">Book a class</span><br><span class="s">See this week's schedule</span></span>
+            <span class="chev">›</span>
+          </button>
+          <button class="card action-row" id="call-row">
+            <span class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 3.5h4l1.5 4.5-2.2 1.6a13 13 0 005.1 5.1l1.6-2.2 4.5 1.5v4a1.5 1.5 0 01-1.6 1.5C9.3 18.9 3.1 12.7 2.5 5.1A1.5 1.5 0 014 3.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+            <span class="tx"><span class="t">Call the studio</span><br><span class="s">(408) 337-2160</span></span>
+            <span class="chev">›</span>
+          </button>
+
+          <div class="card trial-card">
+            <h3>Know someone curious?</h3>
+            <p>New members can try 7 days of unlimited classes for $7. All levels are welcome, always.</p>
+          </div>
+
+          <div class="foot-note">BODIED SJ · 2293 Lincoln Ave, San Jose<br>Strength · Power · Sisterhood</div>
+        </section>
+
+        <!-- ============ SCHEDULE ============ -->
+        <section class="screen" id="screen-schedule">
+          <div class="pad" style="margin-top:12px">
+            <h1>Schedule</h1>
+            <div class="sub" style="margin-top:6px">Tap a class to see details, or book right away.</div>
+          </div>
+          <div class="daypick" id="daypick"></div>
+          <div id="class-list"></div>
+        </section>
+
+        <!-- ============ COACHES ============ -->
+        <section class="screen" id="screen-coaches">
+          <div class="pad" style="margin-top:12px">
+            <h1>Your coaches</h1>
+          </div>
+          <p class="intro">Every class is small enough that your coach knows your name, your goals, and your knees.</p>
+          <div id="coach-list"></div>
+          <div class="card stat-line" style="margin-top:14px">
+            <strong>For the kids:</strong> Coach Hugo runs youth soccer on Saturdays. Ask at the front desk.
+          </div>
+          <div class="foot-note">All coaches are certified personal trainers.</div>
+        </section>
+
+        <!-- ============ ACCOUNT ============ -->
+        <section class="screen" id="screen-account">
+          <div class="pad" style="margin-top:12px">
+            <h1>My account</h1>
+          </div>
+          <div class="card me-card">
+            <div class="info-row"><span class="l">Name</span><span class="v">Maya Reyes</span></div>
+            <div class="info-row"><span class="l">Membership</span><span class="v">Unlimited classes</span></div>
+            <div class="info-row"><span class="l">Member since</span><span class="v">February 2026</span></div>
+            <div class="info-row"><span class="l">Member number</span><span class="v">0214</span></div>
+          </div>
+          <div class="card stat-line">
+            You've taken <strong>47 classes</strong> since February. Three more and you hit fifty!
+          </div>
+          <div class="section-t">Settings</div>
+          <div class="settings">
+            <button class="set-row"><span class="t">Manage membership</span><span class="v">$215 / month</span><span class="chev">›</span></button>
+            <button class="set-row"><span class="t">Payment method</span><span class="v">Visa ···· 4417</span><span class="chev">›</span></button>
+            <button class="set-row"><span class="t">Notifications</span><span class="v">On</span><span class="chev">›</span></button>
+            <button class="set-row" id="textsize-row"><span class="t">Text size</span><span class="v" id="textsize-val">Standard</span><span class="chev">›</span></button>
+            <button class="set-row"><span class="t">Help &amp; FAQs</span><span class="chev">›</span></button>
+          </div>
+          <div class="card call-card">
+            <div class="q">Questions? A real person answers.</div>
+            <div class="num">(408) 337-2160</div>
+            <button class="btn quiet">Call the studio</button>
+          </div>
+          <div class="foot-note">2293 Lincoln Ave, San Jose, CA 95125<br>hello@bodiedsj.com</div>
+        </section>
+
+        <!-- ============ DETAIL ============ -->
+        <section class="detail" id="detail" aria-hidden="true">
+          <button class="back-btn" id="d-back">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M11 3L5 9l6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to schedule
+          </button>
+          <div class="d-body">
+            <h2 class="d-title" id="d-title"></h2>
+            <p class="d-lead" id="d-lead"></p>
+            <div class="card info-card" id="d-info"></div>
+            <div class="confirm-card" id="d-confirm">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--good)"/><path d="M7 12.5l3.5 3.5L17 9" stroke="oklch(99% 0.005 85)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div>
+                <div class="t">You're booked!</div>
+                <div class="s" id="d-confirm-text">We'll save spot 12 for you. See you there.</div>
+              </div>
+            </div>
+            <div class="d-actions">
+              <button class="btn" id="d-book">Book this class</button>
+              <button class="btn quiet" id="d-cal" style="display:none">Add to my calendar</button>
+            </div>
+            <div class="d-smallprint">Cancel anytime up to 2 hours before class, free.</div>
+          </div>
+        </section>
+
+        <!-- ============ TAB BAR ============ -->
+        <nav class="tabbar" aria-label="Main">
+          <button class="tab active" data-screen="home">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path class="ic" d="M4 10.5L12 4l8 6.5V19a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19z" stroke-width="2" stroke-linejoin="round"/><path class="ic" d="M9.5 20.5v-6h5v6" stroke-width="2" stroke-linejoin="round"/></svg>
+            Home
+          </button>
+          <button class="tab" data-screen="schedule">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect class="ic" x="3.5" y="5" width="17" height="15.5" rx="3" stroke-width="2"/><path class="ic" d="M3.5 10h17M8 2.8V7M16 2.8V7" stroke-width="2" stroke-linecap="round"/><path class="ic" d="M7.5 14.5h3M7.5 17.5h6" stroke-width="2" stroke-linecap="round"/></svg>
+            Schedule
+          </button>
+          <button class="tab" data-screen="coaches">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle class="ic" cx="8.5" cy="8" r="3.4" stroke-width="2"/><circle class="ic" cx="16.5" cy="9.5" r="2.6" stroke-width="2"/><path class="ic" d="M2.5 20c.8-3.6 3.1-5.6 6-5.6s5.2 2 6 5.6M14.5 14.9c2.5.2 4.3 1.9 5 4.6" stroke-width="2" stroke-linecap="round"/></svg>
+            Coaches
+          </button>
+          <button class="tab" data-screen="account">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle class="ic" cx="12" cy="8" r="4" stroke-width="2"/><path class="ic" d="M4 20.5c1.3-4.2 4.2-6.3 8-6.3s6.7 2.1 8 6.3" stroke-width="2" stroke-linecap="round"/></svg>
+            Account
+          </button>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const CLASSES = {
+  'booty-abs':{name:'Booty & Abs', intensity:'Energetic',
+    lead:'A focused 45 minutes on glutes and core, set to great music. Hard work, big smiles.',
+    bring:'Water. Mats are provided.'},
+  'full-body-hiit':{name:'Full Body HIIT', intensity:'Very energetic',
+    lead:'Cardio and strength together in one hour. Our most popular class, and the friendliest.',
+    bring:'Water and a small towel.'},
+  'arms-abs':{name:'Arms & Abs', intensity:'Energetic',
+    lead:'Upper body strength at your own pace. Every exercise has an easier and a harder option.',
+    bring:'Just water. Dumbbells are provided.'},
+  'pilates-sculpt':{name:'Pilates Sculpt', intensity:'Moderate',
+    lead:'A slow, controlled class for deep core strength. Low impact and easy on the joints.',
+    bring:'Grip socks if you have them. Mats are provided.'},
+  'mommy-me':{name:'Mommy & Me', intensity:'Gentle',
+    lead:'Bring your little one and move together. Strollers, snacks, and chaos all welcome.',
+    bring:'Whatever you and your child need to be comfy.'},
+  'muscle-mami':{name:'Muscle Mami', intensity:'Very energetic',
+    lead:'Our signature class. Full body training with the energy turned all the way up.',
+    bring:'Water, a towel, and a sense of humor.'},
+};
+
+const SCHEDULE = {
+  'Today, Thu 12':[
+    {id:'booty-abs', t:'6:00', ap:'AM', coach:'Valeria', dur:45, left:0, booked:true},
+    {id:'pilates-sculpt', t:'9:30', ap:'AM', coach:'Kimber', dur:50, left:3},
+    {id:'mommy-me', t:'12:00', ap:'PM', coach:'Kimber', dur:40, left:5},
+    {id:'arms-abs', t:'4:30', ap:'PM', coach:'Bri', dur:45, left:-1},
+    {id:'muscle-mami', t:'5:45', ap:'PM', coach:'Valeria', dur:60, left:2},
+    {id:'full-body-hiit', t:'7:00', ap:'PM', coach:'Gabi', dur:60, left:6},
+  ],
+  'Fri 13':[
+    {id:'full-body-hiit', t:'6:00', ap:'AM', coach:'Gabi', dur:60, left:4},
+    {id:'booty-abs', t:'9:30', ap:'AM', coach:'Valeria', dur:45, left:7},
+    {id:'pilates-sculpt', t:'12:00', ap:'PM', coach:'Kimber', dur:50, left:2},
+    {id:'arms-abs', t:'5:45', ap:'PM', coach:'Bri', dur:45, left:5},
+  ],
+  'Sat 14':[
+    {id:'muscle-mami', t:'8:00', ap:'AM', coach:'Valeria', dur:60, left:3},
+    {id:'mommy-me', t:'9:30', ap:'AM', coach:'Kimber', dur:40, left:8},
+    {id:'full-body-hiit', t:'11:00', ap:'AM', coach:'Gabi', dur:60, left:5},
+  ],
+  'Sun 15':'closed',
+  'Mon 16':[
+    {id:'full-body-hiit', t:'6:00', ap:'AM', coach:'Gabi', dur:60, left:9},
+    {id:'booty-abs', t:'5:45', ap:'PM', coach:'Valeria', dur:45, left:6},
+    {id:'pilates-sculpt', t:'7:00', ap:'PM', coach:'Kimber', dur:50, left:4},
+  ],
+};
+
+const COACHES = [
+  {name:'Valeria', role:'Head trainer', bio:'A former competitive dancer, NASM certified. She runs the studio and will learn your name on day one.'},
+  {name:'Gabi', role:'Strength & conditioning', bio:'Played Division 1 basketball. Brings big energy and zero judgment to every session.'},
+  {name:'Bri', role:'Fitness coach', bio:'Specializes in safe, functional movement for all ages. The one to ask about form.'},
+  {name:'Kimber', role:'Trainer', bio:'A mom and dancer who found fitness later in life. She teaches our gentler classes.'},
+];
+
+const $ = s => document.querySelector(s);
+const app = $('#app');
+
+/* ============ TABS ============ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    $('#screen-'+tab.dataset.screen).classList.add('active');
+    closeDetail();
+  });
+});
+document.querySelectorAll('.action-row[data-go]').forEach(b=>{
+  b.addEventListener('click', ()=> document.querySelector(`.tab[data-screen="${b.dataset.go}"]`).click());
+});
+
+/* ============ TEXT SIZE ============ */
+let bigText = false;
+function setTextSize(big){
+  bigText = big;
+  app.classList.toggle('bigtext', big);
+  $('#aa-btn').setAttribute('aria-pressed', String(big));
+  $('#aa-btn').setAttribute('aria-label', big ? 'Make text standard size' : 'Make text larger');
+  $('#textsize-val').textContent = big ? 'Large' : 'Standard';
+}
+$('#aa-btn').addEventListener('click', ()=> setTextSize(!bigText));
+$('#textsize-row').addEventListener('click', ()=> setTextSize(!bigText));
+
+/* ============ CHECK IN ============ */
+$('#checkin-btn').addEventListener('click', function(){
+  this.classList.add('done');
+  this.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10.5l4.5 4.5L17 5.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> You're checked in. Have a great class!`;
+});
+
+/* ============ SCHEDULE ============ */
+const bookedSet = new Set(['Today, Thu 12|booty-abs|6:00']);
+let currentDay = 'Today, Thu 12';
+
+function renderDays(){
+  $('#daypick').innerHTML = Object.keys(SCHEDULE).map(d=>
+    `<button class="daybtn ${d===currentDay?'sel':''}" data-day="${d}">${d}</button>`
+  ).join('');
+  document.querySelectorAll('.daybtn').forEach(b=>{
+    b.addEventListener('click', ()=>{ currentDay=b.dataset.day; renderDays(); renderList(); });
+  });
+}
+
+function renderList(){
+  const day = SCHEDULE[currentDay];
+  const list = $('#class-list');
+  if(day === 'closed'){
+    list.innerHTML = `<div class="closed-state">
+      <svg class="sun" width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <circle cx="28" cy="28" r="10" stroke="var(--action)" stroke-width="2.5"/>
+        <path d="M28 6v6M28 44v6M6 28h6M44 28h6M12.4 12.4l4.2 4.2M39.4 39.4l4.2 4.2M12.4 43.6l4.2-4.2M39.4 16.6l4.2-4.2" stroke="var(--action)" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <h3>We're closed on Sundays</h3>
+      <p>Rest up, stretch a little, and we'll see you Monday morning.</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = day.map(s=>{
+    const c = CLASSES[s.id];
+    const key = `${currentDay}|${s.id}|${s.t}`;
+    const booked = bookedSet.has(key);
+    const full = s.left === -1;
+    let action;
+    if(booked) action = `<span class="badge-booked"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 10.5l4.5 4.5L17 5.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Booked</span>`;
+    else if(full) action = `<span class="badge-full">Class is full<br>Tap for waitlist</span>`;
+    else action = `<span class="btn small bk-btn" data-key="${key}" role="button">Book</span>`;
+    const spots = full ? '' : (booked ? '' : ` · ${s.left} spots left`);
+    return `<button class="card class-card" data-class="${s.id}" data-key="${key}" data-when="${currentDay}" data-time="${s.t} ${s.ap}" data-coach="${s.coach}" data-dur="${s.dur}">
+      <span class="when"><span class="t">${s.t}</span><br><span class="ap">${s.ap}</span></span>
+      <span class="mid">
+        <h3>${c.name}</h3>
+        <span class="meta">${s.dur} min · with ${s.coach}${spots}</span>
+      </span>
+      <span class="bk">${action}</span>
+    </button>`;
+  }).join('');
+
+  list.querySelectorAll('.bk-btn').forEach(b=>{
+    b.addEventListener('click', e=>{
+      e.stopPropagation();
+      bookedSet.add(b.dataset.key);
+      renderList();
+    });
+  });
+  list.querySelectorAll('.class-card').forEach(row=>{
+    row.addEventListener('click', ()=> openDetail(row.dataset));
+  });
+}
+renderDays(); renderList();
+
+/* ============ DETAIL ============ */
+const detail = $('#detail');
+let currentKey = null;
+
+function openDetail(d){
+  const c = CLASSES[d.class];
+  currentKey = d.key || null;
+  $('#d-title').textContent = c.name;
+  $('#d-lead').textContent = c.lead;
+  $('#d-info').innerHTML = `
+    <div class="info-row"><span class="l">When</span><span class="v">${d.when.replace('Today, ','Today · ')} · ${d.time}</span></div>
+    <div class="info-row"><span class="l">Length</span><span class="v">${d.dur} minutes</span></div>
+    <div class="info-row"><span class="l">Coach</span><span class="v">${d.coach}</span></div>
+    <div class="info-row"><span class="l">Intensity</span><span class="v">${c.intensity}</span></div>
+    <div class="info-row"><span class="l">What to bring</span><span class="v" style="max-width:55%">${c.bring}</span></div>`;
+  setBooked(currentKey && bookedSet.has(currentKey));
+  detail.classList.add('open');
+  detail.setAttribute('aria-hidden','false');
+  detail.scrollTop = 0;
+}
+function setBooked(b){
+  $('#d-confirm').classList.toggle('show', !!b);
+  $('#d-book').style.display = b ? 'none' : 'flex';
+  $('#d-cal').style.display = b ? 'flex' : 'none';
+}
+function closeDetail(){
+  detail.classList.remove('open');
+  detail.setAttribute('aria-hidden','true');
+}
+$('#d-back').addEventListener('click', closeDetail);
+$('#d-book').addEventListener('click', ()=>{
+  if(currentKey) bookedSet.add(currentKey);
+  setBooked(true);
+  renderList();
+});
+
+/* ============ COACHES ============ */
+$('#coach-list').innerHTML = COACHES.map(c=>`
+  <div class="card coach-card">
+    <span class="coach-ava">${c.name[0]}</span>
+    <span>
+      <h3>${c.name}</h3>
+      <div class="role">${c.role}</div>
+      <p>${c.bio}</p>
+    </span>
+  </div>`).join('');
+
+/* ============ FIT + HASH ============ */
+function fitPhone(){
+  if(window.innerWidth <= 560){ $('#phone').style.transform=''; return; }
+  const scale = Math.min(1, (window.innerHeight - 120) / 844, (window.innerWidth - 80) / 390);
+  $('#phone').style.transform = `scale(${scale})`;
+}
+fitPhone();
+window.addEventListener('resize', fitPhone);
+
+(function(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(!h) return;
+  const [main, q] = h.split('&');
+  const scr = main.split('=')[0];
+  if(['home','schedule','coaches','account'].includes(scr)){
+    document.querySelector(`.tab[data-screen="${scr}"]`).click();
+  }
+  if(main.startsWith('detail=')){
+    const id = main.split('=')[1];
+    if(CLASSES[id]) openDetail({class:id, key:null, when:'Today, Thu 12', time:'5:45 PM', coach:'Valeria', dur:'60'});
+  }
+  if(h.includes('big')) setTextSize(true);
+  const sm = (q||'').match(/s=(\d+)/);
+  if(sm) document.querySelector('.screen.active').scrollTop = +sm[1];
+})();
+</script>
+</body>
+</html>
