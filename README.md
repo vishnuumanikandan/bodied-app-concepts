@@ -24,5 +24,13 @@ royal-blue ink, hot pink, chartreuse stamps).
 
 Five interactive mockups live alongside the app — **[open the gallery → compare.html](https://vishnuumanikandan.github.io/bodied-app-concepts/compare.html)**
 
-Concept 01 was approved and became the app. Specs: `PRODUCT.md`, `DESIGN.md`,
-`docs/superpowers/specs/2026-07-02-bodied-app-design.md`.
+Concept 01 was approved and became the app.
+
+## Docs
+
+- `PRODUCT.md` — brand, tone, real content, strategy (source of truth)
+- `DESIGN.md` — the approved visual system: tokens, type, motion, bans
+- `ARCHITECTURE.md` — code map, state schema, invariants, how to dev & verify
+- `CLAUDE-PROJECT-PROMPT.md` — role prompt for the Claude project that prompt-engineers changes to this app
+- `docs/superpowers/specs/` — historical design specs
+- `tools/gen-icons.mjs` — regenerates the PWA icons (`node tools/gen-icons.mjs assets/icons`)
