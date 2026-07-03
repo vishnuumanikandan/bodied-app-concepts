@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BODIED SJ · App Concept 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper: oklch(97.5% 0.015 100);
+  --paper-dim: oklch(94% 0.022 97);
+  --ink: oklch(32% 0.12 265);
+  --ink-soft: oklch(50% 0.06 265);
+  --pink: oklch(67% 0.21 350);
+  --pink-deep: oklch(58% 0.21 352);
+  --chartreuse: oklch(92% 0.2 112);
+  --teal: oklch(78% 0.13 185);
+  --teal-deep: oklch(60% 0.11 190);
+  --royal: oklch(32% 0.12 265);          /* fixed royal blue, both themes */
+  --cream: oklch(97.5% 0.015 100);       /* fixed cream, both themes */
+  --on-bright: oklch(32% 0.12 265);      /* text on chartreuse/teal/pink fields */
+  --hairline: oklch(32% 0.12 265 / 0.14);
+  --hairline-strong: oklch(32% 0.12 265 / 0.45);
+  --display: 'Anton', sans-serif;
+  --sans: 'Hanken Grotesk', sans-serif;
+  --serif: 'Instrument Serif', serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-pop: 4px 4px 0 var(--ink);
+  --shadow-pop-sm: 3px 3px 0 var(--ink);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background: var(--paper-dim);
+  font-family: var(--sans);
+  color: var(--ink);
+  overflow:hidden;
+}
+
+/* ============ DESKTOP STAGE ============ */
+.stage{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 110%, oklch(92% 0.05 100), transparent 60%),
+    var(--paper-dim);
+}
+.stage-word{
+  position:absolute; left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  font-family:var(--display);
+  font-size: clamp(180px, 34vw, 520px);
+  letter-spacing:-0.01em;
+  color: oklch(32% 0.12 265 / 0.05);
+  user-select:none; pointer-events:none;
+  white-space:nowrap;
+}
+.stage-note{
+  position:absolute; font-size:13px; font-weight:600; color:var(--ink-soft);
+  letter-spacing:0.02em;
+}
+.stage-note.tl{top:24px;left:28px}
+.stage-note.tr{top:24px;right:28px; font-family:var(--serif); font-style:italic; font-size:16px;}
+.stage-note.br{bottom:22px;right:28px; font-family:var(--serif); font-style:italic; font-size:16px;}
+.theme-toggle{
+  position:absolute; top:18px; right:24px; z-index:5;
+  font-family:var(--sans); font-weight:800; font-size:12px; letter-spacing:0.05em;
+  text-transform:uppercase;
+  border:2px solid var(--ink); border-radius:999px;
+  background:var(--paper); color:var(--ink);
+  padding:8px 15px; cursor:pointer;
+  box-shadow:var(--shadow-pop-sm);
+  transition:transform 0.12s var(--ease), box-shadow 0.12s var(--ease);
+}
+.theme-toggle:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
+.theme-toggle:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+.stage-note.bl{bottom:22px;left:28px}
+.stage-note .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pink);margin-right:7px;vertical-align:1px}
+
+/* ============ PHONE ============ */
+.phone{
+  position:relative;
+  width:390px; height:844px;
+  flex:none;
+  background:var(--ink);
+  border-radius:54px;
+  padding:10px;
+  box-shadow:
+    0 60px 100px -20px oklch(32% 0.12 265 / 0.35),
+    0 30px 50px -25px oklch(32% 0.12 265 / 0.4);
+}
+.viewport{
+  position:relative; width:100%; height:100%;
+  background:var(--paper);
+  border-radius:44px;
+  overflow:hidden;
+  isolation:isolate;
+}
+/* riso paper grain */
+.viewport::after{
+  content:""; position:absolute; inset:0; z-index:99; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:0.05; mix-blend-mode:multiply;
+  border-radius:44px;
+}
+.notch{
+  position:absolute; top:21px; left:50%; transform:translateX(-50%);
+  width:118px; height:32px; background:var(--ink); border-radius:20px; z-index:60;
+}
+.statusbar{
+  position:absolute; top:0; left:0; right:0; height:58px; z-index:75;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 30px 0;
+  font-size:15px; font-weight:700; color:var(--ink);
+  pointer-events:none;
+  transition: color 0.25s var(--ease);
+  background:linear-gradient(to bottom, var(--paper) 45%, oklch(97.5% 0.015 100 / 0) 100%);
+}
+.app.detail-light .statusbar{background:none}
+.statusbar svg{display:block}
+.app.detail-light .statusbar{color:var(--cream)}
+.app.detail-bright .statusbar{color:var(--on-bright); background:none}
+.home-pill{
+  position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+  width:130px; height:5px; border-radius:3px; background:var(--ink); opacity:0.35; z-index:60;
+  transition: background 0.25s var(--ease), opacity 0.25s var(--ease);
+}
+.app.detail-light .home-pill{background:var(--cream); opacity:0.6}
+.app.detail-bright .home-pill{background:var(--on-bright); opacity:0.5}
+
+/* ============ APP SHELL ============ */
+.app{position:absolute; inset:0; overflow:hidden}
+.screen{
+  position:absolute; inset:0;
+  padding:64px 0 96px;
+  overflow-y:auto; overflow-x:hidden;
+  scrollbar-width:none;
+  opacity:0; transform:translateY(10px);
+  pointer-events:none;
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1; transform:translateY(0); pointer-events:auto}
+
+/* ============ TYPE HELPERS ============ */
+.eyebrow{
+  font-size:11px; font-weight:800; letter-spacing:0.14em; color:var(--ink-soft);
+  text-transform:uppercase;
+}
+.display{font-family:var(--display); text-transform:uppercase; line-height:0.92; letter-spacing:0.01em}
+.aside{font-family:var(--serif); font-style:italic; color:var(--ink-soft)}
+
+/* ============ TODAY ============ */
+.pad{padding-left:22px; padding-right:22px}
+.today-head{display:flex; align-items:flex-end; justify-content:space-between; margin-top:10px}
+.today-head h1{font-size:34px; font-weight:800; letter-spacing:-0.02em; line-height:1.05; margin-top:6px}
+.today-head h1 em{font-family:var(--serif); font-weight:400; font-style:italic; letter-spacing:0}
+.avatar{
+  width:46px; height:46px; border-radius:50%;
+  background:var(--pink); color:var(--cream);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:16px;
+  border:2px solid var(--ink); box-shadow:var(--shadow-pop-sm);
+  flex:none;
+}
+
+/* marquee */
+.marquee{
+  margin:18px 0 0; background:var(--chartreuse);
+  border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);
+  overflow:hidden; white-space:nowrap;
+  padding:7px 0;
+}
+.marquee-track{display:inline-block; animation:marq 26s linear infinite}
+.marquee span{
+  font-family:var(--display); font-size:15px; letter-spacing:0.08em;
+  color:var(--on-bright); text-transform:uppercase;
+}
+.marquee .star{margin:0 14px; font-family:var(--sans); font-weight:800}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ticket */
+.section-label{margin:24px 22px 12px; display:flex; align-items:baseline; gap:10px}
+.ticket{
+  margin:0 22px; position:relative;
+  background:var(--paper); border:2px solid var(--ink); border-radius:16px;
+  box-shadow:var(--shadow-pop);
+  display:flex;
+  overflow:hidden;
+}
+.ticket-main{flex:1; padding:18px 14px 16px 18px; min-width:0}
+.ticket-main .display{font-size:33px; color:var(--ink)}
+.ticket-meta{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; font-weight:700;
+  border:1.5px solid var(--ink); border-radius:999px;
+  padding:4px 10px; color:var(--ink); background:var(--paper);
+}
+.chip.fill-pink{background:var(--pink); color:var(--paper)}
+.coach-dot{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex:none}
+.ticket-perf{
+  position:relative; width:0;
+  border-left:2px dashed var(--hairline-strong);
+}
+.ticket-perf::before,.ticket-perf::after{
+  content:""; position:absolute; left:-9px; width:16px; height:16px;
+  background:var(--paper-dim); border:2px solid var(--ink); border-radius:50%;
+}
+.ticket-perf::before{top:-10px}
+.ticket-perf::after{bottom:-10px}
+.ticket-stub{
+  width:104px; flex:none; padding:14px 12px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  background:oklch(96% 0.04 108);
+}
+.ticket-stub .spot{font-family:var(--display); font-size:26px; color:var(--ink)}
+.ticket-stub .eyebrow{font-size:9px; text-align:center}
+.btn{
+  font-family:var(--sans); font-weight:800; font-size:13px; letter-spacing:0.03em;
+  border:2px solid var(--ink); border-radius:999px;
+  background:var(--pink); color:var(--paper);
+  padding:9px 16px; cursor:pointer;
+  box-shadow:var(--shadow-pop-sm);
+  transition:transform 0.12s var(--ease), box-shadow 0.12s var(--ease), background 0.15s;
+  text-transform:uppercase;
+}
+.btn:active{transform:translate(3px,3px); box-shadow:0 0 0 var(--ink)}
+.btn:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+.btn.ghost{background:var(--paper); color:var(--ink)}
+.btn.stamped{background:var(--chartreuse); color:var(--on-bright)}
+.btn.sm{padding:7px 13px; font-size:11px; box-shadow:2px 2px 0 var(--ink)}
+.btn.sm:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
+
+/* week strip */
+.week{
+  margin:0 22px; display:grid; grid-template-columns:repeat(7,1fr); gap:6px;
+}
+.day-cell{
+  text-align:center; padding:9px 0 7px;
+  border-radius:12px; border:1.5px solid transparent;
+  position:relative;
+}
+.day-cell .d{font-size:10px; font-weight:800; letter-spacing:0.1em; color:var(--ink-soft)}
+.day-cell .n{font-size:15px; font-weight:700; margin-top:2px}
+.day-cell.today{border-color:var(--ink); background:var(--paper); box-shadow:2px 2px 0 var(--ink)}
+.day-cell .stamp-star{
+  position:absolute; top:50%; left:50%; width:34px; height:34px;
+  transform:translate(-50%,-44%) rotate(12deg);
+  z-index:0;
+}
+.day-cell .d,.day-cell .n{position:relative; z-index:1}
+.day-cell.done .n{color:var(--ink)}
+
+/* poster rail */
+.rail{
+  display:flex; gap:14px; overflow-x:auto; padding:6px 22px 14px;
+  scrollbar-width:none; scroll-snap-type:x mandatory;
+}
+.rail::-webkit-scrollbar{display:none}
+.poster{
+  flex:none; width:150px; height:200px; border-radius:14px;
+  border:2px solid var(--ink); box-shadow:var(--shadow-pop);
+  padding:14px 13px; position:relative; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:space-between;
+  cursor:pointer; scroll-snap-align:start;
+  transition:transform 0.15s var(--ease);
+  text-align:left; font-family:var(--sans);
+}
+.poster:active{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink)}
+.poster .display{font-size:27px; word-break:break-word}
+.poster .ptime{font-size:11px; font-weight:800; letter-spacing:0.06em; opacity:0.85}
+.poster .pcoach{font-size:11px; font-weight:700; opacity:0.85}
+.poster.c-pink{background:var(--pink); color:var(--paper)}
+.poster.c-blue{background:var(--royal); color:var(--cream); box-shadow:4px 4px 0 var(--pink)}
+.poster.c-chartreuse{background:var(--chartreuse); color:var(--on-bright)}
+.poster.c-teal{background:var(--teal); color:var(--on-bright)}
+.poster .pburst{position:absolute; top:10px; right:10px; width:34px; height:34px; opacity:0.9}
+
+/* promo */
+.promo{
+  margin:8px 22px 26px; position:relative;
+  background:var(--ink); color:var(--paper);
+  border-radius:16px; border:2px solid var(--ink);
+  padding:20px 110px 20px 20px;
+  box-shadow:4px 4px 0 var(--pink);
+  overflow:hidden;
+}
+.promo .display{font-size:26px}
+.promo p{font-size:13px; font-weight:500; margin-top:7px; opacity:0.85; line-height:1.45}
+.promo .aside{color:oklch(85% 0.06 100)}
+.promo-burst{
+  position:absolute; right:-14px; top:50%; transform:translateY(-50%) rotate(8deg);
+  width:108px; height:108px;
+}
+.promo-burst text{font-family:var(--display); font-size:30px}
+
+/* ============ CLASSES / SCHEDULE ============ */
+.sched-head{margin-top:10px}
+.sched-head .display{font-size:42px}
+.daychips{display:flex; gap:8px; overflow-x:auto; padding:16px 22px 4px; scrollbar-width:none}
+.daychips::-webkit-scrollbar{display:none}
+.daychip{
+  flex:none; border:2px solid var(--ink); border-radius:999px;
+  background:var(--paper); padding:8px 14px;
+  font-family:var(--sans); font-weight:800; font-size:12px; letter-spacing:0.05em;
+  color:var(--ink); cursor:pointer;
+  transition:background 0.15s, box-shadow 0.15s, transform 0.15s var(--ease);
+  text-transform:uppercase;
+}
+.daychip.sel{background:var(--chartreuse); color:var(--on-bright); box-shadow:2px 2px 0 var(--ink)}
+.daychip:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+.timetable{margin:14px 0 10px}
+.trow{
+  display:flex; gap:14px; padding:14px 22px;
+  border-bottom:1.5px solid var(--hairline);
+  cursor:pointer; position:relative;
+  transition:background 0.15s;
+}
+.trow:active{background:oklch(96% 0.04 108)}
+.trow:last-child{border-bottom:none}
+.t-time{width:62px; flex:none; padding-top:2px}
+.t-time .h{font-family:var(--display); font-size:19px; line-height:1}
+.t-time .ap{font-size:10px; font-weight:800; letter-spacing:0.1em; color:var(--ink-soft)}
+.t-main{flex:1; min-width:0}
+.t-name{font-size:17px; font-weight:800; letter-spacing:-0.01em; line-height:1.15}
+.t-meta{display:flex; align-items:center; gap:8px; margin-top:5px; font-size:12px; font-weight:600; color:var(--ink-soft); flex-wrap:wrap}
+.t-meta .cdot{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:1.5px solid var(--ink)}
+.spots{display:inline-flex; align-items:center; gap:4px}
+.spots i{width:7px;height:7px;border-radius:50%;background:var(--pink);display:inline-block}
+.t-act{flex:none; display:flex; align-items:center}
+.mini-stamp{
+  font-family:var(--display); font-size:13px; letter-spacing:0.06em;
+  background:var(--chartreuse); color:var(--on-bright);
+  border:2px solid var(--ink); border-radius:8px;
+  padding:5px 10px; transform:rotate(-4deg);
+  display:inline-block;
+}
+.full-tag{font-size:11px; font-weight:800; letter-spacing:0.08em; color:var(--ink-soft); text-transform:uppercase}
+.rest-state{padding:70px 40px; text-align:center}
+.rest-state .display{font-size:36px; margin-top:18px}
+.rest-state p{margin-top:10px; font-size:16px}
+
+/* ============ DETAIL SHEET ============ */
+.detail{
+  position:absolute; inset:0; z-index:70;
+  transform:translateY(102%);
+  transition:transform 0.3s var(--ease);
+  display:flex; flex-direction:column;
+  padding:64px 24px 30px;
+  overflow-y:auto; scrollbar-width:none;
+}
+.detail::-webkit-scrollbar{display:none}
+.detail.open{transform:translateY(0)}
+.detail.c-pink{background:var(--pink); color:var(--paper)}
+.detail.c-blue{background:var(--royal); color:var(--cream)}
+.detail.c-teal{background:var(--teal-deep); color:var(--cream)}
+.detail.c-chartreuse{background:var(--chartreuse); color:var(--on-bright)}
+.d-back{
+  width:42px; height:42px; border-radius:50%; flex:none;
+  border:2px solid currentColor; background:transparent; color:inherit;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:transform 0.12s var(--ease);
+}
+.d-back:active{transform:scale(0.92)}
+.d-back:focus-visible{outline:3px solid currentColor; outline-offset:2px}
+.d-title{margin-top:26px}
+.d-title .display{font-size:64px; line-height:0.88}
+.d-title .outline{
+  color:transparent;
+  -webkit-text-stroke:2px currentColor;
+}
+.detail.c-pink .d-title .outline{-webkit-text-stroke-color:var(--paper)}
+.detail.c-blue .d-title .outline,.detail.c-teal .d-title .outline{-webkit-text-stroke-color:var(--cream)}
+.detail.c-chartreuse .d-title .outline{-webkit-text-stroke-color:var(--on-bright)}
+.d-when{margin-top:18px; font-size:14px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; opacity:0.95}
+.d-coachline{display:flex; align-items:center; gap:10px; margin-top:14px; font-size:15px; font-weight:700}
+.d-coachline .cdot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid currentColor}
+.d-effort{margin-top:22px; display:flex; align-items:center; gap:10px}
+.d-effort .eyebrow{color:inherit; opacity:0.75}
+.d-effort .stars{font-size:18px; letter-spacing:4px}
+.d-vibe{margin-top:24px}
+.d-vibe .eyebrow{color:inherit; opacity:0.75}
+.d-vibe p{font-family:var(--serif); font-style:italic; font-size:21px; line-height:1.35; max-width:30ch; margin-top:8px}
+.d-tags{display:flex; gap:8px; margin-top:20px; flex-wrap:wrap}
+.d-tags .chip{background:transparent; color:inherit; border-color:currentColor}
+.d-spacer{flex:1; min-height:26px}
+.d-book{
+  width:100%; padding:17px; font-size:16px;
+  background:var(--paper); color:var(--ink);
+  border:2px solid var(--ink); box-shadow:var(--shadow-pop);
+}
+.detail.c-chartreuse .d-book{background:var(--on-bright); color:var(--chartreuse); box-shadow:4px 4px 0 var(--cream)}
+.d-book.stamped{background:var(--chartreuse); color:var(--ink)}
+.d-note{margin-top:12px; text-align:center; font-size:12px; font-weight:600; opacity:0.8}
+
+/* booked stamp overlay */
+.stamp-overlay{
+  position:absolute; top:38%; left:50%; z-index:80;
+  transform:translate(-50%,-50%) rotate(-9deg) scale(1.6);
+  opacity:0; pointer-events:none;
+}
+.stamp-overlay.show{
+  animation:stampdown 0.42s var(--ease) forwards;
+}
+@keyframes stampdown{
+  0%{opacity:0; transform:translate(-50%,-50%) rotate(-16deg) scale(1.7)}
+  60%{opacity:1; transform:translate(-50%,-50%) rotate(-9deg) scale(0.96)}
+  100%{opacity:1; transform:translate(-50%,-50%) rotate(-9deg) scale(1)}
+}
+.stamp-inner{
+  font-family:var(--display); font-size:44px; letter-spacing:0.04em;
+  color:var(--on-bright); background:var(--chartreuse);
+  border:3px solid var(--ink); border-radius:14px;
+  padding:10px 26px; box-shadow:6px 6px 0 var(--ink);
+  text-transform:uppercase;
+}
+
+/* ============ COACHES ============ */
+.coach-sub{margin-top:8px; font-size:19px}
+.coach-list{margin-top:22px}
+.coach-row{
+  display:flex; gap:16px; padding:20px 22px;
+  border-top:2px solid var(--ink);
+  align-items:flex-start;
+}
+.coach-row:last-of-type{border-bottom:2px solid var(--ink)}
+.coach-row.flip{flex-direction:row-reverse; text-align:right}
+.coach-row.flip .coach-tags{justify-content:flex-end}
+.coach-row.flip .coach-name-row{flex-direction:row-reverse}
+.coach-block{
+  width:88px; height:104px; flex:none; border-radius:14px;
+  border:2px solid var(--ink); box-shadow:var(--shadow-pop-sm);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); font-size:44px;
+  position:relative; overflow:hidden;
+}
+.coach-info{flex:1; min-width:0}
+.coach-name-row{display:flex; align-items:center; gap:10px}
+.coach-info .display{font-size:30px}
+.coach-role{font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-soft); margin-top:5px}
+.coach-bio{font-size:13px; line-height:1.5; margin-top:8px; color:var(--ink); font-weight:500; max-width:42ch}
+.coach-tags{display:flex; gap:6px; margin-top:10px; flex-wrap:wrap}
+.coach-tags .chip{font-size:10px; padding:3px 9px}
+.fave{
+  background:none; border:none; cursor:pointer; padding:4px; flex:none;
+  transition:transform 0.15s var(--ease);
+}
+.fave:active{transform:scale(1.25)}
+.fave svg{display:block}
+.fave .heart-fill{fill:transparent; transition:fill 0.15s}
+.fave.on .heart-fill{fill:var(--pink)}
+.soccer-band{
+  margin:24px 22px 10px; padding:16px 18px;
+  color:var(--on-bright);
+  background:var(--teal); border:2px solid var(--ink); border-radius:14px;
+  box-shadow:var(--shadow-pop-sm);
+  display:flex; align-items:center; gap:12px;
+}
+.soccer-band .display{font-size:17px}
+.soccer-band p{font-size:12px; font-weight:600; margin-top:3px}
+
+/* ============ YOU ============ */
+.member-card{
+  margin:18px 22px 0; padding:20px;
+  background:var(--ink); color:var(--paper);
+  border-radius:18px; border:2px solid var(--ink);
+  box-shadow:4px 4px 0 var(--pink);
+  position:relative; overflow:hidden;
+}
+.member-card .display{font-size:30px}
+.mc-row{display:flex; justify-content:space-between; align-items:flex-end; margin-top:26px}
+.mc-label{font-size:9px; font-weight:800; letter-spacing:0.16em; opacity:0.6; text-transform:uppercase}
+.mc-val{font-size:14px; font-weight:700; margin-top:3px}
+.barcode{
+  margin-top:18px; height:34px; border-radius:4px;
+  background:repeating-linear-gradient(90deg,
+    var(--paper) 0 2px, transparent 2px 5px,
+    var(--paper) 5px 9px, transparent 9px 11px,
+    var(--paper) 11px 12px, transparent 12px 16px);
+  opacity:0.9;
+}
+.mc-spark{position:absolute; top:14px; right:16px; width:30px; height:30px}
+.bodied-line{margin:20px 22px 0; font-size:15px; font-weight:600; line-height:1.5}
+.bodied-line strong{font-weight:800}
+.sticker-book{
+  margin:14px 22px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+}
+.sticker{
+  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  position:relative; text-align:center;
+}
+.sticker svg{position:absolute; inset:0; width:100%; height:100%}
+.sticker .s-label{
+  position:relative; font-family:var(--display); font-size:11px; line-height:1.05;
+  text-transform:uppercase; max-width:62%; letter-spacing:0.03em;
+}
+.sticker.locked{opacity:0.55}
+.sticker.locked .s-label{color:var(--ink-soft); font-family:var(--sans); font-weight:800; font-size:10px}
+.plan-row,.settings-row{
+  margin:0 22px; padding:16px 4px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  border-bottom:1.5px solid var(--hairline);
+}
+.plan-row .pr-main{font-size:15px; font-weight:800}
+.plan-row .pr-sub{font-size:12px; font-weight:600; color:var(--ink-soft); margin-top:3px}
+.settings-row{cursor:pointer; font-size:15px; font-weight:700}
+.settings-row .arrow{color:var(--ink-soft); font-weight:800}
+.studio-foot{margin:26px 22px 10px; text-align:center}
+.studio-foot .aside{font-size:17px}
+.studio-foot p{font-size:12px; font-weight:600; color:var(--ink-soft); margin-top:6px}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute; left:0; right:0; bottom:0; z-index:50;
+  height:84px; padding:10px 14px 26px;
+  background:var(--paper);
+  border-top:2px solid var(--ink);
+  display:flex;
+}
+.tab{
+  flex:1; background:none; border:none; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  font-family:var(--sans); font-size:10px; font-weight:800; letter-spacing:0.06em;
+  color:var(--ink-soft); text-transform:uppercase;
+  border-radius:12px; padding:4px 0;
+  transition:color 0.15s;
+}
+.tab svg{display:block}
+.tab .ic{stroke:var(--ink-soft); transition:stroke 0.15s}
+.tab.active{color:var(--ink)}
+.tab.active .ic{stroke:var(--ink)}
+.tab .tab-pill{
+  width:26px; height:5px; border-radius:3px; background:transparent;
+  transition:background 0.18s;
+}
+.tab.active .tab-pill{background:var(--chartreuse); outline:1.5px solid var(--ink)}
+.tab:focus-visible{outline:3px solid var(--pink); outline-offset:-2px}
+
+/* ============ AFTER DARK (black + pink) ============ */
+[data-theme="dark"]{
+  --paper: oklch(17% 0.022 345);
+  --paper-dim: oklch(12.5% 0.018 345);
+  --ink: oklch(92% 0.035 350);
+  --ink-soft: oklch(70% 0.05 350);
+  --on-bright: oklch(16% 0.03 340);
+  --hairline: oklch(92% 0.035 350 / 0.16);
+  --hairline-strong: oklch(92% 0.035 350 / 0.45);
+}
+[data-theme="dark"] .stage{
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 110%, oklch(35% 0.13 350 / 0.55), transparent 60%),
+    var(--paper-dim);
+}
+[data-theme="dark"] .stage-word{color:oklch(92% 0.035 350 / 0.05)}
+[data-theme="dark"] .phone{
+  background:oklch(10% 0.012 340);
+  box-shadow:
+    0 60px 100px -20px oklch(67% 0.21 350 / 0.3),
+    0 30px 50px -25px oklch(0% 0 0 / 0.6);
+}
+[data-theme="dark"] .notch{background:oklch(10% 0.012 340)}
+[data-theme="dark"] .viewport::after{mix-blend-mode:screen; opacity:0.07}
+[data-theme="dark"] .statusbar{background:linear-gradient(to bottom, var(--paper) 45%, oklch(17% 0.022 345 / 0) 100%)}
+[data-theme="dark"] .app.detail-light .statusbar,
+[data-theme="dark"] .app.detail-bright .statusbar{background:none}
+[data-theme="dark"] .marquee{background:var(--pink); border-color:var(--pink)}
+[data-theme="dark"] .ticket-stub{background:oklch(24% 0.05 350)}
+[data-theme="dark"] .trow:active{background:oklch(22% 0.035 350)}
+[data-theme="dark"] .daychip.sel{background:var(--pink)}
+[data-theme="dark"] .tab.active .tab-pill{background:var(--pink)}
+[data-theme="dark"] .member-card{background:var(--pink); color:var(--on-bright); box-shadow:4px 4px 0 var(--ink)}
+[data-theme="dark"] .promo{background:oklch(25% 0.06 348); color:var(--ink)}
+
+/* ============ MOBILE FULL-BLEED ============ */
+@media (max-width:560px){
+  .stage{display:block; background:var(--paper)}
+  .stage-word,.stage-note,.theme-toggle{display:none}
+  .phone{
+    width:100%; height:100%; border-radius:0; padding:0; box-shadow:none;
+    transform:none !important;
+  }
+  .viewport{border-radius:0}
+  .viewport::after{border-radius:0}
+  .notch{display:none}
+  .statusbar{display:none}
+  .screen{padding-top:max(18px, env(safe-area-inset-top))}
+  .detail{padding-top:max(24px, env(safe-area-inset-top))}
+}
+@media (prefers-reduced-motion:reduce){
+  .marquee-track{animation:none}
+  *{transition-duration:0.01ms !important; animation-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="stage-word" aria-hidden="true">BODIED</div>
+  <div class="stage-note tl"><span class="dot"></span>BODIED SJ · app concept 01</div>
+  <button class="theme-toggle" id="theme-toggle">☾ after dark</button>
+  <div class="stage-note br">tap around, everything works</div>
+  <div class="stage-note bl">strength · power · sisterhood</div>
+
+  <div class="phone" id="phone">
+    <div class="viewport">
+      <div class="app" id="app">
+
+        <div class="notch" aria-hidden="true"></div>
+        <div class="statusbar" aria-hidden="true">
+          <span>9:41</span>
+          <svg width="64" height="13" viewBox="0 0 64 13" fill="none" aria-hidden="true">
+            <rect x="0" y="6" width="3" height="6" rx="1" fill="currentColor"/>
+            <rect x="5" y="4" width="3" height="8" rx="1" fill="currentColor"/>
+            <rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/>
+            <rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+            <path d="M26 4.5C28.5 2 32.5 2 35 4.5M27.8 7C29.3 5.6 31.7 5.6 33.2 7M29.6 9.4C30.3 8.8 30.7 8.8 31.4 9.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="41" y="1.5" width="20" height="10" rx="3" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="43" y="3.5" width="13" height="6" rx="1.5" fill="currentColor"/>
+            <rect x="62" y="4.5" width="2" height="4" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+
+        <!-- ============ TODAY ============ -->
+        <section class="screen active" id="screen-today">
+          <div class="pad today-head">
+            <div>
+              <div class="eyebrow">Thursday, June 12</div>
+              <h1>Buenos días,<br><em>Maya</em></h1>
+            </div>
+            <div class="avatar" aria-hidden="true">MR</div>
+          </div>
+
+          <div class="marquee" aria-hidden="true">
+            <div class="marquee-track">
+              <span>Strength<i class="star">★</i>Power<i class="star">★</i>Sisterhood<i class="star">★</i>Strength<i class="star">★</i>Power<i class="star">★</i>Sisterhood<i class="star">★</i></span><span>Strength<i class="star">★</i>Power<i class="star">★</i>Sisterhood<i class="star">★</i>Strength<i class="star">★</i>Power<i class="star">★</i>Sisterhood<i class="star">★</i></span>
+            </div>
+          </div>
+
+          <div class="section-label">
+            <span class="eyebrow">Up next</span>
+            <span class="aside" style="font-size:15px">in 9 hours</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-main">
+              <div class="display">Booty<br>&amp; Abs</div>
+              <div class="ticket-meta">
+                <span class="chip">6:00 AM · 45 min</span>
+                <span class="chip"><span class="coach-dot" style="background:var(--pink);color:var(--paper)">V</span>Valeria</span>
+              </div>
+            </div>
+            <div class="ticket-perf" aria-hidden="true"></div>
+            <div class="ticket-stub">
+              <div>
+                <div class="eyebrow">Spot</div>
+                <div class="spot">07</div>
+              </div>
+              <button class="btn sm" id="checkin-btn">Check in</button>
+            </div>
+          </div>
+
+          <div class="section-label"><span class="eyebrow">Your week</span></div>
+          <div class="week" id="week-strip"></div>
+
+          <div class="section-label" style="margin-top:28px">
+            <span class="eyebrow">This week at the club</span>
+          </div>
+          <div class="rail" id="poster-rail"></div>
+
+          <div class="promo">
+            <div class="display">New here?</div>
+            <p>Seven days of unlimited classes. No judgment, all levels.<br>
+            <span class="aside">bring a friend, mami.</span></p>
+            <svg class="promo-burst" viewBox="0 0 108 108" aria-hidden="true">
+              <path d="M54 2l8 14 14-8-1 16 16 1-8 14 14 8-14 8 8 14-16 1 1 16-14-8-8 14-8-14-14 8 1-16-16-1 8-14-14-8 14-8-8-14 16-1-1-16 14 8z" fill="var(--chartreuse)" stroke="var(--ink)" stroke-width="2"/>
+              <text x="54" y="64" text-anchor="middle" fill="var(--on-bright)">$7</text>
+            </svg>
+          </div>
+        </section>
+
+        <!-- ============ CLASSES ============ -->
+        <section class="screen" id="screen-classes">
+          <div class="pad sched-head">
+            <div class="eyebrow">Class schedule</div>
+            <div class="display">Pick your<br>fight</div>
+          </div>
+          <div class="daychips" id="daychips" role="tablist" aria-label="Day"></div>
+          <div class="timetable" id="timetable"></div>
+        </section>
+
+        <!-- ============ COACHES ============ -->
+        <section class="screen" id="screen-coaches">
+          <div class="pad sched-head">
+            <div class="eyebrow">Meet the team</div>
+            <div class="display" style="font-size:42px">The<br>headliners</div>
+            <div class="aside coach-sub">the women who run this club</div>
+          </div>
+          <div class="coach-list" id="coach-list"></div>
+          <div class="soccer-band">
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+              <circle cx="17" cy="17" r="15" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
+              <path d="M17 9l5 4-2 6h-6l-2-6z" fill="var(--ink)"/>
+            </svg>
+            <div>
+              <div class="display">Lil' Bodied: youth soccer</div>
+              <p>Coach Hugo trains the next generation. Saturdays.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ YOU ============ -->
+        <section class="screen" id="screen-you">
+          <div class="pad sched-head">
+            <div class="eyebrow">Your card</div>
+            <div class="display" style="font-size:42px">Maya R.</div>
+          </div>
+
+          <div class="member-card">
+            <svg class="mc-spark" viewBox="0 0 30 30" aria-hidden="true">
+              <path d="M15 0l3 10 10 3-10 3-3 10-3-10-10-3 10-3z" fill="var(--chartreuse)"/>
+            </svg>
+            <div class="display">Bodied SJ</div>
+            <div class="mc-label" style="margin-top:4px">Member since Feb 2026</div>
+            <div class="mc-row">
+              <div><div class="mc-label">Plan</div><div class="mc-val">Unlimited</div></div>
+              <div><div class="mc-label">No.</div><div class="mc-val">0214</div></div>
+              <div><div class="mc-label">Home turf</div><div class="mc-val">Lincoln Ave</div></div>
+            </div>
+            <div class="barcode" aria-hidden="true"></div>
+          </div>
+
+          <p class="bodied-line"><strong>47 classes bodied</strong> since February. Valeria says you're not allowed to stop now.</p>
+
+          <div class="section-label"><span class="eyebrow">Sticker book</span><span class="aside" style="font-size:15px">earn them, collect them</span></div>
+          <div class="sticker-book" id="sticker-book"></div>
+
+          <div class="section-label"><span class="eyebrow">Membership</span></div>
+          <div class="plan-row">
+            <div>
+              <div class="pr-main">Unlimited · $215/mo</div>
+              <div class="pr-sub">Renews July 1 · pause anytime by email</div>
+            </div>
+            <button class="btn sm ghost">Manage</button>
+          </div>
+          <div class="settings-row" id="appearance-row"><span>Appearance</span><span class="arrow" id="appearance-val">Daylight ›</span></div>
+          <div class="settings-row"><span>Notifications</span><span class="arrow">›</span></div>
+          <div class="settings-row"><span>Payment method</span><span class="arrow">›</span></div>
+          <div class="settings-row"><span>Help &amp; contact</span><span class="arrow">›</span></div>
+
+          <div class="studio-foot">
+            <div class="aside">see you on the floor, mami.</div>
+            <p>2293 Lincoln Ave, San Jose · (408) 337-2160</p>
+          </div>
+        </section>
+
+        <!-- ============ CLASS DETAIL ============ -->
+        <section class="detail" id="detail" aria-hidden="true">
+          <button class="d-back" id="d-back" aria-label="Back">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 3L5 9l6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="d-title" id="d-title"></div>
+          <div class="d-when" id="d-when"></div>
+          <div class="d-coachline" id="d-coach"></div>
+          <div class="d-effort">
+            <span class="eyebrow" style="letter-spacing:0.14em">Effort</span>
+            <span class="stars" id="d-effort"></span>
+          </div>
+          <div class="d-vibe" id="d-vibe"></div>
+          <div class="d-tags" id="d-tags"></div>
+          <div class="d-spacer"></div>
+          <button class="btn d-book" id="d-book">Book my spot</button>
+          <div class="d-note" id="d-note">Cancel free up to 2 hours before</div>
+        </section>
+
+        <div class="stamp-overlay" id="stamp-overlay" aria-hidden="true">
+          <div class="stamp-inner">Booked!</div>
+        </div>
+
+        <!-- ============ TAB BAR ============ -->
+        <nav class="tabbar" aria-label="Main">
+          <button class="tab active" data-screen="today">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path class="ic" d="M11 2v3M11 17v3M2 11h3M17 11h3M4.6 4.6l2.1 2.1M15.3 15.3l2.1 2.1M4.6 17.4l2.1-2.1M15.3 6.7l2.1-2.1" stroke-width="2" stroke-linecap="round"/><circle class="ic" cx="11" cy="11" r="3.4" stroke-width="2"/></svg>
+            Today<span class="tab-pill"></span>
+          </button>
+          <button class="tab" data-screen="classes">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect class="ic" x="3" y="4" width="16" height="15" rx="3" stroke-width="2"/><path class="ic" d="M3 9h16M7.5 2v4M14.5 2v4" stroke-width="2" stroke-linecap="round"/><path class="ic" d="M7 13.5h3M7 16h5" stroke-width="2" stroke-linecap="round"/></svg>
+            Classes<span class="tab-pill"></span>
+          </button>
+          <button class="tab" data-screen="coaches">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path class="ic" d="M3 9l11-5v14L3 13z" stroke-width="2" stroke-linejoin="round"/><path class="ic" d="M14 7c2.5 0 5 1.5 5 4s-2.5 4-5 4M6 13.5V18a1.5 1.5 0 003 0v-3.5" stroke-width="2" stroke-linecap="round"/></svg>
+            Coaches<span class="tab-pill"></span>
+          </button>
+          <button class="tab" data-screen="you">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle class="ic" cx="11" cy="7.5" r="4" stroke-width="2"/><path class="ic" d="M3.5 19.5c1.2-4 4-6 7.5-6s6.3 2 7.5 6" stroke-width="2" stroke-linecap="round"/></svg>
+            You<span class="tab-pill"></span>
+          </button>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const COACH_COLORS = {
+  Valeria:{bg:'var(--pink)', fg:'var(--cream)'},
+  Gabi:{bg:'var(--royal)', fg:'var(--cream)'},
+  Bri:{bg:'var(--teal)', fg:'var(--on-bright)'},
+  Kimber:{bg:'var(--chartreuse)', fg:'var(--on-bright)'},
+};
+
+const CLASSES = {
+  'booty-abs':{lines:['Booty','& Abs'], color:'c-pink', effort:3,
+    vibe:'Reggaeton up loud. Your glutes will know about it mañana.',
+    tags:['Mat provided','Bring water','All levels']},
+  'full-body-hiit':{lines:['Full Body','HIIT'], color:'c-blue', effort:4,
+    vibe:'Cardio and strength in one sweaty hour. The fan favorite.',
+    tags:['Bring water','Towel','All levels']},
+  'arms-abs':{lines:['Arms','& Abs'], color:'c-chartreuse', effort:3,
+    vibe:'Upper body day. Tank top season is every season here.',
+    tags:['Dumbbells provided','Bring water']},
+  'pilates-sculpt':{lines:['Pilates','Sculpt'], color:'c-teal', effort:2,
+    vibe:'Slow burn, deep core, shaky legs. In the best way.',
+    tags:['Grip socks','Mat provided','Low impact']},
+  'mommy-me':{lines:['Mommy','& Me'], color:'c-teal', effort:1,
+    vibe:'Move with your little one. Chaos welcome, strollers too.',
+    tags:['Kids welcome','Stroller friendly']},
+  'muscle-mami':{lines:['Muscle','Mami'], color:'c-pink', effort:4,
+    vibe:'The signature. Full body HIIT with the volume at eleven.',
+    tags:['Bring water','Towel','Brave face']},
+};
+
+const SCHEDULE = {
+  'THU 12':[
+    {id:'booty-abs', t:'6:00', ap:'AM', coach:'Valeria', dur:45, left:0, booked:true},
+    {id:'pilates-sculpt', t:'9:30', ap:'AM', coach:'Kimber', dur:50, left:3},
+    {id:'mommy-me', t:'12:00', ap:'PM', coach:'Kimber', dur:40, left:5},
+    {id:'arms-abs', t:'4:30', ap:'PM', coach:'Bri', dur:45, left:-1},
+    {id:'muscle-mami', t:'5:45', ap:'PM', coach:'Valeria', dur:60, left:2},
+    {id:'full-body-hiit', t:'7:00', ap:'PM', coach:'Gabi', dur:60, left:6},
+  ],
+  'FRI 13':[
+    {id:'full-body-hiit', t:'6:00', ap:'AM', coach:'Gabi', dur:60, left:4},
+    {id:'booty-abs', t:'9:30', ap:'AM', coach:'Valeria', dur:45, left:7},
+    {id:'pilates-sculpt', t:'12:00', ap:'PM', coach:'Kimber', dur:50, left:2},
+    {id:'arms-abs', t:'5:45', ap:'PM', coach:'Bri', dur:45, left:5},
+    {id:'muscle-mami', t:'7:00', ap:'PM', coach:'Valeria', dur:60, left:-1},
+  ],
+  'SAT 14':[
+    {id:'muscle-mami', t:'8:00', ap:'AM', coach:'Valeria', dur:60, left:3},
+    {id:'mommy-me', t:'9:30', ap:'AM', coach:'Kimber', dur:40, left:8},
+    {id:'full-body-hiit', t:'11:00', ap:'AM', coach:'Gabi', dur:60, left:5},
+  ],
+  'SUN 15':'rest',
+  'MON 16':[
+    {id:'full-body-hiit', t:'6:00', ap:'AM', coach:'Gabi', dur:60, left:9},
+    {id:'booty-abs', t:'5:45', ap:'PM', coach:'Valeria', dur:45, left:6},
+    {id:'pilates-sculpt', t:'7:00', ap:'PM', coach:'Kimber', dur:50, left:4},
+  ],
+};
+
+const COACHES = [
+  {name:'Valeria', role:'Head trainer · Studio ops', bio:'Former competitive dancer, NASM certified. Core and glutes are her love language.', tags:['Core','Glutes','Personal training']},
+  {name:'Gabi', role:'Strength & conditioning', bio:'Ex Division 1 basketball. Brings the competitive fire, leaves the judgment at the door.', tags:['Strength','Weightlifting','Hype']},
+  {name:'Bri', role:'Fitness coach', bio:'Functional movement specialist. Coaches youth and adults to feel strong and capable.', tags:['Functional','Youth','Form']},
+  {name:'Kimber', role:'Trainer', bio:'Dancer, mom, NASM certified. Built a safe space for women to fall in love with fitness.', tags:['Confidence','Pilates','Moms']},
+];
+
+const STICKERS = [
+  {label:'First class', earned:true, shape:'burst', color:'var(--pink)', text:'var(--paper)', rot:-5},
+  {label:'5AM club', earned:true, shape:'circle', color:'var(--chartreuse)', text:'var(--on-bright)', rot:4},
+  {label:'25 bodied', earned:true, shape:'star', color:'var(--ink)', text:'var(--paper)', rot:-3},
+  {label:'Pilates era', earned:true, shape:'circle', color:'var(--teal)', text:'var(--on-bright)', rot:6},
+  {label:'Brought a friend', earned:true, shape:'burst', color:'var(--chartreuse)', text:'var(--on-bright)', rot:-7},
+  {label:'50 bodied · 3 to go', earned:false, shape:'dashed'},
+];
+
+/* ============ HELPERS ============ */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+
+function coachDot(name, size){
+  const c = COACH_COLORS[name];
+  return `<span class="cdot" style="width:${size}px;height:${size}px;background:${c.bg};color:${c.fg}">${name[0]}</span>`;
+}
+
+/* ============ TABS ============ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    $('#screen-'+tab.dataset.screen).classList.add('active');
+    closeDetail();
+  });
+});
+
+/* ============ WEEK STRIP ============ */
+const star = `<svg class="stamp-star" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 1l2.4 6.1L20 8.4l-5 4.2 1.6 6.4L11 15.4 5.4 19l1.6-6.4-5-4.2 6.6-1.3z" fill="var(--chartreuse)" stroke="var(--ink)" stroke-width="1.6"/></svg>`;
+const weekDays = [
+  {d:'M', n:9, done:true},{d:'T', n:10, done:true},{d:'W', n:11, done:false},
+  {d:'T', n:12, today:true},{d:'F', n:13},{d:'S', n:14},{d:'S', n:15},
+];
+$('#week-strip').innerHTML = weekDays.map(w=>`
+  <div class="day-cell ${w.done?'done':''} ${w.today?'today':''}">
+    ${w.done?star:''}
+    <div class="d">${w.d}</div><div class="n">${w.n}</div>
+  </div>`).join('');
+
+/* ============ POSTER RAIL ============ */
+const railOrder = ['muscle-mami','full-body-hiit','arms-abs','pilates-sculpt','mommy-me'];
+const railTimes = {'muscle-mami':'Today 5:45 PM','full-body-hiit':'Today 7:00 PM','arms-abs':'Today 4:30 PM','pilates-sculpt':'Fri 12:00 PM','mommy-me':'Sat 9:30 AM'};
+const railCoach = {'muscle-mami':'Valeria','full-body-hiit':'Gabi','arms-abs':'Bri','pilates-sculpt':'Kimber','mommy-me':'Kimber'};
+const burst = `<svg class="pburst" viewBox="0 0 34 34" aria-hidden="true"><path d="M17 1l2 6 6-2-2 6 6 2-6 2 2 6-6-2-2 6-2-6-6 2 2-6-6-2 6-2-2-6 6 2z" fill="currentColor" opacity="0.85"/></svg>`;
+$('#poster-rail').innerHTML = railOrder.map(id=>{
+  const c = CLASSES[id];
+  return `<button class="poster ${c.color}" data-class="${id}" data-when="${railTimes[id]}" data-coach="${railCoach[id]}">
+    ${burst}
+    <span class="ptime">${railTimes[id].toUpperCase()}</span>
+    <span>
+      <span class="display">${c.lines.join('<br>')}</span>
+      <span class="pcoach" style="display:block;margin-top:6px">with ${railCoach[id]}</span>
+    </span>
+  </button>`;
+}).join('');
+
+/* ============ SCHEDULE ============ */
+const bookedSet = new Set(['THU 12|booty-abs|6:00']);
+let currentDay = 'THU 12';
+
+function renderDayChips(){
+  $('#daychips').innerHTML = Object.keys(SCHEDULE).map(d=>
+    `<button class="daychip ${d===currentDay?'sel':''}" role="tab" aria-selected="${d===currentDay}" data-day="${d}">${d}</button>`
+  ).join('');
+  document.querySelectorAll('.daychip').forEach(ch=>{
+    ch.addEventListener('click', ()=>{ currentDay = ch.dataset.day; renderDayChips(); renderTimetable(); });
+  });
+}
+
+function renderTimetable(){
+  const day = SCHEDULE[currentDay];
+  const tt = $('#timetable');
+  if(day === 'rest'){
+    tt.innerHTML = `<div class="rest-state">
+      <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4l6 16 16-6-6 16 16 6-16 6 6 16-16-6-6 16-6-16-16 6 6-16-16-6 16-6-6-16 16 6z" fill="var(--chartreuse)" stroke="var(--ink)" stroke-width="2.5"/></svg>
+      <div class="display">Rest day</div>
+      <p class="aside">stretch, hydrate, text your gym bestie.</p>
+    </div>`;
+    return;
+  }
+  tt.innerHTML = day.map((s,i)=>{
+    const c = CLASSES[s.id];
+    const key = `${currentDay}|${s.id}|${s.t}`;
+    const booked = bookedSet.has(key);
+    const full = s.left === -1;
+    let act;
+    if(booked) act = `<span class="mini-stamp">Booked</span>`;
+    else if(full) act = `<span class="full-tag">Full ·<br>waitlist</span>`;
+    else act = `<button class="btn sm book-inline" data-key="${key}">Book</button>`;
+    const spots = (full || booked) ? '' :
+      `<span class="spots">${'<i></i>'.repeat(Math.min(s.left,3))} ${s.left} left</span>`;
+    return `<div class="trow" data-class="${s.id}" data-when="${currentDay} · ${s.t} ${s.ap}" data-coach="${s.coach}" data-key="${key}" role="button" tabindex="0">
+      <div class="t-time"><div class="h">${s.t}</div><div class="ap">${s.ap}</div></div>
+      <div class="t-main">
+        <div class="t-name">${c.lines.join(' ')}</div>
+        <div class="t-meta">${coachDot(s.coach,18)} ${s.coach} · ${s.dur} min ${spots}</div>
+      </div>
+      <div class="t-act">${act}</div>
+    </div>`;
+  }).join('');
+
+  tt.querySelectorAll('.book-inline').forEach(b=>{
+    b.addEventListener('click', e=>{
+      e.stopPropagation();
+      bookedSet.add(b.dataset.key);
+      renderTimetable();
+    });
+  });
+  tt.querySelectorAll('.trow').forEach(row=>{
+    row.addEventListener('click', ()=> openDetail(row.dataset.class, row.dataset.when, row.dataset.coach, row.dataset.key));
+    row.addEventListener('keydown', e=>{ if(e.key==='Enter') row.click(); });
+  });
+}
+renderDayChips();
+renderTimetable();
+
+/* ============ DETAIL ============ */
+const detail = $('#detail');
+let currentKey = null;
+
+function openDetail(id, when, coach, key){
+  const c = CLASSES[id];
+  currentKey = key || null;
+  detail.className = 'detail ' + c.color;
+  $('#d-title').innerHTML = `<div class="display">${c.lines[0]}</div><div class="display outline">${c.lines[1]}</div>`;
+  $('#d-when').textContent = when;
+  $('#d-coach').innerHTML = `${coachDot(coach,30)} with Coach ${coach}`;
+  $('#d-effort').textContent = '★'.repeat(c.effort) + '☆'.repeat(4-c.effort);
+  $('#d-vibe').innerHTML = `<span class="eyebrow" style="letter-spacing:0.14em">The vibe</span><p>${c.vibe}</p>`;
+  $('#d-tags').innerHTML = c.tags.map(t=>`<span class="chip">${t}</span>`).join('');
+  const booked = currentKey && bookedSet.has(currentKey);
+  setBookBtn(booked);
+  detail.classList.add('open');
+  detail.setAttribute('aria-hidden','false');
+  detail.scrollTop = 0;
+  // status bar legibility on saturated backgrounds
+  app.classList.toggle('detail-light', c.color !== 'c-chartreuse');
+  app.classList.toggle('detail-bright', c.color === 'c-chartreuse');
+}
+
+function setBookBtn(booked){
+  const btn = $('#d-book');
+  if(booked){
+    btn.textContent = "You're in · spot 12";
+    btn.classList.add('stamped');
+    $('#d-note').textContent = 'See you there. Cancel free up to 2 hours before.';
+  } else {
+    btn.textContent = 'Book my spot';
+    btn.classList.remove('stamped');
+    $('#d-note').textContent = 'Cancel free up to 2 hours before';
+  }
+}
+
+function closeDetail(){
+  detail.classList.remove('open');
+  detail.setAttribute('aria-hidden','true');
+  app.classList.remove('detail-light','detail-bright');
+}
+$('#d-back').addEventListener('click', closeDetail);
+
+$('#d-book').addEventListener('click', ()=>{
+  if($('#d-book').classList.contains('stamped')) return;
+  if(currentKey) bookedSet.add(currentKey);
+  setBookBtn(true);
+  renderTimetable();
+  const so = $('#stamp-overlay');
+  so.classList.remove('show');
+  void so.offsetWidth;
+  so.classList.add('show');
+  setTimeout(()=>so.classList.remove('show'), 1600);
+});
+
+/* posters open detail too */
+document.querySelectorAll('.poster').forEach(p=>{
+  p.addEventListener('click', ()=> openDetail(p.dataset.class, p.dataset.when.toUpperCase(), p.dataset.coach, null));
+});
+
+/* ============ CHECK IN ============ */
+$('#checkin-btn').addEventListener('click', function(){
+  this.textContent = 'In ★';
+  this.classList.add('stamped');
+});
+
+/* ============ COACHES ============ */
+$('#coach-list').innerHTML = COACHES.map((c,i)=>{
+  const col = COACH_COLORS[c.name];
+  return `<div class="coach-row ${i%2?'flip':''}">
+    <div class="coach-block" style="background:${col.bg};color:${col.fg}">${c.name[0]}</div>
+    <div class="coach-info">
+      <div class="coach-name-row">
+        <span class="display">${c.name}</span>
+        <button class="fave" aria-label="Favorite ${c.name}">
+          <svg width="20" height="20" viewBox="0 0 20 20"><path class="heart-fill" d="M10 17.5C5 13.5 2 10.6 2 7.3 2 4.9 3.9 3 6.3 3c1.5 0 2.9 0.8 3.7 2 0.8-1.2 2.2-2 3.7-2C16.1 3 18 4.9 18 7.3c0 3.3-3 6.2-8 10.2z" stroke="var(--ink)" stroke-width="1.8"/></svg>
+        </button>
+      </div>
+      <div class="coach-role">${c.role}</div>
+      <div class="coach-bio">${c.bio}</div>
+      <div class="coach-tags">${c.tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}).join('');
+document.querySelectorAll('.fave').forEach(f=>f.addEventListener('click', ()=>f.classList.toggle('on')));
+
+/* ============ STICKER BOOK ============ */
+function stickerSVG(s){
+  if(s.shape==='dashed') return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="var(--ink-soft)" stroke-width="2" stroke-dasharray="6 6"/></svg>`;
+  if(s.shape==='burst') return `<svg viewBox="0 0 100 100" style="transform:rotate(${s.rot}deg)"><path d="M50 4l7 15 15-7-3 16 17 2-10 13 14 9-15 6 6 15-16-3-2 17-13-11-9 14-6-15-15 6 3-16-17-2 11-13-14-9 16-6-6-15 16 3 2-17 13 11z" fill="${s.color}" stroke="var(--ink)" stroke-width="2.5"/></svg>`;
+  if(s.shape==='star') return `<svg viewBox="0 0 100 100" style="transform:rotate(${s.rot}deg)"><path d="M50 5l11 28 30 2-23 19 8 29-26-17-26 17 8-29L9 35l30-2z" fill="${s.color}" stroke="var(--ink)" stroke-width="2.5"/></svg>`;
+  return `<svg viewBox="0 0 100 100" style="transform:rotate(${s.rot}deg)"><circle cx="50" cy="50" r="44" fill="${s.color}" stroke="var(--ink)" stroke-width="2.5"/></svg>`;
+}
+$('#sticker-book').innerHTML = STICKERS.map(s=>`
+  <div class="sticker ${s.earned?'':'locked'}">
+    ${stickerSVG(s)}
+    <span class="s-label" style="${s.earned?`color:${s.text};transform:rotate(${s.rot}deg)`:''}">${s.label}</span>
+  </div>`).join('');
+
+/* ============ FIT PHONE TO VIEWPORT ============ */
+function fitPhone(){
+  if(window.innerWidth <= 560) { $('#phone').style.transform=''; return; }
+  const scale = Math.min(1, (window.innerHeight - 120) / 844, (window.innerWidth - 80) / 390);
+  $('#phone').style.transform = `scale(${scale})`;
+}
+fitPhone();
+window.addEventListener('resize', fitPhone);
+
+/* ============ THEME ============ */
+let theme = 'light';
+try{ theme = localStorage.getItem('bodied-theme') || 'light'; }catch(e){}
+if(location.hash.includes('dark')) theme = 'dark';
+function applyTheme(t, persist){
+  theme = t;
+  if(t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  else document.documentElement.removeAttribute('data-theme');
+  $('#theme-toggle').textContent = t === 'dark' ? '☀ daylight' : '☾ after dark';
+  $('#appearance-val').textContent = (t === 'dark' ? 'After dark' : 'Daylight') + ' ›';
+  if(persist){ try{ localStorage.setItem('bodied-theme', t); }catch(e){} }
+}
+applyTheme(theme, false);
+const flipTheme = ()=> applyTheme(theme === 'dark' ? 'light' : 'dark', true);
+$('#theme-toggle').addEventListener('click', flipTheme);
+$('#appearance-row').addEventListener('click', flipTheme);
+
+/* ============ HASH NAV (design review / deep links) ============ */
+(function(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(!h) return;
+  const [main, q] = h.split('&');
+  const scr = main.split('=')[0];
+  if(['today','classes','coaches','you'].includes(scr)){
+    document.querySelector(`.tab[data-screen="${scr}"]`).click();
+  }
+  if(main.startsWith('detail=')){
+    const id = main.split('=')[1];
+    if(CLASSES[id]) openDetail(id, 'THU 12 · 5:45 PM', railCoach[id] || 'Valeria', null);
+  }
+  const sm = (q||'').match(/s=(\d+)/);
+  if(sm) document.querySelector('.screen.active').scrollTop = +sm[1];
+})();
+</script>
+</body>
+</html>
