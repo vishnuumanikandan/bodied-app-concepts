@@ -28,8 +28,8 @@ Concept 01 was approved and became the app.
 
 ## Docs
 
-- `PRODUCT.md` — brand, tone, real content, strategy (source of truth)
-- `DESIGN.md` — the approved visual system: tokens, type, motion, bans
+- `PRODUCT.md` — brand, tone, real content, strategy (source of truth; local only, gitignored)
+- `DESIGN.md` — the approved visual system: tokens, type, motion, bans (local only, gitignored)
 - `ARCHITECTURE.md` — code map, state schema, invariants, how to dev & verify
 - `CLAUDE-PROJECT-PROMPT.md` — role prompt for the Claude project that prompt-engineers changes to this app
 - `docs/superpowers/specs/` — historical design specs
