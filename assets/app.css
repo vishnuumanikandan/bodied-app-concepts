@@ -624,22 +624,6 @@ body{
 }
 .policy-line{font-size:12px; font-weight:600; color:var(--ink-soft); line-height:1.6; margin-top:14px}
 
-/* testimonials */
-.testi-rail{
-  display:flex; gap:12px; overflow-x:auto; padding:4px 2px 10px;
-  scrollbar-width:none; scroll-snap-type:x mandatory;
-}
-.testi-rail::-webkit-scrollbar{display:none}
-.testi{
-  flex:none; width:236px; scroll-snap-align:start;
-  border:2px solid var(--ink); border-radius:14px;
-  background:var(--paper); box-shadow:var(--shadow-pop-sm);
-  padding:14px 15px;
-}
-.testi .stars{color:var(--pink); font-size:14px; letter-spacing:3px}
-.testi p{font-size:13px; font-weight:500; line-height:1.5; margin-top:8px}
-.testi .who{margin-top:10px; display:block}
-
 /* ============ ONBOARDING ============ */
 .onboard{
   position:absolute; inset:0; z-index:76;

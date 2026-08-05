@@ -106,14 +106,5 @@ const PLANS = [
 ];
 const PRICING_POLICY = 'All sales are final. Cancellations/pauses for recurring monthly memberships can be done by emailing us at hello@bodiedsj.com';
 
-/* Member quotes from bodiedsj.com, verbatim. Each `txt` is a contiguous excerpt of
-   the homepage quote under that name — trim for fit, never paraphrase, never blend. */
-const TESTIMONIALS = [
-  { who: 'Lupita', txt: 'Honestly one of the best trainers! Come and try!' },
-  { who: 'Ramona', txt: 'I’ve been working out at bodied for almost a year now and all I can say is that this gym has become my second home' },
-  { who: 'Pooja', txt: 'Their well curated classes and personal training is affordable and one can start seeing results within a few weeks.' },
-  { who: 'Jasmine', txt: 'Honestly, the best PT experience I’ve had, hands down.' },
-];
-
 const CAPACITY = 12;
 const MILESTONES = [1, 5, 10, 25, 50, 100];

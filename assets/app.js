@@ -646,17 +646,9 @@ const SHEETS = {
         <span><div class="nm">${p.name}${p.badge ? `<span class="price-badge">${p.badge}</span>` : ''}</div><div class="sb">${p.sub}</div></span>
         <span class="pr">${p.price}<span class="per">${p.per}</span></span>
       </div>`).join('');
-    const testis = TESTIMONIALS.map(t => `
-      <div class="testi">
-        <div class="stars">★★★★★</div>
-        <p>“${t.txt}”</p>
-        <span class="who eyebrow">${t.who}</span>
-      </div>`).join('');
     return `${sheetHead('Membership', 'Pick your plan')}
       ${rows}
       <p class="policy-line">${PRICING_POLICY}</p>
-      <div class="section-label" style="margin-top:22px"><span class="eyebrow">Word on the street</span></div>
-      <div class="testi-rail">${testis}</div>
       <div class="sheet-actions">
         <a class="btn" href="${STUDIO.site}" target="_blank" rel="noopener">Join at bodiedsj.com</a>
         <a class="btn ghost" href="${STUDIO.tel}">Call the studio</a>

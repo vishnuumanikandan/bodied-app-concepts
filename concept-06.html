@@ -499,9 +499,6 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .infoblock{padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--card); margin-bottom:12px}
 .infoblock .k{font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-50); margin-bottom:5px}
 .infoblock .v{font-size:15px; font-weight:600; line-height:1.45}
-.quote{padding:16px; border-left:3px solid var(--pink); background:var(--pink-wash); border-radius:0 12px 12px 0; margin-bottom:12px}
-.quote p{font-size:14px; line-height:1.55; font-style:italic; margin-bottom:7px}
-.quote .who{font-size:12px; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color:var(--pink)}
 .toast{
   position:absolute; left:50%; bottom:100px; transform:translate(-50%,14px); z-index:110;
   background:var(--royal); color:var(--cream); padding:12px 18px; border-radius:999px;
@@ -596,14 +593,6 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
             <div class="card">
               <div class="progline"><b id="stamp-count">12</b><span>classes bodied since March</span></div>
               <div class="stamps" id="home-stamps"></div>
-            </div>
-          </div>
-
-          <div class="section" style="padding-bottom:8px">
-            <div class="sechead"><h2 class="title-lg">From the sisterhood</h2></div>
-            <div class="quote">
-              <p>"I’ve been working out at bodied for almost a year now and all I can say is that this gym has become my second home"</p>
-              <div class="who">Ramona</div>
             </div>
           </div>
         </section>
@@ -892,14 +881,6 @@ const PLANS = {
   ],
 };
 const POLICY = 'All sales are final. Cancellations/pauses for recurring monthly memberships can be done by emailing us at hello@bodiedsj.com';
-
-/* Verbatim from the bodiedsj.com homepage — contiguous excerpts, never paraphrased. */
-const TESTIMONIALS = [
-  {who:'Lupita', txt:'Honestly one of the best trainers! Come and try!'},
-  {who:'Ramona', txt:'I’ve been working out at bodied for almost a year now and all I can say is that this gym has become my second home'},
-  {who:'Pooja', txt:'Their well curated classes and personal training is affordable and one can start seeing results within a few weeks.'},
-  {who:'Jasmine', txt:'Honestly, the best PT experience I’ve had, hands down.'},
-];
 
 const CAPACITY = 12;
 const MY_PLAN = 'Unlimited · month to month';
@@ -1480,8 +1461,6 @@ const FULLSCREENS = {
           <div class="chips">${c.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
         </div>`;
       }).join('')}
-      <div class="sechead" style="margin-top:22px"><h2 class="title-lg">What members say</h2></div>
-      ${TESTIMONIALS.map(t => `<div class="quote"><p>"${esc(t.txt)}"</p><div class="who">${esc(t.who)}</div></div>`).join('')}
     </div>`}),
 };
 
