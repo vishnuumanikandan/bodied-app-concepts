@@ -16,7 +16,7 @@ Keep it this way: any change that adds a build step or a dependency is wrong by 
 |---|---|
 | `index.html` | App shell: desktop stage + phone frame, all four screens' static skeleton, detail sheet, bottom sheet, onboarding overlay, tab bar, PWA meta |
 | `assets/app.css` | All styles. Top half is the approved concept-01 system verbatim; app-only surfaces (sheets, onboarding, pricing) extend it with the same tokens |
-| `assets/data.js` | Content only: `STUDIO`, `COACH_COLORS`, `CLASSES`, `WEEK_TEMPLATE`, `COACHES`, `PLANS`, `PRICING_POLICY`, `TESTIMONIALS`, `CAPACITY`, `MILESTONES`. All content is real, from bodiedsj.com — never invent |
+| `assets/data.js` | Content only: `STUDIO`, `COACH_COLORS`, `CLASSES`, `WEEK_TEMPLATE`, `COACHES`, `PLANS`, `PRICING_POLICY`, `CAPACITY`, `MILESTONES`. All content is real, studio-authored, from bodiedsj.com — never invent |
 | `assets/app.js` | All logic: state, schedule instances, booking lifecycle, renderers, sheets, onboarding, theme, ICS export, SW registration |
 | `sw.js` | Service worker (must stay at repo root for scope) |
 | `manifest.webmanifest` | PWA manifest (relative `start_url`/`scope` for the Pages subpath) |
@@ -74,8 +74,9 @@ python3 -m http.server 8471   # from repo root → http://127.0.0.1:8471/
 
 ## Invariants (beyond DESIGN.md's)
 
-- Only real content: 6 classes, 4 coaches, 7 real price
-  plans, 4 real testimonials (verbatim from bodiedsj.com). Sunday is rest day.
+- Only real content: 6 classes, 4 coaches, 7 real price plans. Content is
+  studio-authored bodiedsj.com content only, verbatim; no customer-generated content
+  (reviews/testimonials/ratings); never invent. Sunday is rest day.
 - No payments, accounts, or push notifications in-app — link out to the studio
   (site / phone / email). Bookings are honest about being on-device.
 - Reminders = `.ics` calendar export, not notification permissions.
