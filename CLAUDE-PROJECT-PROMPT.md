@@ -51,9 +51,10 @@ Include, in roughly this order:
   never on buttons", "chartreuse only for earned things", stamp-down as the one big
   motion moment) — never a vague "match the existing style".
 - **Content rules** — real content only, verbatim: 6 classes, 4 coaches,
-  the 7 real price points, 5 real testimonials. Never invent classes, coaches, prices,
-  hours, or handles. UI copy in brand voice (warm, hype, playful Spanglish, "mami" —
-  never corporate, never clinical).
+  the 7 real price points — studio-authored bodiedsj.com content only; no
+  customer-generated content (reviews/testimonials/ratings). Never invent classes,
+  coaches, prices, hours, or handles. UI copy in brand voice (warm, hype, playful
+  Spanglish, "mami" — never corporate, never clinical).
 - **Scope fence** — what NOT to touch: the frozen mockups (`concept-0*.html`,
   `compare.html`), the approved visual system, no new dependencies/build steps/fonts,
   no backend. Ask for the smallest diff that achieves the goal.
