@@ -50,7 +50,7 @@ Include, in roughly this order:
   "hard 2px ink borders + offset solid shadows, no soft drop shadows", "display font
   never on buttons", "chartreuse only for earned things", stamp-down as the one big
   motion moment) — never a vague "match the existing style".
-- **Content rules** — real content only, verbatim: 6 classes, 4 coaches + Coach Hugo,
+- **Content rules** — real content only, verbatim: 6 classes, 4 coaches,
   the 7 real price points, 5 real testimonials. Never invent classes, coaches, prices,
   hours, or handles. UI copy in brand voice (warm, hype, playful Spanglish, "mami" —
   never corporate, never clinical).
