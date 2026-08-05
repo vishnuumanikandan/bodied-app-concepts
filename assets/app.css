@@ -403,7 +403,7 @@ body{
   border:2px solid var(--ink); box-shadow:var(--shadow-pop);
 }
 .detail.c-chartreuse .d-book{background:var(--on-bright); color:var(--chartreuse); box-shadow:4px 4px 0 var(--cream)}
-.d-book.stamped{background:var(--chartreuse); color:var(--ink)}
+.d-book.stamped{background:var(--chartreuse); color:var(--on-bright)}
 .d-book[disabled]{opacity:0.55}
 .d-note{margin-top:12px; text-align:center; font-size:12px; font-weight:600; opacity:0.8}
 .d-actions{margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
