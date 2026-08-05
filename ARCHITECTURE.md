@@ -75,7 +75,7 @@ python3 -m http.server 8471   # from repo root → http://127.0.0.1:8471/
 ## Invariants (beyond DESIGN.md's)
 
 - Only real content: 6 classes, 4 coaches, 7 real price
-  plans, 5 real testimonials. Sunday is rest day.
+  plans, 4 real testimonials (verbatim from bodiedsj.com). Sunday is rest day.
 - No payments, accounts, or push notifications in-app — link out to the studio
   (site / phone / email). Bookings are honest about being on-device.
 - Reminders = `.ics` calendar export, not notification permissions.

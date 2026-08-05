@@ -562,10 +562,10 @@ function renderYou(){
   if(plan.id === 'trial'){
     const d = trialDay();
     $('#plan-main').textContent = '7 days for $7';
-    $('#plan-sub').textContent = d > 7 ? 'Trial over · pick a plan, mami' : `Day ${d} of 7 · then from $110/mo`;
+    $('#plan-sub').textContent = d > 7 ? 'Trial over · pick a plan, mami' : `Day ${d} of 7 · then from $102/mo`;
   } else {
     $('#plan-main').textContent = `${plan.short} · ${plan.price}${plan.per}`;
-    $('#plan-sub').textContent = plan.id === 'pack-20' ? '20 classes · 3-month expiry' : 'Renews monthly · pause anytime by email';
+    $('#plan-sub').textContent = plan.id === 'pack-20' ? '20 classes · 6-month expiry' : 'Renews monthly · pause anytime by email';
   }
 }
 
