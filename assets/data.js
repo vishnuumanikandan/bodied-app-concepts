@@ -94,13 +94,14 @@ const COACHES = [
 ];
 
 /* Real pricing from bodiedsj.com */
+// Plan ids are opaque/historical — NEVER rename: profile.plan stores them in members' localStorage.
 const PLANS = [
   { id: 'trial', name: '7 days for $7', sub: 'Unlimited classes for a week', price: '$7', per: '', short: '7-day trial', badge: 'Start here' },
   { id: 'unlimited', name: 'Unlimited · month to month', sub: 'Every class, every week', price: '$215', per: '/mo', short: 'Unlimited' },
   { id: 'unlimited-6', name: '6 months unlimited', sub: 'Commit a little, save a little', price: '$199', per: '/mo', short: 'Unlimited · 6 mo' },
   { id: 'unlimited-12', name: '12 months unlimited', sub: 'Best value all year', price: '$184', per: '/mo', short: 'Unlimited · 12 mo' },
-  { id: 'classes-10', name: '8 classes / month', sub: 'For the regulars', price: '$150', per: '/mo', short: '8 classes/mo' },
-  { id: 'classes-5', name: '4 classes / month', sub: 'Ease into it', price: '$102', per: '/mo', short: '4 classes/mo' },
+  { id: 'classes-10', name: 'Consistency Tier', sub: '8 classes/mo · for the regulars', price: '$150', per: '/mo', short: '8 classes/mo' },
+  { id: 'classes-5', name: 'Flex Tier', sub: '4 classes/mo · ease into it', price: '$102', per: '/mo', short: '4 classes/mo' },
   { id: 'pack-20', name: '20-class pack', sub: '6 month expiry', price: '$479', per: '', short: '20-class pack' },
 ];
 const PRICING_POLICY = 'All sales are final. Cancellations/pauses for recurring monthly memberships can be done by emailing us at hello@bodiedsj.com';
