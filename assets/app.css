@@ -475,15 +475,6 @@ body{
 .fave svg{display:block}
 .fave .heart-fill{fill:transparent; transition:fill 0.15s}
 .fave.on .heart-fill{fill:var(--pink)}
-.soccer-band{
-  margin:24px 22px 10px; padding:16px 18px;
-  color:var(--on-bright);
-  background:var(--teal); border:2px solid var(--ink); border-radius:14px;
-  box-shadow:var(--shadow-pop-sm);
-  display:flex; align-items:center; gap:12px;
-}
-.soccer-band .display{font-size:17px}
-.soccer-band p{font-size:12px; font-weight:600; margin-top:3px}
 
 /* ============ YOU ============ */
 .member-card{

@@ -353,19 +353,7 @@ function renderTimetable(){
     </div>`;
   }).join('');
 
-  const soccer = date.getDay() === 6 ? `
-    <div class="soccer-band" style="margin-top:20px">
-      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
-        <circle cx="17" cy="17" r="15" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>
-        <path d="M17 9l5 4-2 6h-6l-2-6z" fill="var(--ink)"/>
-      </svg>
-      <div>
-        <div class="display">Lil' Bodied: youth soccer</div>
-        <p>Coach Hugo trains the next generation. Saturday mornings.</p>
-      </div>
-    </div>` : '';
-
-  tt.innerHTML = rows + soccer;
+  tt.innerHTML = rows;
 
   tt.querySelectorAll('.book-inline').forEach(btn => {
     btn.addEventListener('click', e => {

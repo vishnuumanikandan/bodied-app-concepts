@@ -30,7 +30,7 @@ changes link out to bodiedsj.com / phone / email.
    Past classes today render dimmed/"ended".
 2. **Weekly schedule template** keyed by weekday, only real classes/coaches (PRODUCT.md:
    never invent). Thu/Fri/Sat/Mon from the mockup verbatim; Tue/Wed composed from the same
-   real classes; Sun = rest day. Saturday shows the Lil' Bodied youth-soccer band.
+   real classes; Sun = rest day.
 3. **Booking lifecycle.** Book → ticket + stamp animation; cancel (free ≥2h out, per the
    mockup's own copy); join/leave waitlist when full; check-in window opens 60 min before
    class, marks attendance. Spot numbers and spots-left are seeded deterministically per

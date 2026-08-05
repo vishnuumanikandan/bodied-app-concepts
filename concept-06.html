@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BODIED SJ · Concept 06 · Studio Standard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BODIED SJ · Concept 06 · "Studio Standard"
+   Structure mirrors a mainstream boutique-fitness booking app
+   (bottom tab bar, day-strip schedule, inline reserve rows,
+   tabbed pricing, product grid). Skin is BODIED SJ: cream paper,
+   royal-blue ink, hot pink doing the highlighting.
+   All content real, from bodiedsj.com. See PRODUCT.md.
+   ============================================================ */
+:root{
+  /* ---- FIXED tokens: never flip. These are foregrounds sitting on
+         saturated brand fills, so they must stay legible in both themes. ---- */
+  --cream:#FBF9EE;        /* text on pink / royal / salmon fills */
+  --on-bright:#101010;    /* text on chartreuse / teal fills */
+  --pink:#FD47AC;
+  --pink-deep:#E33F9A;
+  --chartreuse:#E3F223;
+  --teal:#16D5CC;
+  --salmon:#DB998B;
+
+  /* ---- THEMED tokens: light ("daylight") ---- */
+  --bg:#FBF9EE;           /* the cream paper */
+  --dim:#F3F0E1;          /* recessed wells / section headers */
+  --card:#FFFDF5;
+  --text:#000000;         /* body + heading type */
+  --text-70:rgba(0,0,0,0.68);
+  --text-50:rgba(0,0,0,0.50);
+  --text-32:rgba(0,0,0,0.32);
+  --line:rgba(0,0,0,0.13);
+  --line-2:rgba(0,0,0,0.22);
+  --royal:#15358E;        /* royal blue survives as the secondary-action fill */
+  --pink-wash:rgba(253,71,172,0.10);
+  --scrim-c:rgba(0,0,0,0.42);
+  --shade:rgba(0,0,0,0.22);
+  --stage-bg:#efece0;
+  --stage-word:rgba(0,0,0,0.05);
+  --frame:#111827;
+
+  --head:'Hanken Grotesk','Inter',sans-serif;
+  --body:'Inter','Hanken Grotesk',sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ---- THEMED tokens: dark ("after dark") ---- */
+[data-theme="dark"]{
+  --bg:#0B0B0D;
+  --dim:#18181C;
+  --card:#141417;
+  --text:#FFFFFF;
+  --text-70:rgba(255,255,255,0.72);
+  --text-50:rgba(255,255,255,0.52);
+  --text-32:rgba(255,255,255,0.34);
+  --line:rgba(255,255,255,0.14);
+  --line-2:rgba(255,255,255,0.26);
+  --royal:#3D63D9;        /* lifted so it still reads as a button on near-black */
+  --pink-wash:rgba(253,71,172,0.17);
+  --scrim-c:rgba(0,0,0,0.66);
+  --shade:rgba(0,0,0,0.62);
+  --stage-bg:#08080A;
+  --stage-word:rgba(255,255,255,0.045);
+  --frame:#26262C;        /* bezel must stay lighter than the stage or the phone vanishes */
+}
+html{background:var(--stage-bg); transition:background .25s var(--ease)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--stage-bg); font-family:var(--body); color:var(--text); overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+/* ============ STAGE (desktop only) ============ */
+.stage{
+  position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse 75% 55% at 50% 112%, rgba(253,71,172,0.14), transparent 65%), var(--stage-bg);
+}
+.stage-word{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-family:var(--head); font-weight:800; letter-spacing:-0.04em;
+  font-size:clamp(150px,28vw,420px); color:var(--stage-word);
+  user-select:none; pointer-events:none; white-space:nowrap;
+}
+.stage-note{position:absolute; font-size:13px; font-weight:500; color:var(--text-70)}
+.stage-note.tl{top:24px; left:28px; font-weight:600}
+.stage-note.bl{bottom:22px; left:28px}
+.stage-note.br{bottom:22px; right:28px; font-style:italic}
+.stage-note .dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--pink); margin-right:7px}
+.stage-toggle{
+  position:absolute; top:20px; right:26px; display:flex; align-items:center; gap:9px;
+  padding:9px 16px 9px 12px; border-radius:999px;
+  border:1px solid var(--line-2); color:var(--text-70);
+  font-size:12.5px; font-weight:600; letter-spacing:0.01em;
+  transition:all .18s var(--ease);
+}
+.stage-toggle:hover{border-color:var(--pink); color:var(--pink)}
+.stage-toggle svg{display:block}
+
+/* ============ PHONE ============ */
+.phone{
+  position:relative; width:390px; height:844px; flex:none;
+  background:var(--frame); border-radius:54px; padding:10px;
+  box-shadow:0 60px 100px -25px var(--shade);
+}
+.viewport{position:relative; width:100%; height:100%; background:var(--bg); border-radius:44px; overflow:hidden; isolation:isolate}
+.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:var(--frame); border-radius:20px; z-index:90}
+.statusbar{
+  position:absolute; top:0; left:0; right:0; height:54px; z-index:88;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 30px 0; font-size:15px; font-weight:600; color:var(--text); pointer-events:none;
+}
+.home-pill{position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:130px; height:5px; border-radius:3px; background:var(--text); opacity:0.28; z-index:86}
+
+/* ============ APP SHELL ============ */
+.app{position:absolute; inset:0; overflow:hidden}
+.screen{
+  position:absolute; inset:0; padding:54px 0 112px;
+  overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  transition:opacity .22s var(--ease), transform .22s var(--ease);
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1; transform:none; pointer-events:auto}
+.pad{padding-left:20px; padding-right:20px}
+
+/* ============ TYPE ============ */
+.title-xl{font-family:var(--head); font-weight:800; font-size:34px; letter-spacing:-0.032em; line-height:1.05}
+.title-lg{font-family:var(--head); font-weight:800; font-size:22px; letter-spacing:-0.025em}
+.title-md{font-family:var(--head); font-weight:700; font-size:17px; letter-spacing:-0.015em}
+.eyebrow{font-size:11px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; color:var(--pink)}
+.meta{font-size:13px; color:var(--text-70); line-height:1.45}
+.meta-sm{font-size:12px; color:var(--text-50)}
+
+/* ============ TOP BARS ============ */
+.topbar{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding:10px 20px 14px}
+.topbar .title-xl{padding-bottom:2px}
+.iconbtn{
+  width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  color:var(--pink); flex:none; transition:background .16s var(--ease);
+}
+.iconbtn:active{background:var(--pink-wash)}
+.iconbtn.has-dot{position:relative}
+.iconbtn.has-dot::after{
+  content:''; position:absolute; top:5px; right:5px; width:8px; height:8px;
+  border-radius:50%; background:var(--pink); border:2px solid var(--bg);
+}
+.studio-pick{display:flex; align-items:center; gap:7px}
+.studio-pick svg{color:var(--pink)}
+
+/* home header */
+.brandbar{display:flex; align-items:center; justify-content:space-between; padding:8px 20px 6px}
+.wordmark{font-family:var(--head); font-weight:800; font-size:20px; letter-spacing:-0.03em; display:flex; align-items:center; gap:8px}
+.wordmark .mark{
+  width:30px; height:30px; border-radius:9px; background:var(--pink); color:var(--cream);
+  display:grid; place-items:center; font-size:12px; font-weight:800; letter-spacing:0.02em;
+}
+.wordmark .sj{color:var(--pink)}
+
+/* ============ SEGMENTED CONTROL ============ */
+.segwrap{padding:0 20px 14px}
+.seg{
+  display:flex; background:var(--dim); border-radius:999px; padding:4px;
+  border:1px solid var(--line);
+}
+.seg button{
+  flex:1; padding:9px 4px; border-radius:999px; font-size:13px; font-weight:600;
+  color:var(--text-70); transition:all .18s var(--ease); white-space:nowrap;
+}
+.seg button.on{background:var(--pink); color:var(--cream); box-shadow:0 2px 8px rgba(253,71,172,0.35)}
+
+/* ============ DAY STRIP ============ */
+.daystrip{display:flex; padding:0 12px 16px; gap:2px}
+.day{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; padding:2px 0;
+}
+.day .dow{font-size:12px; font-weight:600; color:var(--text-50)}
+.day .num{
+  width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
+  font-size:16px; font-weight:600; color:var(--text); transition:all .18s var(--ease);
+}
+.day.past .dow, .day.past .num{color:var(--text-32)}
+.day.on .num{background:var(--pink); color:var(--cream); font-weight:700; box-shadow:0 3px 10px rgba(253,71,172,0.4)}
+.day.on .dow{color:var(--pink); font-weight:700}
+.day .rest-dot{width:4px; height:4px; border-radius:50%; background:var(--text-32); margin-top:-3px}
+
+/* ============ SCHEDULE LIST ============ */
+.datehead{
+  background:var(--dim); padding:11px 20px; font-size:12px; font-weight:700;
+  letter-spacing:0.09em; text-transform:uppercase; color:var(--pink);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  position:sticky; top:0; z-index:5;
+}
+.datehead.plain{color:var(--text-50)}
+.crow{
+  display:flex; gap:12px; padding:15px 20px; align-items:flex-start;
+  border-bottom:1px solid var(--line); background:var(--bg);
+  transition:background .16s var(--ease);
+}
+.crow:active{background:var(--pink-wash)}
+.crow.booked{background:linear-gradient(90deg, var(--pink-wash), transparent 60%)}
+.crow.booked::before{content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--pink)}
+.crow{position:relative}
+.crow .left{width:66px; flex:none; display:flex; flex-direction:column; align-items:flex-start; gap:8px}
+.crow .time{font-size:16px; font-weight:700; letter-spacing:-0.02em; line-height:1.1}
+.av{
+  width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+  font-size:12px; font-weight:800; font-family:var(--head); letter-spacing:-0.01em;
+  border:1.5px solid var(--line);
+}
+.crow .mid{flex:1; min-width:0}
+.crow .cname{font-family:var(--head); font-size:16px; font-weight:700; letter-spacing:-0.02em; line-height:1.2; margin-bottom:3px}
+.crow .sub{font-size:12.5px; color:var(--text-70); line-height:1.5}
+.spots{font-size:11px; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color:var(--pink); margin-top:4px}
+.spots.full{color:var(--text-50)}
+.pill{
+  flex:none; align-self:center; padding:9px 15px; border-radius:999px; font-size:13px; font-weight:700;
+  border:1.5px solid var(--pink); color:var(--pink); background:transparent;
+  transition:all .16s var(--ease); white-space:nowrap;
+}
+.pill:active{background:var(--pink); color:var(--cream)}
+.pill.wait{border-color:var(--line-2); color:var(--text-70)}
+.pill.wait:active{background:var(--royal); color:var(--cream); border-color:var(--royal)}
+.pill.done{background:var(--pink); border-color:var(--pink); color:var(--cream)}
+.pill.done:active{background:var(--pink-deep)}
+.pill.queued{background:var(--royal); border-color:var(--royal); color:var(--cream)}
+
+/* rest day + empty */
+.restday{padding:34px 24px 40px; text-align:center}
+.restday .glyph{
+  width:62px; height:62px; margin:0 auto 14px; border-radius:50%;
+  background:var(--pink-wash); display:grid; place-items:center; color:var(--pink);
+}
+.restday h3{font-family:var(--head); font-size:19px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px}
+.restday p{font-size:13.5px; color:var(--text-70); line-height:1.5; max-width:250px; margin:0 auto}
+
+/* ============ CARDS ============ */
+.section{padding:20px 20px 0}
+.sechead{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px}
+.showall{font-size:13px; font-weight:700; color:var(--pink)}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px;
+}
+.card.hi{border-color:var(--pink); box-shadow:0 4px 18px rgba(253,71,172,0.13)}
+
+/* carousel */
+.carousel{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding:0 20px 12px; scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.promo{
+  flex:none; width:310px; height:172px; border-radius:18px; scroll-snap-align:center;
+  padding:20px; display:flex; flex-direction:column; justify-content:space-between;
+  position:relative; overflow:hidden;
+}
+.promo .kicker{font-size:11px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; opacity:0.85}
+.promo h3{font-family:var(--head); font-size:27px; font-weight:800; letter-spacing:-0.035em; line-height:1.02}
+.promo p{font-size:13px; line-height:1.4; opacity:0.9; max-width:215px}
+.promo .blob{position:absolute; border-radius:50%; opacity:0.28}
+.promo-a{background:var(--pink); color:var(--cream)}
+.promo-b{background:var(--royal); color:var(--cream)}
+.promo-c{background:var(--chartreuse); color:var(--on-bright)}
+.dots{display:flex; gap:6px; justify-content:center; padding:2px 0 4px}
+.dots i{width:6px; height:6px; border-radius:50%; background:var(--text-32); transition:all .2s var(--ease)}
+.dots i.on{background:var(--pink); width:18px; border-radius:3px}
+
+/* empty state */
+.empty{text-align:center; padding:26px 18px}
+.empty h3{font-family:var(--head); font-size:19px; font-weight:800; letter-spacing:-0.022em; margin-bottom:6px}
+.empty p{font-size:13.5px; color:var(--text-70); line-height:1.5; margin-bottom:18px}
+.btn{
+  display:block; width:100%; padding:15px; border-radius:12px; background:var(--pink); color:var(--cream);
+  font-size:15px; font-weight:700; text-align:center; transition:all .16s var(--ease);
+  box-shadow:0 4px 14px rgba(253,71,172,0.32);
+}
+.btn:active{background:var(--pink-deep); transform:translateY(1px); box-shadow:0 2px 8px rgba(253,71,172,0.3)}
+.btn.ghost{background:transparent; color:var(--pink); border:1.5px solid var(--pink); box-shadow:none}
+.btn.ghost:active{background:var(--pink-wash)}
+.btn.ink{background:var(--royal); box-shadow:0 4px 14px var(--shade)}
+
+/* reservation card */
+.rescard{position:relative; overflow:hidden}
+.rescard .stripe{position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--pink)}
+.rescard .row{display:flex; gap:13px; align-items:flex-start; padding-left:8px}
+.rescard .when{font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--pink); margin-bottom:5px}
+.rescard h3{font-family:var(--head); font-size:20px; font-weight:800; letter-spacing:-0.025em; line-height:1.15; margin-bottom:4px}
+.rescard .acts{display:flex; gap:9px; margin-top:15px; padding-left:8px}
+.rescard .acts button{
+  flex:1; padding:11px; border-radius:10px; font-size:13px; font-weight:700;
+  border:1.5px solid var(--line-2); color:var(--text);
+}
+.rescard .acts button.p{background:var(--pink); border-color:var(--pink); color:var(--cream)}
+
+/* stamps */
+.stamps{display:flex; gap:9px; flex-wrap:wrap}
+.stamp{
+  width:52px; height:52px; border-radius:14px; display:grid; place-items:center;
+  font-family:var(--head); font-size:11px; font-weight:800; text-align:center; line-height:1.05;
+  border:1.5px dashed var(--line-2); color:var(--text-32);
+}
+.stamp.got{border-style:solid; border-color:var(--pink); background:var(--pink-wash); color:var(--pink); transform:rotate(-3deg)}
+.stamp.got:nth-child(even){transform:rotate(3deg)}
+.progline{display:flex; align-items:baseline; gap:8px; margin-bottom:12px}
+.progline b{font-family:var(--head); font-size:30px; font-weight:800; letter-spacing:-0.03em; color:var(--pink)}
+.progline span{font-size:13px; color:var(--text-70)}
+
+/* ============ PRICING ============ */
+.utabs{display:flex; gap:22px; padding:0 20px; border-bottom:1px solid var(--line); overflow-x:auto; scrollbar-width:none}
+.utabs::-webkit-scrollbar{display:none}
+.utabs button{
+  padding:0 0 11px; font-size:15px; font-weight:600; color:var(--text-50);
+  border-bottom:2.5px solid transparent; margin-bottom:-1px; white-space:nowrap;
+}
+.utabs button.on{color:var(--pink); font-weight:700; border-color:var(--pink)}
+.plan{
+  border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:14px;
+  background:var(--card); position:relative;
+}
+.plan.feature{border-color:var(--pink); background:linear-gradient(180deg, var(--pink-wash), var(--card) 55%)}
+.plan .tag{
+  position:absolute; top:-9px; left:16px; background:var(--pink); color:var(--cream);
+  font-size:10px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;
+  padding:4px 9px; border-radius:999px;
+}
+.plan .picon{width:26px; height:26px; color:var(--pink); margin-bottom:12px}
+.plan h3{font-family:var(--head); font-size:18px; font-weight:700; letter-spacing:-0.02em; margin-bottom:12px; line-height:1.25}
+.priceline{display:flex; align-items:center; gap:10px; margin-bottom:14px}
+.priceline .circ{
+  width:26px; height:26px; border-radius:50%; border:1.5px solid var(--pink); color:var(--pink);
+  display:grid; place-items:center; font-size:13px; font-weight:700; flex:none;
+}
+.priceline b{font-family:var(--head); font-size:23px; font-weight:800; letter-spacing:-0.03em}
+.priceline span{font-size:14px; color:var(--text-50)}
+.plan .details{font-size:14px; font-weight:700; color:var(--pink)}
+.policy{font-size:12px; line-height:1.55; color:var(--text-50); padding:6px 4px 0}
+
+/* ============ SHOP ============ */
+.shop-empty{padding:56px 26px 20px; text-align:center}
+.shop-empty .glyph{
+  width:88px; height:88px; margin:0 auto 20px; border-radius:26px;
+  background:var(--pink-wash); border:1.5px dashed var(--pink); color:var(--pink);
+  display:grid; place-items:center; transform:rotate(-4deg);
+}
+.shop-empty h2{font-family:var(--head); font-size:25px; font-weight:800; letter-spacing:-0.03em; line-height:1.12; margin-bottom:10px}
+.shop-empty p{font-size:14px; color:var(--text-70); line-height:1.55; margin-bottom:22px}
+.ghostgrid{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:26px 20px 0}
+.ghostcard{border:1px dashed var(--line-2); border-radius:14px; padding:14px; text-align:left}
+.ghostcard .sq{height:78px; border-radius:10px; background:var(--dim); margin-bottom:10px}
+.ghostcard .l1{height:9px; width:72%; border-radius:4px; background:var(--dim); margin-bottom:6px}
+.ghostcard .l2{height:9px; width:42%; border-radius:4px; background:var(--dim)}
+
+/* ============ LIST (More) ============ */
+.list{background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden}
+.li{
+  display:flex; align-items:center; gap:13px; padding:15px 16px; width:100%; text-align:left;
+  border-bottom:1px solid var(--line); transition:background .16s var(--ease);
+}
+.li:last-child{border-bottom:none}
+.li:active{background:var(--pink-wash)}
+.li .ic{width:34px; height:34px; border-radius:10px; background:var(--pink-wash); color:var(--pink); display:grid; place-items:center; flex:none}
+.li .lb{flex:1; font-size:15px; font-weight:600}
+.li .rt{font-size:13px; color:var(--text-50)}
+.li .chev{color:var(--text-32)}
+.profilecard{
+  display:flex; align-items:center; gap:14px; padding:18px; border-radius:16px;
+  background:var(--royal); color:var(--cream); margin-bottom:18px; position:relative; overflow:hidden;
+}
+.profilecard .blob{position:absolute; right:-30px; top:-30px; width:130px; height:130px; border-radius:50%; background:var(--pink); opacity:0.5}
+.profilecard .av-lg{
+  width:52px; height:52px; border-radius:50%; background:var(--pink); color:var(--cream);
+  display:grid; place-items:center; font-family:var(--head); font-size:19px; font-weight:800; flex:none; z-index:1;
+}
+.profilecard .who{z-index:1}
+.profilecard h3{font-family:var(--head); font-size:19px; font-weight:800; letter-spacing:-0.02em}
+.profilecard p{font-size:12.5px; opacity:0.8; margin-top:2px}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute; left:14px; right:14px; bottom:22px; height:64px; z-index:70;
+  background:var(--card); border:1px solid var(--line); border-radius:999px;
+  display:flex; align-items:center; padding:0 6px;
+  box-shadow:0 10px 30px -8px var(--shade);
+}
+.tab{
+  flex:1; height:52px; border-radius:999px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:3px; color:var(--text-50);
+  transition:all .18s var(--ease);
+}
+.tab span{font-size:10px; font-weight:600; letter-spacing:0.01em}
+.tab.on{color:var(--pink); background:var(--pink-wash)}
+.tab.on span{font-weight:700}
+
+/* ============ OVERLAYS ============ */
+.scrim{
+  position:absolute; inset:0; background:var(--scrim-c); z-index:100;
+  opacity:0; pointer-events:none; transition:opacity .24s var(--ease); backdrop-filter:blur(2px);
+}
+.scrim.on{opacity:1; pointer-events:auto}
+.sheet{
+  position:absolute; left:0; right:0; bottom:0; z-index:101; max-height:82%;
+  background:var(--bg); border-radius:24px 24px 0 0; padding:10px 20px 26px;
+  transform:translateY(101%); transition:transform .3s var(--ease);
+  overflow-y:auto; scrollbar-width:none; box-shadow:0 -12px 40px var(--shade);
+}
+.sheet::-webkit-scrollbar{display:none}
+.sheet.on{transform:none}
+.grab{width:38px; height:4px; border-radius:2px; background:var(--line-2); margin:0 auto 16px}
+.sheet h2{font-family:var(--head); font-size:21px; font-weight:800; letter-spacing:-0.025em; margin-bottom:4px}
+
+/* full-screen sheets */
+.fs{
+  position:absolute; inset:0; z-index:96; background:var(--bg);
+  transform:translateX(100%); transition:transform .3s var(--ease);
+  overflow-y:auto; scrollbar-width:none; display:flex; flex-direction:column;
+}
+.fs::-webkit-scrollbar{display:none}
+.fs.on{transform:none}
+.fs-nav{
+  display:flex; align-items:center; gap:12px; padding:60px 18px 12px; flex:none;
+}
+.fs-nav button{width:36px; height:36px; border-radius:50%; display:grid; place-items:center; background:var(--dim); color:var(--text)}
+.fs-body{flex:1; overflow-y:auto; scrollbar-width:none; padding-bottom:20px}
+.fs-body::-webkit-scrollbar{display:none}
+.fs-foot{flex:none; padding:14px 20px 30px; border-top:1px solid var(--line); background:var(--bg)}
+
+/* class detail hero */
+.hero{
+  margin:0 18px 18px; border-radius:20px; padding:22px; color:var(--cream);
+  position:relative; overflow:hidden; min-height:158px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.hero .blob{position:absolute; border-radius:50%; opacity:0.3}
+.hero .kick{font-size:11px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; opacity:0.9; margin-bottom:7px}
+.hero h1{font-family:var(--head); font-size:33px; font-weight:800; letter-spacing:-0.038em; line-height:1.0}
+.factrow{display:flex; border:1px solid var(--line); border-radius:14px; margin:0 18px 18px; overflow:hidden; background:var(--card)}
+.fact{flex:1; padding:13px 10px; text-align:center; border-right:1px solid var(--line)}
+.fact:last-child{border-right:none}
+.fact .k{font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-50); margin-bottom:4px}
+.fact .v{font-family:var(--head); font-size:15px; font-weight:800; letter-spacing:-0.02em}
+.fact .v.pink{color:var(--pink)}
+.blk{padding:0 20px 18px}
+.blk h3{font-size:12px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--pink); margin-bottom:8px}
+.blk p{font-size:14.5px; line-height:1.6; color:var(--text-70)}
+.chips{display:flex; gap:7px; flex-wrap:wrap}
+.chip{
+  padding:7px 12px; border-radius:999px; border:1px solid var(--line-2);
+  font-size:12.5px; font-weight:600; color:var(--text-70);
+}
+.chip.on{background:var(--pink); border-color:var(--pink); color:var(--cream)}
+.coachline{display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--line); border-radius:14px; background:var(--card)}
+.coachline .av{width:42px; height:42px; font-size:15px}
+.coachline h4{font-family:var(--head); font-size:16px; font-weight:800; letter-spacing:-0.02em}
+
+/* confirm rows */
+.confrow{display:flex; justify-content:space-between; gap:14px; padding:13px 0; border-bottom:1px solid var(--line); font-size:14px}
+.confrow:last-of-type{border-bottom:none}
+.confrow .k{color:var(--text-50)}
+.confrow .v{font-weight:700; text-align:right}
+.paysel{
+  display:flex; align-items:center; gap:12px; padding:15px; border:1.5px solid var(--pink);
+  border-radius:14px; background:var(--pink-wash); margin:14px 0 18px;
+}
+.paysel .rad{width:20px; height:20px; border-radius:50%; border:2px solid var(--pink); display:grid; place-items:center; flex:none}
+.paysel .rad i{width:10px; height:10px; border-radius:50%; background:var(--pink)}
+
+/* confirmed */
+.done-wrap{
+  position:absolute; inset:0; z-index:105; background:var(--bg);
+  opacity:0; pointer-events:none; transition:opacity .26s var(--ease);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 28px; text-align:center;
+}
+.done-wrap.on{opacity:1; pointer-events:auto}
+.bigstamp{
+  width:118px; height:118px; border-radius:50%; background:var(--pink); color:var(--cream);
+  display:grid; place-items:center; margin-bottom:26px; box-shadow:0 12px 34px rgba(253,71,172,0.4);
+  transform:scale(0.3) rotate(-22deg); opacity:0;
+}
+.done-wrap.on .bigstamp{animation:stampin .46s var(--ease) .06s forwards}
+@keyframes stampin{to{transform:scale(1) rotate(-6deg); opacity:1}}
+.bigstamp.ink{background:var(--royal); box-shadow:0 12px 34px var(--shade)}
+.done-wrap h1{font-family:var(--head); font-size:31px; font-weight:800; letter-spacing:-0.035em; line-height:1.06; margin-bottom:10px}
+.done-wrap .sub{font-size:14.5px; color:var(--text-70); line-height:1.55; margin-bottom:24px}
+.ticket{
+  width:100%; background:var(--card); border:1px solid var(--line); border-radius:16px;
+  padding:18px; text-align:left; margin-bottom:22px; position:relative;
+}
+.ticket::before, .ticket::after{
+  content:''; position:absolute; width:18px; height:18px; border-radius:50%;
+  background:var(--bg); border:1px solid var(--line); top:50%; margin-top:-9px;
+}
+.ticket::before{left:-10px; border-right-color:transparent}
+.ticket::after{right:-10px; border-left-color:transparent}
+.done-acts{width:100%; display:flex; flex-direction:column; gap:10px}
+
+/* misc */
+.infoblock{padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--card); margin-bottom:12px}
+.infoblock .k{font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-50); margin-bottom:5px}
+.infoblock .v{font-size:15px; font-weight:600; line-height:1.45}
+.quote{padding:16px; border-left:3px solid var(--pink); background:var(--pink-wash); border-radius:0 12px 12px 0; margin-bottom:12px}
+.quote p{font-size:14px; line-height:1.55; font-style:italic; margin-bottom:7px}
+.quote .who{font-size:12px; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color:var(--pink)}
+.toast{
+  position:absolute; left:50%; bottom:100px; transform:translate(-50%,14px); z-index:110;
+  background:var(--royal); color:var(--cream); padding:12px 18px; border-radius:999px;
+  font-size:13px; font-weight:600; opacity:0; pointer-events:none;
+  transition:all .24s var(--ease); white-space:nowrap; max-width:88%;
+}
+.toast.on{opacity:1; transform:translate(-50%,0)}
+
+/* ============ SMALL SCREEN = the real app ============ */
+@media (max-width:560px){
+  .stage{display:block; background:var(--bg)}
+  .stage-word, .stage-note{display:none}
+  .phone{width:100%; height:100%; border-radius:0; padding:0; box-shadow:none; transform:none !important}
+  .viewport{border-radius:0}
+  .notch, .home-pill{display:none}
+  .statusbar{display:none}
+  .screen{padding-top:max(18px, env(safe-area-inset-top))}
+  .fs-nav{padding-top:max(20px, env(safe-area-inset-top))}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important; transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="stage-word" aria-hidden="true">BODIED</div>
+  <div class="stage-note tl"><span class="dot"></span>BODIED SJ · concept 06 · studio standard</div>
+  <div class="stage-note bl">strength · power · sisterhood</div>
+  <div class="stage-note br">tap around — booking works end to end</div>
+  <button class="stage-toggle" id="stage-toggle" aria-label="Toggle appearance">
+    <span id="stage-toggle-icon"></span>
+    <span id="stage-toggle-label">after dark</span>
+  </button>
+
+  <div class="phone" id="phone">
+    <div class="notch"></div>
+    <div class="viewport">
+      <div class="statusbar">
+        <span id="clock">9:41</span>
+        <span style="display:flex;gap:6px;align-items:center">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 10.5 5.8 8.2a3.1 3.1 0 0 1 4.4 0L8 10.5Zm0-4.6a6 6 0 0 0-4.2 1.7L2.3 6.1a8.1 8.1 0 0 1 11.4 0l-1.5 1.5A6 6 0 0 0 8 5.9Zm0-4a10 10 0 0 0-7 2.9L-.5 2.7a12.1 12.1 0 0 1 17 0L15 4.8a10 10 0 0 0-7-2.9Z"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.2" stroke="currentColor" opacity="0.45"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><path d="M23 4v4a2.1 2.1 0 0 0 0-4Z" fill="currentColor" opacity="0.45"/></svg>
+        </span>
+      </div>
+
+      <div class="app">
+
+        <!-- ========== HOME ========== -->
+        <section class="screen active" id="screen-home">
+          <div class="brandbar">
+            <div class="wordmark"><span class="mark">B</span>BODIED <span class="sj">SJ</span></div>
+            <button class="iconbtn has-dot" data-go="more" aria-label="Account">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20a7.4 7.4 0 0 1 14.4 0"/></svg>
+            </button>
+          </div>
+
+          <div class="section" style="padding-bottom:12px">
+            <div class="sechead"><h2 class="title-lg">What's good</h2></div>
+          </div>
+          <div class="carousel" id="carousel">
+            <div class="promo promo-a">
+              <div class="blob" style="width:150px;height:150px;right:-42px;top:-48px;background:#fff"></div>
+              <div class="kicker">New here?</div>
+              <div>
+                <h3>Try 7 days<br>for $7.</h3>
+                <p style="margin-top:7px">Unlimited classes for a week. Come as you are.</p>
+              </div>
+            </div>
+            <div class="promo promo-b">
+              <div class="blob" style="width:130px;height:130px;right:-30px;bottom:-46px;background:var(--pink);opacity:.55"></div>
+              <div class="kicker" style="color:var(--pink);opacity:1">The signature</div>
+              <div>
+                <h3>Muscle Mami<br>Full Body HIIT</h3>
+                <p style="margin-top:7px">Volume at eleven. Valeria's got you.</p>
+              </div>
+            </div>
+          </div>
+          <div class="dots" id="dots"><i class="on"></i><i></i></div>
+
+          <div class="section">
+            <div class="sechead"><h2 class="title-lg">Your next class</h2></div>
+            <div id="home-next"></div>
+          </div>
+
+          <div class="section">
+            <div class="sechead">
+              <h2 class="title-lg">Your stamps</h2>
+              <button class="showall" data-go="stamps">Show all</button>
+            </div>
+            <div class="card">
+              <div class="progline"><b id="stamp-count">12</b><span>classes bodied since March</span></div>
+              <div class="stamps" id="home-stamps"></div>
+            </div>
+          </div>
+
+          <div class="section" style="padding-bottom:8px">
+            <div class="sechead"><h2 class="title-lg">From the sisterhood</h2></div>
+            <div class="quote">
+              <p>"I've been working out at bodied for almost a year now and all I can say is that this gym has become my second home."</p>
+              <div class="who">Ramona</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SCHEDULE ========== -->
+        <section class="screen" id="screen-schedule">
+          <div class="topbar">
+            <button class="studio-pick" data-sheet="studio">
+              <span class="title-xl">Willow Glen</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <button class="iconbtn" id="filter-btn" data-sheet="filter" aria-label="Filters">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 7h13M19 7h2M3 17h5M11 17h10"/><circle cx="17.5" cy="7" r="2.2"/><circle cx="9.5" cy="17" r="2.2"/></svg>
+            </button>
+          </div>
+
+          <div class="segwrap">
+            <div class="seg" id="seg">
+              <button class="on" data-seg="classes">Classes</button>
+              <button data-seg="events">Events</button>
+            </div>
+          </div>
+
+          <div class="daystrip" id="daystrip"></div>
+          <div id="sched-list"></div>
+        </section>
+
+        <!-- ========== PRICING ========== -->
+        <section class="screen" id="screen-pricing">
+          <div class="topbar"><h1 class="title-xl">Pricing</h1></div>
+          <div class="utabs" id="ptabs">
+            <button class="on" data-ptab="memberships">Memberships</button>
+            <button data-ptab="unlimited">Unlimited</button>
+            <button data-ptab="packages">Packages</button>
+            <button data-ptab="private">Private</button>
+          </div>
+          <div class="pad" style="padding-top:20px" id="plan-list"></div>
+          <div class="pad"><p class="policy" id="policy"></p></div>
+        </section>
+
+        <!-- ========== SHOP ========== -->
+        <section class="screen" id="screen-shop">
+          <div class="topbar">
+            <h1 class="title-xl">Shop</h1>
+            <button class="iconbtn" data-toast="Nothing to search yet — merch is still in the works." aria-label="Search">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+            </button>
+          </div>
+          <div class="shop-empty">
+            <div class="glyph">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8h15l-1.2 11.2a1.6 1.6 0 0 1-1.6 1.4H7.3a1.6 1.6 0 0 1-1.6-1.4Z"/><path d="M8.7 8V6.2a3.3 3.3 0 0 1 6.6 0V8"/></svg>
+            </div>
+            <h2>Merch is<br>coming.</h2>
+            <p>We're not selling anything online yet. Tanks, grip socks and the good crewnecks are in the works — ask at the front desk in the meantime.</p>
+            <button class="btn ghost" data-toast="We'll ping you the second it drops.">Tell me when it drops</button>
+          </div>
+          <div class="ghostgrid" aria-hidden="true">
+            <div class="ghostcard"><div class="sq"></div><div class="l1"></div><div class="l2"></div></div>
+            <div class="ghostcard"><div class="sq"></div><div class="l1"></div><div class="l2"></div></div>
+            <div class="ghostcard"><div class="sq"></div><div class="l1"></div><div class="l2"></div></div>
+            <div class="ghostcard"><div class="sq"></div><div class="l1"></div><div class="l2"></div></div>
+          </div>
+        </section>
+
+        <!-- ========== MORE ========== -->
+        <section class="screen" id="screen-more">
+          <div class="topbar"><h1 class="title-xl">More</h1></div>
+          <div class="pad">
+            <div class="profilecard">
+              <div class="blob"></div>
+              <div class="av-lg">M</div>
+              <div class="who">
+                <h3>Hey, mami</h3>
+                <p id="plan-line">Unlimited · month to month</p>
+              </div>
+            </div>
+
+            <div class="list" style="margin-bottom:16px">
+              <button class="li" data-fs="reservations">
+                <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
+                <span class="lb">My reservations</span>
+                <span class="rt" id="res-count">0</span>
+                <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+              <button class="li" data-fs="stamps">
+                <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3.5 2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.65l5.9-.85Z"/></svg></span>
+                <span class="lb">Stamps &amp; milestones</span>
+                <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+              <button class="li" data-fs="coaches">
+                <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M2.8 19.5a6.3 6.3 0 0 1 12.4 0"/><path d="M16.5 6.2a3.2 3.2 0 0 1 0 6.1M17.5 14.4a6.3 6.3 0 0 1 3.7 5.1"/></svg></span>
+                <span class="lb">Meet the coaches</span>
+                <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+            </div>
+
+            <div class="list" style="margin-bottom:16px">
+              <button class="li" data-sheet="studio">
+                <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+                <span class="lb">Studio info</span>
+                <span class="rt">Willow Glen</span>
+                <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+              <button class="li" data-sheet="contact">
+                <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4.5 6.5a2 2 0 0 1 2-2h2l1.6 4-2 1.4a11.5 11.5 0 0 0 5.9 5.9l1.4-2 4 1.6v2a2 2 0 0 1-2 2A14.5 14.5 0 0 1 4.5 6.5Z"/></svg></span>
+                <span class="lb">Call or text the studio</span>
+                <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+              <button class="li" data-toast="Refer a friend — screen not in this concept.">
+                <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 21s-7.5-4.4-7.5-9.4A4.1 4.1 0 0 1 12 8.9a4.1 4.1 0 0 1 7.5 2.7C19.5 16.6 12 21 12 21Z"/></svg></span>
+                <span class="lb">Bring a friend</span>
+                <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+              <button class="li" id="theme-row">
+                <span class="ic" id="theme-icon"></span>
+                <span class="lb">Appearance</span>
+                <span class="rt" id="theme-value">Daylight</span>
+                <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></span>
+              </button>
+            </div>
+            <p class="policy">BODIED SJ · 2293 Lincoln Ave, San Jose, CA 95125<br>Concept 06 mockup — bookings live on this device only.</p>
+          </div>
+        </section>
+
+        <!-- ========== TAB BAR ========== -->
+        <nav class="tabbar" aria-label="Main">
+          <button class="tab on" data-screen="home">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>
+            <span>Home</span>
+          </button>
+          <button class="tab" data-screen="schedule">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+            <span>Schedule</span>
+          </button>
+          <button class="tab" data-screen="pricing">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8h15l-1.2 11.2a1.6 1.6 0 0 1-1.6 1.4H7.3a1.6 1.6 0 0 1-1.6-1.4Z"/><path d="M8.7 8V6.2a3.3 3.3 0 0 1 6.6 0V8"/></svg>
+            <span>Pricing</span>
+          </button>
+          <button class="tab" data-screen="shop">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.1a1.6 1.6 0 0 0 1.6-1.3L20.5 8H6"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>
+            <span>Shop</span>
+          </button>
+          <button class="tab" data-screen="more">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18" cy="12" r="1.7"/></svg>
+            <span>More</span>
+          </button>
+        </nav>
+
+        <!-- ========== OVERLAYS ========== -->
+        <div class="scrim" id="scrim"></div>
+        <div class="sheet" id="sheet"><div class="grab"></div><div id="sheet-body"></div></div>
+
+        <div class="fs" id="fs">
+          <div class="fs-nav">
+            <button id="fs-back" aria-label="Back">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg>
+            </button>
+            <span class="title-md" id="fs-title"></span>
+          </div>
+          <div class="fs-body" id="fs-body"></div>
+          <div class="fs-foot" id="fs-foot" hidden></div>
+        </div>
+
+        <div class="done-wrap" id="done"></div>
+        <div class="toast" id="toast"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONTENT — real, from bodiedsj.com. Never invent.
+   ============================================================ */
+const STUDIO = {
+  name:'BODIED SJ', hood:'Willow Glen',
+  addr:'2293 Lincoln Ave, San Jose, CA 95125',
+  phone:'(408) 337-2160', text:'408-539-1264', email:'hello@bodiedsj.com',
+  line:'Where women build strength that lasts.',
+  welcome:"Come as you are. We'll build strength from there.",
+};
+
+/* Bright fills (chartreuse, teal) take dark text; the rest take cream. */
+const BRIGHT_HERO = ['#E3F223', '#16D5CC'];
+
+const COACH_COLOR = {
+  Valeria:{bg:'#FD47AC', fg:'#FBF9EE'},
+  Gabi:{bg:'#15358E', fg:'#FBF9EE'},
+  Bri:{bg:'#16D5CC', fg:'#101010'},
+  Kimber:{bg:'#E3F223', fg:'#101010'},
+};
+
+const COACHES = [
+  {name:'Valeria', role:'Head Trainer & Studio Operations Manager',
+   bio:'NASM Certified Personal Trainer and group fitness instructor with a competitive dance background. She helps clients strengthen cores, tone glutes, and achieve more than you thought possible.',
+   tags:['Core','Glutes','Personal training']},
+  {name:'Gabi', role:'Trainer',
+   bio:'Former Division 1 basketball player who emphasizes discipline, teamwork, and a healthy dose of competition. She specializes in weightlifting and brings high-energy personality to motivate clients and celebrate their progress.',
+   tags:['Strength','Weightlifting','Hype']},
+  {name:'Bri', full:'Brianna (Bri)', role:'Coach',
+   bio:'Fitness coach with experience training both adult and youth athletes, specializing in functional movement and strength training. She coaches with high energy, clear communication skills, and a supportive vibe.',
+   tags:['Functional','Youth','Form']},
+  {name:'Kimber', role:'NASM Certified Personal Trainer & Group Fitness Instructor',
+   bio:'Dance and beauty industry background. She creates a safe space for other women to fall in love with fitness and provides high energy, good vibes and unconditional support.',
+   tags:['Confidence','Pilates','Moms']},
+];
+
+const CLASSES = {
+  'full-body-hiit':{name:'Full Body HIIT', hero:'#15358E',
+    desc:'Perfect for those looking for a comprehensive workout that combines cardio and strength training.',
+    tags:['Bring water','Towel','All levels'], effort:'High'},
+  'booty-abs':{name:'Booty & Abs', hero:'#FD47AC',
+    desc:'One of our signature classes that focuses on sculpting and toning your core and lower body.',
+    tags:['Mat provided','Bring water','All levels'], effort:'Moderate'},
+  'arms-abs':{name:'Arms & Abs', hero:'#DB998B',
+    desc:'Get ready to sculpt and strengthen your upper body! This high-intensity workout focuses on toning and tightening your arms, shoulders, and core.',
+    tags:['Dumbbells provided','Bring water'], effort:'Moderate'},
+  'pilates-sculpt':{name:'Pilates Sculpt', hero:'#16D5CC',
+    desc:'Slow burn, deep core, shaky legs. In the best way.',
+    tags:['Grip socks','Mat provided','Low impact'], effort:'Low'},
+  'mommy-me':{name:'Mommy & Me', hero:'#16D5CC',
+    desc:'A fun, dynamic class where moms and kids move together! Strengthen your body while bonding through playful, effective exercises.',
+    tags:['Kids welcome','Stroller friendly'], effort:'Low'},
+  'muscle-mami':{name:'Muscle Mami Full Body HIIT', hero:'#FD47AC',
+    desc:'The signature. Full body HIIT with the volume at eleven.',
+    tags:['Bring water','Towel','Brave face'], effort:'High'},
+};
+
+/* weekday (0 = Sun) → sessions. Sunday is rest day. */
+const WEEK = {
+  0:'rest',
+  1:[{id:'full-body-hiit',h:6,m:0,coach:'Gabi',dur:60},
+     {id:'booty-abs',h:17,m:45,coach:'Valeria',dur:45},
+     {id:'pilates-sculpt',h:19,m:0,coach:'Kimber',dur:50}],
+  2:[{id:'booty-abs',h:6,m:0,coach:'Valeria',dur:45},
+     {id:'pilates-sculpt',h:9,m:30,coach:'Kimber',dur:50},
+     {id:'muscle-mami',h:17,m:45,coach:'Valeria',dur:60},
+     {id:'full-body-hiit',h:19,m:0,coach:'Gabi',dur:60}],
+  3:[{id:'arms-abs',h:6,m:0,coach:'Bri',dur:45},
+     {id:'mommy-me',h:12,m:0,coach:'Kimber',dur:40},
+     {id:'full-body-hiit',h:17,m:45,coach:'Gabi',dur:60},
+     {id:'booty-abs',h:19,m:0,coach:'Valeria',dur:45}],
+  4:[{id:'booty-abs',h:6,m:0,coach:'Valeria',dur:45},
+     {id:'pilates-sculpt',h:9,m:30,coach:'Kimber',dur:50},
+     {id:'mommy-me',h:12,m:0,coach:'Kimber',dur:40},
+     {id:'arms-abs',h:16,m:30,coach:'Bri',dur:45},
+     {id:'muscle-mami',h:17,m:45,coach:'Valeria',dur:60},
+     {id:'full-body-hiit',h:19,m:0,coach:'Gabi',dur:60}],
+  5:[{id:'full-body-hiit',h:6,m:0,coach:'Gabi',dur:60},
+     {id:'booty-abs',h:9,m:30,coach:'Valeria',dur:45},
+     {id:'pilates-sculpt',h:12,m:0,coach:'Kimber',dur:50},
+     {id:'arms-abs',h:17,m:45,coach:'Bri',dur:45},
+     {id:'muscle-mami',h:19,m:0,coach:'Valeria',dur:60}],
+  6:[{id:'muscle-mami',h:8,m:0,coach:'Valeria',dur:60},
+     {id:'mommy-me',h:9,m:30,coach:'Kimber',dur:40},
+     {id:'full-body-hiit',h:11,m:0,coach:'Gabi',dur:60}],
+};
+
+/* Live pricing from bodiedsj.com/pricing (verified 2026-07-21) */
+const PLANS = {
+  memberships:[
+    {name:'Try 7 days for $7', price:'$7', per:'one time', feature:'Start here',
+     incl:['Unlimited classes for 7 days','Every class on the schedule','No commitment after']},
+    {name:'Consistency Tier: 8 Classes/Month', price:'$150', per:'/ every month',
+     incl:['8 classes each month','Book up to 7 days ahead','Cancel free up to 12h before']},
+    {name:'Flex Tier: 4 Classes/Month', price:'$102', per:'/ every month',
+     incl:['4 classes each month','Book up to 7 days ahead','Cancel free up to 12h before']},
+  ],
+  unlimited:[
+    {name:'Unlimited: Month-to-Month', price:'$215', per:'/ every month',
+     incl:['Every class, every week','No commitment','Cancel by email any time']},
+    {name:'Unlimited: 6-Month Commitment', price:'$199', per:'/ every month', feature:'Most popular',
+     incl:['Every class, every week','6-month term','Commit a little, save a little']},
+    {name:'Unlimited: 12-Month Commitment', price:'$184', per:'/ every month',
+     incl:['Every class, every week','12-month term','Best value all year']},
+  ],
+  packages:[
+    {name:'1 Drop-in Class', price:'$28', per:'per class',
+     incl:['One class, any time','No membership needed']},
+    {name:'20-Class Pack', price:'$479', per:'upfront',
+     incl:['20 classes','6-month expiry','Share nothing, it is yours']},
+  ],
+  private:[
+    {name:'Semi-Private Group Training', price:'$50', per:'per session',
+     incl:['Small group coaching','Programmed for your goals','Book at the front desk']},
+  ],
+};
+const POLICY = 'All sales are final. Cancellations/pauses for recurring monthly memberships can be done by emailing us at hello@bodiedsj.com';
+
+const TESTIMONIALS = [
+  {who:'Ria', txt:"Great HIIT workout with Coach Destiny. I'm definitely coming back on a regular basis."},
+  {who:'Lupita', txt:'Best trainer ever! Cindy is super motivating, kind, helpful.'},
+  {who:'Ramona', txt:"I've been working out at bodied for almost a year now and all I can say is that this gym has become my second home."},
+  {who:'Pooja', txt:'If you are thinking about getting fit and heathy! Bodied is one of the best places.'},
+  {who:'Jasmine', txt:"Honestly, the best PT experience I've had, hands down."},
+];
+
+const CAPACITY = 12;
+const MY_PLAN = 'Unlimited · month to month';
+
+/* ============================================================
+   STATE + HELPERS
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const bookings = {};           /* key → {status:'booked'|'waitlist', spot, pos} */
+let seg = 'classes';
+let filters = {coach:null, cls:null, time:null};
+let pendingInst = null;
+
+const TODAY = new Date();
+let selDay = TODAY.getDay();   /* offset from Sunday — open on today */
+const WEEK_START = new Date(TODAY); WEEK_START.setDate(TODAY.getDate() - TODAY.getDay()); /* Sunday */
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DOW_LONG = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+const dayAt = i => { const d = new Date(WEEK_START); d.setDate(WEEK_START.getDate()+i); return d; };
+const isSameDay = (a,b) => a.toDateString() === b.toDateString();
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+function fmtTime(h,m){
+  const ap = h >= 12 ? 'pm' : 'am';
+  const hh = h % 12 === 0 ? 12 : h % 12;
+  return `${hh}:${String(m).padStart(2,'0')}${ap}`;
+}
+function fnv(str){ let h = 2166136261; for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function spotsFor(key){ return fnv(key) % 9; }   /* 0 = full → waitlist */
+
+function instancesFor(dateIdx){
+  const d = dayAt(dateIdx);
+  const rows = WEEK[d.getDay()];
+  if(rows === 'rest') return 'rest';
+  return (rows||[]).map(r => {
+    const key = `${iso(d)}|${r.id}|${String(r.h).padStart(2,'0')}:${String(r.m).padStart(2,'0')}`;
+    return {...r, key, date:d, dateIdx, left:spotsFor(key)};
+  });
+}
+function passesFilter(inst){
+  if(seg !== 'classes') return true;   /* filters are a Classes-only control */
+  if(filters.coach && inst.coach !== filters.coach) return false;
+  if(filters.cls && inst.id !== filters.cls) return false;
+  if(filters.time){
+    if(filters.time === 'am' && inst.h >= 12) return false;
+    if(filters.time === 'pm' && inst.h < 12) return false;
+  }
+  return true;
+}
+const activeFilters = () => Object.values(filters).filter(Boolean).length;
+
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('on'), 2200);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function goScreen(name){
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $('#screen-'+name).classList.add('active');
+  $$('.tab').forEach(t => t.classList.toggle('on', t.dataset.screen === name));
+  $('#screen-'+name).scrollTop = 0;
+}
+$$('.tab').forEach(t => t.addEventListener('click', () => goScreen(t.dataset.screen)));
+
+/* ============================================================
+   SCHEDULE
+   ============================================================ */
+function renderDayStrip(){
+  $('#daystrip').innerHTML = [0,1,2,3,4,5,6].map(i => {
+    const d = dayAt(i);
+    const past = d < TODAY && !isSameDay(d, TODAY);
+    const rest = WEEK[d.getDay()] === 'rest';
+    return `<button class="day${i===selDay?' on':''}${past?' past':''}" data-day="${i}">
+      <span class="dow">${DOW[d.getDay()]}</span>
+      <span class="num">${d.getDate()}</span>
+      ${rest ? '<span class="rest-dot"></span>' : ''}
+    </button>`;
+  }).join('');
+  $$('#daystrip .day').forEach(b => b.addEventListener('click', () => {
+    selDay = +b.dataset.day; renderDayStrip(); renderSchedule();
+    $('#screen-schedule').scrollTop = 0;
+  }));
+}
+
+function rowHTML(inst){
+  const c = CLASSES[inst.id];
+  const cc = COACH_COLOR[inst.coach];
+  const bk = bookings[inst.key];
+  const full = inst.left === 0;
+  let cta;
+  if(bk && bk.status === 'booked') cta = `<button class="pill done" data-open="${inst.key}">Reserved</button>`;
+  else if(bk) cta = `<button class="pill queued" data-open="${inst.key}">Waitlisted</button>`;
+  else if(full) cta = `<button class="pill wait" data-open="${inst.key}">Waitlist</button>`;
+  else cta = `<button class="pill" data-open="${inst.key}">Reserve</button>`;
+
+  const spots = full
+    ? `<div class="spots full">Class full</div>`
+    : (inst.left <= 4 ? `<div class="spots">${inst.left} spot${inst.left===1?'':'s'} left</div>` : '');
+
+  return `<div class="crow${bk && bk.status==='booked' ? ' booked':''}" data-row="${inst.key}">
+    <div class="left">
+      <div class="time">${fmtTime(inst.h, inst.m)}</div>
+      <div class="av" style="background:${cc.bg};color:${cc.fg}">${inst.coach[0]}</div>
+    </div>
+    <div class="mid" data-open="${inst.key}">
+      <div class="cname">${esc(c.name)}</div>
+      <div class="sub">${STUDIO.hood}</div>
+      <div class="sub">${esc(inst.coach)}</div>
+      <div class="sub">${inst.dur} min</div>
+      ${spots}
+    </div>
+    ${cta}
+  </div>`;
+}
+
+function renderSchedule(){
+  const wrap = $('#sched-list');
+
+  if(seg === 'events'){
+    wrap.innerHTML = `<div class="restday">
+      <div class="glyph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M18 12h3M16.3 7.7l2.1-2.1"/><circle cx="12" cy="15" r="5"/></svg></div>
+      <h3>No events on the books</h3>
+      <p>Pop-ups, challenges and member socials land here. Follow along for the next one.</p>
+    </div>`;
+    return;
+  }
+
+  let html = '';
+  let shown = 0;
+  for(let i = selDay; i < 7; i++){
+    const d = dayAt(i);
+    const list = instancesFor(i);
+    const isToday = isSameDay(d, TODAY);
+    const label = isToday
+      ? `TODAY, ${DOW_LONG[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`
+      : `${DOW_LONG[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`;
+    html += `<div class="datehead${isToday?'':' plain'}">${label}</div>`;
+
+    if(list === 'rest'){
+      html += `<div class="restday">
+        <div class="glyph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg></div>
+        <h3>Sunday is rest day</h3>
+        <p>Nothing on the schedule. Stretch, eat, sleep in. We'll see you Monday, mami.</p>
+      </div>`;
+      continue;
+    }
+    const rows = list.filter(passesFilter);
+    if(!rows.length){
+      html += `<div class="restday" style="padding:24px">
+        <p>Nothing matches your filters this day.</p>
+      </div>`;
+      continue;
+    }
+    shown += rows.length;
+    html += rows.map(rowHTML).join('');
+  }
+
+  if(!shown && seg === 'classes' && activeFilters()){
+    html += `<div class="pad" style="padding-top:18px"><button class="btn ghost" id="clear-f">Clear filters</button></div>`;
+  }
+  wrap.innerHTML = html;
+
+  wrap.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', e => {
+    e.stopPropagation(); openDetail(el.dataset.open);
+  }));
+  const cf = $('#clear-f');
+  if(cf) cf.addEventListener('click', () => { filters = {coach:null,cls:null,time:null}; syncFilterDot(); renderSchedule(); });
+}
+
+$$('#seg button').forEach(b => b.addEventListener('click', () => {
+  $$('#seg button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); seg = b.dataset.seg;
+  renderDayStrip(); renderSchedule();
+}));
+
+function syncFilterDot(){
+  $('#filter-btn').classList.toggle('has-dot', activeFilters() > 0);
+}
+
+/* ============================================================
+   CLASS DETAIL + BOOKING FLOW
+   ============================================================ */
+function findInst(key){
+  for(let i = 0; i < 7; i++){
+    const list = instancesFor(i);
+    if(list === 'rest') continue;
+    const hit = list.find(x => x.key === key);
+    if(hit) return hit;
+  }
+  return null;
+}
+
+function whenLabel(inst){
+  const d = inst.date;
+  const today = isSameDay(d, TODAY);
+  const tmr = (()=>{ const t = new Date(TODAY); t.setDate(t.getDate()+1); return isSameDay(d,t); })();
+  const day = today ? 'Today' : tmr ? 'Tomorrow' : `${DOW[d.getDay()]} ${MON[d.getMonth()][0]+MON[d.getMonth()].slice(1).toLowerCase()} ${d.getDate()}`;
+  return `${day} · ${fmtTime(inst.h, inst.m)}`;
+}
+
+function openDetail(key){
+  const inst = findInst(key);
+  if(!inst) return;
+  pendingInst = inst;
+  const c = CLASSES[inst.id];
+  const cc = COACH_COLOR[inst.coach];
+  const coach = COACHES.find(x => x.name === inst.coach);
+  const bk = bookings[key];
+  const full = inst.left === 0;
+
+  $('#fs-title').textContent = 'Class details';
+  $('#fs-body').innerHTML = `
+    <div class="hero" style="background:${c.hero};color:${BRIGHT_HERO.includes(c.hero) ? 'var(--on-bright)' : 'var(--cream)'}">
+      <div class="blob" style="width:170px;height:170px;right:-58px;top:-72px;background:#FBF9EE"></div>
+      <div class="blob" style="width:120px;height:120px;left:-62px;bottom:-64px;background:#FD47AC;opacity:.3"></div>
+      <div class="kick">${whenLabel(inst)}</div>
+      <h1>${esc(c.name)}</h1>
+    </div>
+
+    <div class="factrow">
+      <div class="fact"><div class="k">Length</div><div class="v">${inst.dur} min</div></div>
+      <div class="fact"><div class="k">Effort</div><div class="v">${c.effort}</div></div>
+      <div class="fact"><div class="k">Spots</div><div class="v${full?'':' pink'}">${full ? 'Full' : inst.left + ' left'}</div></div>
+    </div>
+
+    <div class="blk">
+      <h3>What it is</h3>
+      <p>${esc(c.desc)}</p>
+    </div>
+
+    <div class="blk">
+      <h3>Your coach</h3>
+      <div class="coachline">
+        <div class="av" style="background:${cc.bg};color:${cc.fg}">${inst.coach[0]}</div>
+        <div>
+          <h4>${esc(coach.full || coach.name)}</h4>
+          <div class="meta-sm">${esc(coach.role)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="blk">
+      <h3>Bring</h3>
+      <div class="chips">${c.tags.map(t => `<span class="chip">${esc(t)}</span>`).join('')}</div>
+    </div>
+
+    <div class="blk">
+      <h3>Where</h3>
+      <p>${STUDIO.addr}<br><span class="meta-sm">Free lot behind the building. Doors open 15 min early.</span></p>
+    </div>
+
+    <div class="blk">
+      <h3>Cancellation</h3>
+      <p class="meta-sm">Cancel free up to 12 hours before class. ${esc(POLICY)}</p>
+    </div>`;
+
+  const foot = $('#fs-foot');
+  foot.hidden = false;
+  if(bk && bk.status === 'booked'){
+    foot.innerHTML = `<button class="btn ghost" id="cancel-btn">Cancel this reservation</button>`;
+    $('#cancel-btn').onclick = () => {
+      delete bookings[key]; renderAll(); closeFs();
+      toast('Reservation cancelled. Spot released.');
+    };
+  } else if(bk){
+    foot.innerHTML = `<button class="btn ghost" id="cancel-btn">Leave the waitlist</button>`;
+    $('#cancel-btn').onclick = () => {
+      delete bookings[key]; renderAll(); closeFs();
+      toast("You're off the waitlist.");
+    };
+  } else if(full){
+    foot.innerHTML = `<button class="btn ink" id="book-btn">Join the waitlist</button>`;
+    $('#book-btn').onclick = () => openConfirm(inst, true);
+  } else {
+    foot.innerHTML = `<button class="btn" id="book-btn">Reserve my spot</button>`;
+    $('#book-btn').onclick = () => openConfirm(inst, false);
+  }
+  openFs();
+}
+
+function openConfirm(inst, waitlist){
+  const c = CLASSES[inst.id];
+  openSheet(`
+    <h2>${waitlist ? 'Join the waitlist' : 'Confirm your spot'}</h2>
+    <p class="meta" style="margin-bottom:16px">${waitlist
+      ? "We'll text you the second a spot opens. No charge unless you get in."
+      : 'One tap and the spot is yours, mami.'}</p>
+
+    <div class="confrow"><span class="k">Class</span><span class="v">${esc(c.name)}</span></div>
+    <div class="confrow"><span class="k">When</span><span class="v">${whenLabel(inst)}</span></div>
+    <div class="confrow"><span class="k">Coach</span><span class="v">${esc(inst.coach)}</span></div>
+    <div class="confrow"><span class="k">Where</span><span class="v">${STUDIO.hood}<br><span style="font-weight:400;color:var(--text-50);font-size:12px">${STUDIO.addr}</span></span></div>
+    <div class="confrow"><span class="k">Length</span><span class="v">${inst.dur} min</span></div>
+
+    <div class="paysel">
+      <span class="rad"><i></i></span>
+      <span>
+        <div style="font-weight:700;font-size:14px">${MY_PLAN}</div>
+        <div class="meta-sm">${waitlist ? 'Nothing deducted for a waitlist spot' : 'This class is included — no charge'}</div>
+      </span>
+    </div>
+
+    <button class="btn${waitlist ? ' ink' : ''}" id="confirm-btn">${waitlist ? 'Put me on the list' : 'Confirm reservation'}</button>
+    <p class="policy" style="text-align:center;padding-top:12px">Cancel free up to 12 hours before class.</p>
+  `);
+  $('#confirm-btn').onclick = () => {
+    if(waitlist){
+      bookings[inst.key] = {status:'waitlist', pos:(fnv(inst.key) % 4) + 1};
+    } else {
+      bookings[inst.key] = {status:'booked', spot:CAPACITY - inst.left + 1};
+    }
+    closeSheet(); closeFs(); renderAll();
+    showDone(inst, waitlist);
+  };
+}
+
+function showDone(inst, waitlist){
+  const c = CLASSES[inst.id];
+  const bk = bookings[inst.key];
+  $('#done').innerHTML = `
+    <div class="bigstamp${waitlist ? ' ink' : ''}">
+      ${waitlist
+        ? '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>'
+        : '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>'}
+    </div>
+    <h1>${waitlist ? "You're on the list." : "You're in, mami."}</h1>
+    <p class="sub">${waitlist
+      ? `Number ${bk.pos} in line for ${esc(c.name)}. We'll text ${STUDIO.text} the moment a spot opens.`
+      : `Spot ${bk.spot} of ${CAPACITY} is yours. Doors open 15 minutes early.`}</p>
+
+    <div class="ticket">
+      <div class="rescard">
+        <div class="when">${whenLabel(inst)}</div>
+        <h3 style="font-family:var(--head);font-size:20px;font-weight:800;letter-spacing:-0.025em;margin-bottom:4px">${esc(c.name)}</h3>
+        <div class="meta">${esc(inst.coach)} · ${inst.dur} min · ${STUDIO.hood}</div>
+      </div>
+    </div>
+
+    <div class="done-acts">
+      ${waitlist ? '' : '<button class="btn ghost" id="done-cal">Add to calendar</button>'}
+      <button class="btn" id="done-ok">Done</button>
+    </div>`;
+  $('#done').classList.add('on');
+  $('#done-ok').onclick = () => { $('#done').classList.remove('on'); goScreen('schedule'); };
+  const cal = $('#done-cal');
+  if(cal) cal.onclick = () => toast('Calendar reminder saved (.ics).');
+}
+
+/* ============================================================
+   HOME
+   ============================================================ */
+function myBookings(){
+  return Object.keys(bookings).map(findInst).filter(Boolean)
+    .sort((a,b) => (a.dateIdx - b.dateIdx) || (a.h*60+a.m) - (b.h*60+b.m));
+}
+
+function renderHome(){
+  const mine = myBookings();
+  const next = mine[0];
+  const wrap = $('#home-next');
+  if(!next){
+    wrap.innerHTML = `<div class="card">
+      <div class="empty">
+        <h3>Nothing booked yet.</h3>
+        <p>Let's fix that. Pick a class, claim a spot, show up.</p>
+        <button class="btn" data-go="schedule">Book a class</button>
+      </div>
+    </div>`;
+  } else {
+    const c = CLASSES[next.id];
+    const bk = bookings[next.key];
+    const cc = COACH_COLOR[next.coach];
+    wrap.innerHTML = `<div class="card hi rescard">
+      <div class="stripe"></div>
+      <div class="row">
+        <div class="av" style="background:${cc.bg};color:${cc.fg};width:44px;height:44px;font-size:16px">${next.coach[0]}</div>
+        <div style="flex:1;min-width:0">
+          <div class="when">${bk.status === 'waitlist' ? `Waitlist · no. ${bk.pos}` : whenLabel(next)}</div>
+          <h3>${esc(c.name)}</h3>
+          <div class="meta">${esc(next.coach)} · ${next.dur} min · ${STUDIO.hood}</div>
+        </div>
+      </div>
+      <div class="acts">
+        <button data-open2="${next.key}">Details</button>
+        <button class="p" data-toast2="See you at ${STUDIO.hood}. Doors open 15 min early.">I'm coming</button>
+      </div>
+    </div>`;
+    if(mine.length > 1){
+      wrap.innerHTML += `<button class="showall" style="display:block;margin:12px auto 0" data-fs2="reservations">See all ${mine.length} reservations</button>`;
+    }
+  }
+
+  const got = ['1st class','6AM club','10 down','Pilates era'];
+  const locked = ['25 club','Bring a friend'];
+  $('#home-stamps').innerHTML =
+    got.map(g => `<div class="stamp got">${g.replace(' ','<br>')}</div>`).join('') +
+    locked.map(l => `<div class="stamp">${l.replace(' ','<br>')}</div>`).join('');
+
+  $('#res-count').textContent = mine.length;
+  bindDelegates();
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+let ptab = 'memberships';
+function renderPricing(){
+  $('#plan-list').innerHTML = PLANS[ptab].map((p,i) => `
+    <div class="plan${p.feature ? ' feature':''}" data-plan="${ptab}:${i}">
+      ${p.feature ? `<span class="tag">${esc(p.feature)}</span>` : ''}
+      <svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m12 3 9 4.5-9 4.5-9-4.5Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg>
+      <h3>${esc(p.name)}</h3>
+      <div class="priceline">
+        <span class="circ">$</span>
+        <b>${esc(p.price)}</b>
+        <span>${esc(p.per)}</span>
+      </div>
+      <span class="details">Details</span>
+    </div>`).join('');
+  $('#policy').textContent = POLICY;
+  $$('#plan-list .plan').forEach(el => el.addEventListener('click', () => {
+    const [t,i] = el.dataset.plan.split(':');
+    const p = PLANS[t][+i];
+    openSheet(`
+      <h2>${esc(p.name)}</h2>
+      <div class="priceline" style="margin-top:12px">
+        <span class="circ">$</span><b>${esc(p.price)}</b><span>${esc(p.per)}</span>
+      </div>
+      <div style="margin:6px 0 18px">
+        ${p.incl.map(x => `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FD47AC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+          <span>${esc(x)}</span></div>`).join('')}
+      </div>
+      <button class="btn" data-toast2="Memberships are set up at the front desk or on bodiedsj.com.">Get this plan</button>
+      <p class="policy" style="padding-top:14px">${esc(POLICY)}</p>
+    `);
+  }));
+}
+$$('#ptabs button').forEach(b => b.addEventListener('click', () => {
+  $$('#ptabs button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); ptab = b.dataset.ptab; renderPricing();
+  $('#screen-pricing').scrollTop = 0;
+}));
+
+/* ============================================================
+   SHEETS + FULL SCREENS
+   ============================================================ */
+function openSheet(html){
+  $('#sheet-body').innerHTML = html;
+  $('#sheet').classList.add('on'); $('#scrim').classList.add('on');
+  bindDelegates();
+}
+function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); }
+function openFs(){ $('#fs').classList.add('on'); $('#fs-body').scrollTop = 0; }
+function closeFs(){ $('#fs').classList.remove('on'); $('#fs-foot').hidden = true; }
+$('#scrim').addEventListener('click', closeSheet);
+$('#fs-back').addEventListener('click', closeFs);
+
+const SHEETS = {
+  studio: () => `
+    <h2>${STUDIO.name} · ${STUDIO.hood}</h2>
+    <p class="meta" style="margin-bottom:16px">${STUDIO.line}</p>
+    <div class="infoblock"><div class="k">Address</div><div class="v">${STUDIO.addr}</div></div>
+    <div class="infoblock"><div class="k">Call</div><div class="v">${STUDIO.phone}</div></div>
+    <div class="infoblock"><div class="k">Text</div><div class="v">${STUDIO.text}</div></div>
+    <div class="infoblock"><div class="k">Email</div><div class="v">${STUDIO.email}</div></div>
+    <p class="policy" style="padding:4px 4px 16px">One studio, one room, one community. ${STUDIO.welcome}</p>
+    <button class="btn ghost" data-toast2="Opening maps…">Get directions</button>`,
+
+  contact: () => `
+    <h2>Talk to us</h2>
+    <p class="meta" style="margin-bottom:16px">Front desk picks up during class hours. Text is fastest.</p>
+    <button class="btn" style="margin-bottom:10px" data-toast2="Calling ${STUDIO.phone}…">Call ${STUDIO.phone}</button>
+    <button class="btn ghost" style="margin-bottom:10px" data-toast2="Texting ${STUDIO.text}…">Text ${STUDIO.text}</button>
+    <button class="btn ghost" data-toast2="Emailing ${STUDIO.email}…">Email ${STUDIO.email}</button>`,
+
+  filter: () => {
+    const coaches = ['Valeria','Gabi','Bri','Kimber'];
+    return `
+    <h2>Filter the schedule</h2>
+    <p class="meta" style="margin-bottom:18px">Narrow it down to what you actually want.</p>
+    <h3 class="blk" style="padding:0 0 8px;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink)">Coach</h3>
+    <div class="chips" style="margin-bottom:20px">
+      ${coaches.map(c => `<button class="chip${filters.coach===c?' on':''}" data-f="coach:${c}">${c}</button>`).join('')}
+    </div>
+    <h3 class="blk" style="padding:0 0 8px;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink)">Class</h3>
+    <div class="chips" style="margin-bottom:20px">
+      ${Object.entries(CLASSES)
+        .map(([k,v]) => `<button class="chip${filters.cls===k?' on':''}" data-f="cls:${k}">${esc(v.name)}</button>`).join('')}
+    </div>
+    <h3 class="blk" style="padding:0 0 8px;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink)">Time of day</h3>
+    <div class="chips" style="margin-bottom:22px">
+      <button class="chip${filters.time==='am'?' on':''}" data-f="time:am">Morning</button>
+      <button class="chip${filters.time==='pm'?' on':''}" data-f="time:pm">Afternoon &amp; evening</button>
+    </div>
+    <button class="btn" id="f-apply">Show classes</button>
+    <button class="btn ghost" style="margin-top:10px" id="f-clear">Clear all</button>`;
+  },
+};
+
+function openNamedSheet(name){
+  openSheet(SHEETS[name]());
+  if(name === 'filter'){
+    $$('#sheet-body [data-f]').forEach(b => b.addEventListener('click', () => {
+      const [k,v] = b.dataset.f.split(':');
+      filters[k] = filters[k] === v ? null : v;
+      openNamedSheet('filter');
+    }));
+    $('#f-apply').onclick = () => { syncFilterDot(); renderSchedule(); closeSheet(); goScreen('schedule'); };
+    $('#f-clear').onclick = () => { filters = {coach:null,cls:null,time:null}; syncFilterDot(); renderSchedule(); openNamedSheet('filter'); };
+  }
+}
+
+const FULLSCREENS = {
+  reservations: () => {
+    const mine = myBookings();
+    if(!mine.length){
+      return {title:'My reservations', html:`<div class="restday" style="padding-top:60px">
+        <div class="glyph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></div>
+        <h3>Nothing booked</h3>
+        <p>Your reserved classes show up here with a one-tap cancel.</p>
+      </div>`};
+    }
+    return {title:'My reservations', html:`<div class="pad">${mine.map(inst => {
+      const c = CLASSES[inst.id]; const bk = bookings[inst.key]; const cc = COACH_COLOR[inst.coach];
+      return `<div class="card hi rescard" style="margin-bottom:12px">
+        <div class="stripe" style="${bk.status==='waitlist'?'background:var(--royal)':''}"></div>
+        <div class="row">
+          <div class="av" style="background:${cc.bg};color:${cc.fg};width:44px;height:44px;font-size:16px">${inst.coach[0]}</div>
+          <div style="flex:1;min-width:0">
+            <div class="when" style="${bk.status==='waitlist'?'color:var(--text-50)':''}">${bk.status==='waitlist'?`Waitlist · no. ${bk.pos}`:whenLabel(inst)}</div>
+            <h3>${esc(c.name)}</h3>
+            <div class="meta">${esc(inst.coach)} · ${inst.dur} min</div>
+          </div>
+        </div>
+        <div class="acts"><button data-open2="${inst.key}">Details</button></div>
+      </div>`;
+    }).join('')}</div>`};
+  },
+
+  stamps: () => ({title:'Stamps & milestones', html:`
+    <div class="pad">
+      <div class="card" style="margin-bottom:16px">
+        <div class="progline"><b>12</b><span>classes bodied since March</span></div>
+        <p class="meta">13 more and you hit the 25 club. Consistency is the whole thing, mami.</p>
+      </div>
+      <div class="sechead"><h2 class="title-lg">Earned</h2></div>
+      <div class="stamps" style="margin-bottom:22px">
+        ${['1st class','6AM club','10 down','Pilates era','Two weeks straight'].map(g=>`<div class="stamp got">${g.replace(' ','<br>')}</div>`).join('')}
+      </div>
+      <div class="sechead"><h2 class="title-lg">Still locked</h2></div>
+      <div class="stamps">
+        ${['25 club','50 club','Bring a friend','Full week'].map(g=>`<div class="stamp">${g.replace(' ','<br>')}</div>`).join('')}
+      </div>
+    </div>`}),
+
+  coaches: () => ({title:'Meet the coaches', html:`
+    <div class="pad">
+      ${COACHES.map(c => {
+        const cc = COACH_COLOR[c.name];
+        return `<div class="card" style="margin-bottom:12px">
+          <div style="display:flex;gap:13px;align-items:center;margin-bottom:12px">
+            <div class="av" style="background:${cc.bg};color:${cc.fg};width:46px;height:46px;font-size:17px">${c.name[0]}</div>
+            <div>
+              <h3 style="font-family:var(--head);font-size:18px;font-weight:800;letter-spacing:-0.022em">${esc(c.full||c.name)}</h3>
+              <div class="meta-sm">${esc(c.role)}</div>
+            </div>
+          </div>
+          <p class="meta" style="margin-bottom:12px">${esc(c.bio)}</p>
+          <div class="chips">${c.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
+        </div>`;
+      }).join('')}
+      <div class="sechead" style="margin-top:22px"><h2 class="title-lg">What members say</h2></div>
+      ${TESTIMONIALS.map(t => `<div class="quote"><p>"${esc(t.txt)}"</p><div class="who">${esc(t.who)}</div></div>`).join('')}
+    </div>`}),
+};
+
+function openNamedFs(name){
+  const {title, html} = FULLSCREENS[name]();
+  $('#fs-title').textContent = title;
+  $('#fs-body').innerHTML = html;
+  $('#fs-foot').hidden = true;
+  openFs(); bindDelegates();
+}
+
+/* ============================================================
+   DELEGATED BINDINGS
+   ============================================================ */
+function bindDelegates(){
+  $$('[data-go]').forEach(b => b.onclick = () => goScreen(b.dataset.go));
+  $$('[data-sheet]').forEach(b => b.onclick = () => openNamedSheet(b.dataset.sheet));
+  $$('[data-fs]').forEach(b => b.onclick = () => openNamedFs(b.dataset.fs));
+  $$('[data-fs2]').forEach(b => b.onclick = () => openNamedFs(b.dataset.fs2));
+  $$('[data-toast]').forEach(b => b.onclick = () => toast(b.dataset.toast));
+  $$('[data-toast2]').forEach(b => b.onclick = () => { closeSheet(); toast(b.dataset.toast2); });
+  $$('[data-open2]').forEach(b => b.onclick = () => openDetail(b.dataset.open2));
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function renderAll(){
+  renderDayStrip(); renderSchedule(); renderHome(); renderPricing(); syncFilterDot();
+}
+renderAll();
+
+/* carousel dots */
+$('#carousel').addEventListener('scroll', () => {
+  const el = $('#carousel');
+  const i = Math.round(el.scrollLeft / 322);
+  $$('#dots i').forEach((d,n) => d.classList.toggle('on', n === Math.min(1, i)));
+});
+
+/* status bar clock */
+(function tick(){
+  const d = new Date();
+  $('#clock').textContent = `${d.getHours()%12===0?12:d.getHours()%12}:${String(d.getMinutes()).padStart(2,'0')}`;
+  setTimeout(tick, 20000);
+})();
+
+/* ============================================================
+   THEME — "daylight" / "after dark"
+   Only --bg/--text/--line-family flip. --cream, --pink, --chartreuse
+   and --teal are fixed so text on brand fills stays legible in both.
+   ============================================================ */
+const SUN = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.4M12 18.8v2.4M4.7 4.7l1.7 1.7M17.6 17.6l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.7 19.3l1.7-1.7M17.6 6.4l1.7-1.7"/></svg>';
+const MOON = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
+
+function isDark(){ return document.documentElement.dataset.theme === 'dark'; }
+
+function applyTheme(){
+  const dark = isDark();
+  $('#stage-toggle-icon').innerHTML = dark ? SUN : MOON;
+  $('#stage-toggle-label').textContent = dark ? 'daylight' : 'after dark';
+  const ti = $('#theme-icon'), tv = $('#theme-value');
+  if(ti) ti.innerHTML = dark ? MOON : SUN;
+  if(tv) tv.textContent = dark ? 'After dark' : 'Daylight';
+}
+function setTheme(t){
+  if(t === 'dark') document.documentElement.dataset.theme = 'dark';
+  else delete document.documentElement.dataset.theme;
+  applyTheme();
+}
+function toggleTheme(){ setTheme(isDark() ? 'light' : 'dark'); }
+
+$('#stage-toggle').addEventListener('click', toggleTheme);
+$('#theme-row').addEventListener('click', () => {
+  toggleTheme();
+  toast(isDark() ? 'After dark. Club lighting, mami.' : 'Back to daylight.');
+});
+applyTheme();
+
+/* phone scaling on desktop */
+function fitPhone(){
+  if(window.innerWidth <= 560){ $('#phone').style.transform = ''; return; }
+  const scale = Math.min(1, (window.innerHeight - 120) / 844, (window.innerWidth - 80) / 390);
+  $('#phone').style.transform = `scale(${scale})`;
+}
+fitPhone();
+window.addEventListener('resize', fitPhone);
+
+/* deep link: #schedule, #pricing, #shop, #more — append &dark for the dark theme */
+(function(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(!h) return;
+  const [scr, ...flags] = h.split('&');
+  if(['home','schedule','pricing','shop','more'].includes(scr)) goScreen(scr);
+  if(flags.includes('dark') || scr === 'dark') setTheme('dark');
+})();
+</script>
+</body>
+</html>
