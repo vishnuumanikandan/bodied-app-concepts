@@ -6,7 +6,7 @@
 
 const STUDIO = {
   name: 'BODIED SJ',
-  addr: '2293 Lincoln Ave, San Jose',
+  addr: '2293 Lincoln Ave, San Jose, CA 95125',
   phone: '(408) 337-2160',
   tel: 'tel:+14083372160',
   email: 'hello@bodiedsj.com',
@@ -87,10 +87,10 @@ const WEEK_TEMPLATE = {
 };
 
 const COACHES = [
-  { name: 'Valeria', role: 'Head trainer · Studio ops', bio: 'Former competitive dancer, NASM certified. Core and glutes are her love language.', tags: ['Core', 'Glutes', 'Personal training'] },
-  { name: 'Gabi', role: 'Strength & conditioning', bio: 'Ex Division 1 basketball. Brings the competitive fire, leaves the judgment at the door.', tags: ['Strength', 'Weightlifting', 'Hype'] },
-  { name: 'Bri', role: 'Fitness coach', bio: 'Functional movement specialist. Coaches youth and adults to feel strong and capable.', tags: ['Functional', 'Youth', 'Form'] },
-  { name: 'Kimber', role: 'Trainer', bio: 'Dancer, mom, NASM certified. Built a safe space for women to fall in love with fitness.', tags: ['Confidence', 'Pilates', 'Moms'] },
+  { name: 'Valeria', role: 'Head Trainer & Studio Operations Manager', bio: 'Valeria is here to help you build the foundation for your healthiest self. With a background as a competitive dancer, she’s always found joy in movement, and that passion drives her teaching today.', tags: ['Core', 'Glutes', 'Personal training'] },
+  { name: 'Gabi', role: 'Trainer', bio: 'Gabi is a former D1 athlete who’s always thrived on discipline, teamwork, and a healthy dose of competition. As a basketball player, strength and conditioning were fundamental to her performance on the court.', tags: ['Strength', 'Weightlifting', 'Hype'] },
+  { name: 'Bri', role: 'Coach', bio: 'With experience training both adult and youth athletes, she specializes in functional movement, strength training, and helping members build confidence through effective and engaging workouts.', tags: ['Functional', 'Youth', 'Form'] },
+  { name: 'Kimber', role: 'NASM Certified Personal Trainer & Group Fitness Instructor', bio: 'After becoming a mom, she found her passion in fitness, and now she thrives on providing a safe space for other women to fall in love with fitness and what their bodies are capable of.', tags: ['Confidence', 'Pilates', 'Moms'] },
 ];
 
 /* Real pricing from bodiedsj.com */
@@ -99,19 +99,19 @@ const PLANS = [
   { id: 'unlimited', name: 'Unlimited · month to month', sub: 'Every class, every week', price: '$215', per: '/mo', short: 'Unlimited' },
   { id: 'unlimited-6', name: '6 months unlimited', sub: 'Commit a little, save a little', price: '$199', per: '/mo', short: 'Unlimited · 6 mo' },
   { id: 'unlimited-12', name: '12 months unlimited', sub: 'Best value all year', price: '$184', per: '/mo', short: 'Unlimited · 12 mo' },
-  { id: 'classes-10', name: '10 classes / month', sub: 'For the regulars', price: '$170', per: '/mo', short: '10 classes/mo' },
-  { id: 'classes-5', name: '5 classes / month', sub: 'Ease into it', price: '$110', per: '/mo', short: '5 classes/mo' },
-  { id: 'pack-20', name: '20-class pack', sub: '3 month expiry', price: '$399', per: '', short: '20-class pack' },
+  { id: 'classes-10', name: '8 classes / month', sub: 'For the regulars', price: '$150', per: '/mo', short: '8 classes/mo' },
+  { id: 'classes-5', name: '4 classes / month', sub: 'Ease into it', price: '$102', per: '/mo', short: '4 classes/mo' },
+  { id: 'pack-20', name: '20-class pack', sub: '6 month expiry', price: '$479', per: '', short: '20-class pack' },
 ];
-const PRICING_POLICY = 'All sales are final. Cancellations or pauses for recurring monthly memberships: email us at hello@bodiedsj.com.';
+const PRICING_POLICY = 'All sales are final. Cancellations/pauses for recurring monthly memberships can be done by emailing us at hello@bodiedsj.com';
 
-/* Real member quotes from the site */
+/* Member quotes from bodiedsj.com, verbatim. Each `txt` is a contiguous excerpt of
+   the homepage quote under that name — trim for fit, never paraphrase, never blend. */
 const TESTIMONIALS = [
-  { who: 'Lupita', txt: 'I tried every gym in San Jose. This is the first one where I actually wanted to come back the next day.' },
-  { who: 'Abby', txt: 'Valeria knows everyone’s name by week one. The community here is unreal.' },
-  { who: 'Ramona', txt: 'I started at the 7-day trial and never left. Three years now.' },
-  { who: 'Pooja', txt: 'As a new mom, Mommy & Me saved me. My daughter loves it as much as I do.' },
-  { who: 'Jasmine', txt: 'Strong, supported, never judged. Exactly what it says on the door.' },
+  { who: 'Lupita', txt: 'Honestly one of the best trainers! Come and try!' },
+  { who: 'Ramona', txt: 'I’ve been working out at bodied for almost a year now and all I can say is that this gym has become my second home' },
+  { who: 'Pooja', txt: 'Their well curated classes and personal training is affordable and one can start seeing results within a few weeks.' },
+  { who: 'Jasmine', txt: 'Honestly, the best PT experience I’ve had, hands down.' },
 ];
 
 const CAPACITY = 12;
