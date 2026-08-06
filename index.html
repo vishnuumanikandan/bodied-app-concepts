@@ -102,14 +102,24 @@
           </div>
         </section>
 
-        <!-- ============ SCHEDULE — LEGACY-01 classes screen, untouched ============ -->
-        <section class="screen lg" id="screen-classes">
-          <div class="pad sched-head">
-            <div class="eyebrow">Class schedule</div>
-            <div class="display">Pick your<br>fight</div>
+        <!-- ============ SCHEDULE (concept-06) ============ -->
+        <section class="screen" id="screen-classes">
+          <div class="topbar">
+            <h1 class="title-xl">Schedule</h1>
+            <button class="iconbtn" id="filter-btn" aria-label="Filter the schedule">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 7h13M19 7h2M3 17h5M11 17h10"/><circle cx="17.5" cy="7" r="2.2"/><circle cx="9.5" cy="17" r="2.2"/></svg>
+            </button>
           </div>
-          <div class="daychips" id="daychips" role="tablist" aria-label="Day"></div>
-          <div class="timetable" id="timetable"></div>
+
+          <div class="segwrap">
+            <div class="seg" id="seg" role="tablist" aria-label="Schedule kind">
+              <button class="on" data-seg="classes" role="tab" aria-selected="true">Classes</button>
+              <button data-seg="events" role="tab" aria-selected="false">Events</button>
+            </div>
+          </div>
+
+          <div class="daystrip" id="daystrip" role="tablist" aria-label="Day"></div>
+          <div id="sched-list"></div>
         </section>
 
         <!-- ============ PRICING — placeholder until PORT-2 ============ -->
@@ -246,9 +256,9 @@
         </section>
 
         <!-- ============ TAB BAR (concept-06) ============
-             Sits before the overlays on purpose: .tabbar and the legacy
-             .detail sheet are both z-index:70, so DOM order is what keeps
-             the sheet above the bar. -->
+             Sits before the overlays on purpose. The concept-06 overlays
+             below out-rank it on z-index; the LEGACY-01 detail used to tie
+             with it at 70 and relied on DOM order. -->
         <nav class="tabbar" aria-label="Main">
           <button class="tab on" data-screen="home">
             <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>
@@ -272,25 +282,30 @@
           </button>
         </nav>
 
-        <!-- ============ CLASS DETAIL — LEGACY-01 ============ -->
-        <section class="detail lg" id="detail" aria-hidden="true">
-          <button class="d-back" id="d-back" aria-label="Back">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 3L5 9l6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div class="d-title" id="d-title"></div>
-          <div class="d-when" id="d-when"></div>
-          <div class="d-coachline" id="d-coach"></div>
-          <div class="d-effort">
-            <span class="eyebrow" style="letter-spacing:0.14em">Effort</span>
-            <span class="stars" id="d-effort"></span>
+        <!-- ============ CLASS DETAIL (concept-06 full screen) ============
+             Replaces the LEGACY-01 colour-drenched sheet. Same #detail id,
+             none of the old #d-* children survive. -->
+        <section class="fs" id="detail" aria-hidden="true">
+          <div class="fs-nav">
+            <button id="detail-back" aria-label="Back">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg>
+            </button>
+            <span class="title-md" id="detail-title">Class details</span>
           </div>
-          <div class="d-vibe" id="d-vibe"></div>
-          <div class="d-tags" id="d-tags"></div>
-          <div class="d-spacer"></div>
-          <button class="btn d-book" id="d-book">Book my spot</button>
-          <div class="d-note" id="d-note"></div>
-          <div class="d-actions" id="d-actions"></div>
+          <div class="fs-body" id="detail-body"></div>
+          <div class="fs-foot" id="detail-foot" hidden></div>
         </section>
+
+        <!-- ============ BOOKING OVERLAYS (concept-06) ============
+             Its own scrim + sheet: the LEGACY-01 #sheet below still carries
+             pricing / contact / payment / profile until PORT-3. -->
+        <div class="scrim" id="scrim"></div>
+        <section class="sheet" id="confirm-sheet" role="dialog" aria-modal="true" aria-hidden="true">
+          <div class="grab" aria-hidden="true"></div>
+          <div id="confirm-body"></div>
+        </section>
+        <div class="done-wrap" id="done" role="dialog" aria-modal="true" aria-hidden="true"></div>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
         <!-- ============ BOTTOM SHEET — LEGACY-01 ============ -->
         <button class="sheet-scrim" id="sheet-scrim" aria-label="Close sheet" tabindex="-1"></button>

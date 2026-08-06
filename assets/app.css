@@ -103,9 +103,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   box-shadow:0 60px 100px -25px var(--shade);
 }
 .viewport{position:relative; width:100%; height:100%; background:var(--bg); border-radius:44px; overflow:hidden; isolation:isolate}
-.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:var(--frame); border-radius:20px; z-index:90}
+/* Staging chrome sits above every overlay. In concept-06 the notch and the
+   status bar are siblings of .viewport, so they always out-rank the app; here
+   they live inside .app, so they carry the z-index that reproduces that. */
+.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:var(--frame); border-radius:20px; z-index:120}
 .statusbar{
-  position:absolute; top:0; left:0; right:0; height:54px; z-index:88;
+  position:absolute; top:0; left:0; right:0; height:54px; z-index:118;
   display:flex; align-items:center; justify-content:space-between;
   padding:14px 30px 0; font-size:15px; font-weight:600; color:var(--text); pointer-events:none;
   transition:color .25s var(--ease);
@@ -257,6 +260,205 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .tab.on span{font-weight:700}
 .tab:focus-visible{outline:2px solid var(--pink); outline-offset:-2px}
 
+/* ============ SEGMENTED CONTROL ============ */
+.segwrap{padding:0 20px 14px}
+.seg{
+  display:flex; background:var(--dim); border-radius:999px; padding:4px;
+  border:1px solid var(--line);
+}
+.seg button{
+  flex:1; padding:9px 4px; border-radius:999px; font-family:var(--body);
+  font-size:13px; font-weight:600; color:var(--text-70);
+  transition:all .18s var(--ease); white-space:nowrap;
+}
+.seg button.on{background:var(--pink); color:var(--cream); box-shadow:0 2px 8px rgba(253,71,172,0.35)}
+.seg button:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+
+/* ============ DAY STRIP ============ */
+.daystrip{display:flex; padding:0 12px 16px; gap:2px}
+.day{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; padding:2px 0;
+  font-family:var(--body);
+}
+.day .dow{font-size:12px; font-weight:600; color:var(--text-50)}
+.day .num{
+  width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
+  font-size:16px; font-weight:600; color:var(--text); transition:all .18s var(--ease);
+}
+.day.past .dow, .day.past .num{color:var(--text-32)}
+.day.on .num{background:var(--pink); color:var(--cream); font-weight:700; box-shadow:0 3px 10px rgba(253,71,172,0.4)}
+.day.on .dow{color:var(--pink); font-weight:700}
+.day .rest-dot{width:4px; height:4px; border-radius:50%; background:var(--text-32); margin-top:-3px}
+.day:focus-visible{outline:2px solid var(--pink); outline-offset:-2px; border-radius:12px}
+
+/* ============ SCHEDULE LIST ============ */
+.datehead{
+  background:var(--dim); padding:11px 20px; font-size:12px; font-weight:700;
+  letter-spacing:0.09em; text-transform:uppercase; color:var(--pink);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  position:sticky; top:0; z-index:5;
+}
+.datehead.plain{color:var(--text-50)}
+.crow{
+  display:flex; gap:12px; padding:15px 20px; align-items:flex-start;
+  border-bottom:1px solid var(--line); background:var(--bg);
+  transition:background .16s var(--ease);
+  position:relative; cursor:pointer;
+}
+.crow:active{background:var(--pink-wash)}
+.crow:focus-visible{outline:2px solid var(--pink); outline-offset:-3px}
+.crow.booked{background:linear-gradient(90deg, var(--pink-wash), transparent 60%)}
+.crow.booked::before{content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--pink)}
+/* not in the mockup — the mockup has no past classes. The 06 "past"
+   treatment (--text-32) from .day.past, applied to a whole row. */
+.crow.past .time, .crow.past .cname, .crow.past .sub{color:var(--text-32)}
+.crow .left{width:66px; flex:none; display:flex; flex-direction:column; align-items:flex-start; gap:8px}
+.crow .time{font-size:16px; font-weight:700; letter-spacing:-0.02em; line-height:1.1}
+.crow .mid{flex:1; min-width:0}
+.crow .cname{font-family:var(--head); font-size:16px; font-weight:700; letter-spacing:-0.02em; line-height:1.2; margin-bottom:3px}
+.crow .sub{font-size:12.5px; color:var(--text-70); line-height:1.5}
+.spots{font-size:11px; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color:var(--pink); margin-top:4px}
+.spots.full{color:var(--text-50)}
+.pill{
+  flex:none; align-self:center; padding:9px 15px; border-radius:999px;
+  font-family:var(--body); font-size:13px; font-weight:700;
+  border:1.5px solid var(--pink); color:var(--pink); background:transparent;
+  transition:all .16s var(--ease); white-space:nowrap;
+}
+.pill:active{background:var(--pink); color:var(--cream)}
+.pill:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.pill.wait{border-color:var(--line-2); color:var(--text-70)}
+.pill.wait:active{background:var(--royal); color:var(--cream); border-color:var(--royal)}
+.pill.done{background:var(--pink); border-color:var(--pink); color:var(--cream)}
+.pill.done:active{background:var(--pink-deep)}
+.pill.queued{background:var(--royal); border-color:var(--royal); color:var(--cream)}
+
+/* rest day + schedule empties */
+.restday{padding:34px 24px 40px; text-align:center}
+.restday .glyph{
+  width:62px; height:62px; margin:0 auto 14px; border-radius:50%;
+  background:var(--pink-wash); display:grid; place-items:center; color:var(--pink);
+}
+.restday h3{font-family:var(--head); font-size:19px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px}
+.restday p{font-size:13.5px; color:var(--text-70); line-height:1.5; max-width:250px; margin:0 auto}
+
+/* ============ CHIPS ============ */
+.chips{display:flex; gap:7px; flex-wrap:wrap}
+.chip{
+  padding:7px 12px; border-radius:999px; border:1px solid var(--line-2);
+  font-family:var(--body); font-size:12.5px; font-weight:600; color:var(--text-70);
+}
+.chip.on{background:var(--pink); border-color:var(--pink); color:var(--cream)}
+.chip:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+
+/* ============ FULL-SCREEN SHEET (class detail) ============ */
+.fs{
+  position:absolute; inset:0; z-index:96; background:var(--bg);
+  transform:translateX(100%); transition:transform .3s var(--ease);
+  overflow-y:auto; scrollbar-width:none; display:flex; flex-direction:column;
+}
+.fs::-webkit-scrollbar{display:none}
+.fs.on{transform:none}
+.fs-nav{display:flex; align-items:center; gap:12px; padding:60px 18px 12px; flex:none}
+.fs-nav button{width:36px; height:36px; border-radius:50%; display:grid; place-items:center; background:var(--dim); color:var(--text)}
+.fs-nav button:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.fs-body{flex:1; overflow-y:auto; scrollbar-width:none; padding-bottom:20px}
+.fs-body::-webkit-scrollbar{display:none}
+.fs-foot{flex:none; padding:14px 20px 30px; border-top:1px solid var(--line); background:var(--bg)}
+
+/* class detail body */
+.hero{
+  margin:0 18px 18px; border-radius:20px; padding:22px; color:var(--cream);
+  position:relative; overflow:hidden; min-height:158px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.hero .blob{position:absolute; border-radius:50%; opacity:0.3}
+.hero .kick{font-size:11px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; opacity:0.9; margin-bottom:7px}
+.hero h1{font-family:var(--head); font-size:33px; font-weight:800; letter-spacing:-0.038em; line-height:1.0}
+.factrow{display:flex; border:1px solid var(--line); border-radius:14px; margin:0 18px 18px; overflow:hidden; background:var(--card)}
+.fact{flex:1; padding:13px 10px; text-align:center; border-right:1px solid var(--line)}
+.fact:last-child{border-right:none}
+.fact .k{font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-50); margin-bottom:4px}
+.fact .v{font-family:var(--head); font-size:15px; font-weight:800; letter-spacing:-0.02em}
+.fact .v.pink{color:var(--pink)}
+.blk{padding:0 20px 18px}
+.blk h3{font-size:12px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--pink); margin-bottom:8px}
+.blk p{font-size:14.5px; line-height:1.6; color:var(--text-70)}
+.coachline{display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--line); border-radius:14px; background:var(--card)}
+.coachline .av{width:42px; height:42px; font-size:15px}
+.coachline h4{font-family:var(--head); font-size:16px; font-weight:800; letter-spacing:-0.02em}
+
+/* ============ BOOKING OVERLAYS ============ */
+.scrim{
+  position:absolute; inset:0; background:var(--scrim-c); z-index:100;
+  opacity:0; pointer-events:none; transition:opacity .24s var(--ease); backdrop-filter:blur(2px);
+}
+.scrim.on{opacity:1; pointer-events:auto}
+.sheet{
+  position:absolute; left:0; right:0; bottom:0; z-index:101; max-height:82%;
+  background:var(--bg); border-radius:24px 24px 0 0; padding:10px 20px 26px;
+  transform:translateY(101%); transition:transform .3s var(--ease);
+  overflow-y:auto; scrollbar-width:none; box-shadow:0 -12px 40px var(--shade);
+}
+.sheet::-webkit-scrollbar{display:none}
+.sheet.on{transform:none}
+.grab{width:38px; height:4px; border-radius:2px; background:var(--line-2); margin:0 auto 16px}
+.sheet h2{font-family:var(--head); font-size:21px; font-weight:800; letter-spacing:-0.025em; margin-bottom:4px}
+
+/* confirm rows */
+.confrow{display:flex; justify-content:space-between; gap:14px; padding:13px 0; border-bottom:1px solid var(--line); font-size:14px}
+.confrow:last-of-type{border-bottom:none}
+.confrow .k{color:var(--text-50)}
+.confrow .v{font-weight:700; text-align:right}
+.paysel{
+  display:flex; align-items:center; gap:12px; padding:15px; border:1.5px solid var(--pink);
+  border-radius:14px; background:var(--pink-wash); margin:14px 0 18px;
+}
+.paysel .rad{width:20px; height:20px; border-radius:50%; border:2px solid var(--pink); display:grid; place-items:center; flex:none}
+.paysel .rad i{width:10px; height:10px; border-radius:50%; background:var(--pink)}
+
+/* confirmed */
+.done-wrap{
+  position:absolute; inset:0; z-index:105; background:var(--bg);
+  opacity:0; pointer-events:none; transition:opacity .26s var(--ease);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 28px; text-align:center;
+}
+.done-wrap.on{opacity:1; pointer-events:auto}
+.bigstamp{
+  width:118px; height:118px; border-radius:50%; background:var(--pink); color:var(--cream);
+  display:grid; place-items:center; margin-bottom:26px; box-shadow:0 12px 34px rgba(253,71,172,0.4);
+  transform:scale(0.3) rotate(-22deg); opacity:0;
+}
+.done-wrap.on .bigstamp{animation:stampin .46s var(--ease) .06s forwards}
+@keyframes stampin{to{transform:scale(1) rotate(-6deg); opacity:1}}
+.bigstamp.ink{background:var(--royal); box-shadow:0 12px 34px var(--shade)}
+.done-wrap h1{font-family:var(--head); font-size:31px; font-weight:800; letter-spacing:-0.035em; line-height:1.06; margin-bottom:10px}
+.done-wrap .sub{font-size:14.5px; color:var(--text-70); line-height:1.55; margin-bottom:24px}
+.done-wrap .ticket{
+  width:100%; background:var(--card); border:1px solid var(--line); border-radius:16px;
+  padding:18px; text-align:left; margin-bottom:22px; position:relative;
+}
+.done-wrap .ticket::before, .done-wrap .ticket::after{
+  content:''; position:absolute; width:18px; height:18px; border-radius:50%;
+  background:var(--bg); border:1px solid var(--line); top:50%; margin-top:-9px;
+}
+.done-wrap .ticket::before{left:-10px; border-right-color:transparent}
+.done-wrap .ticket::after{right:-10px; border-left-color:transparent}
+.done-acts{width:100%; display:flex; flex-direction:column; gap:10px}
+
+.toast{
+  position:absolute; left:50%; bottom:100px; transform:translate(-50%,14px); z-index:110;
+  background:var(--royal); color:var(--cream); padding:12px 18px; border-radius:999px;
+  font-size:13px; font-weight:600; opacity:0; pointer-events:none;
+  transition:all .24s var(--ease); white-space:nowrap; max-width:88%;
+}
+.toast.on{opacity:1; transform:translate(-50%,0)}
+
+/* not in the mockup — the mockup never disables a .btn. Ended / in-progress /
+   already-attended classes need a CTA that reads as unavailable. */
+.btn[disabled]{opacity:0.5; box-shadow:none; cursor:default; pointer-events:none}
+
 /* ============ SMALL SCREEN = the real app ============ */
 @media (max-width:560px){
   .stage{display:block; background:var(--bg)}
@@ -266,6 +468,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   .notch, .home-pill{display:none}
   .statusbar{display:none}
   .screen{padding-top:max(18px, env(safe-area-inset-top))}
+  .fs-nav{padding-top:max(20px, env(safe-area-inset-top))}
+  .fs-foot{padding-bottom:calc(30px + env(safe-area-inset-bottom, 0px))}
+  .sheet{padding-bottom:calc(26px + env(safe-area-inset-bottom, 0px))}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important; transition-duration:.01ms !important}
@@ -364,7 +569,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
 /* ticket */
 .section-label{margin:24px 22px 12px; display:flex; align-items:baseline; gap:10px}
-.ticket{
+.lg .ticket{
   margin:0 22px; position:relative;
   background:var(--paper); border:2px solid var(--ink); border-radius:16px;
   box-shadow:var(--shadow-pop);
@@ -376,13 +581,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .ticket-main .display{font-size:33px; color:var(--ink)}
 .ticket-main:focus-visible{outline:3px solid var(--pink); outline-offset:-4px; border-radius:14px}
 .ticket-meta{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
-.chip{
+.lg .chip{
   display:inline-flex; align-items:center; gap:6px;
   font-size:12px; font-weight:700;
   border:1.5px solid var(--ink); border-radius:999px;
   padding:4px 10px; color:var(--ink); background:var(--paper);
 }
-.chip.fill-pink{background:var(--pink); color:var(--paper)}
+.lg .chip.fill-pink{background:var(--pink); color:var(--paper)}
 .coach-dot{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex:none}
 .ticket-perf{
   position:relative; width:0;
@@ -401,8 +606,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 }
 .ticket-stub .spot{font-family:var(--display); font-size:26px; color:var(--ink)}
 .ticket-stub .eyebrow{font-size:9px; text-align:center}
-.ticket.empty{border-style:dashed; box-shadow:none; background:transparent}
-.ticket.empty .ticket-stub{background:transparent}
+.lg .ticket.empty{border-style:dashed; box-shadow:none; background:transparent}
+.lg .ticket.empty .ticket-stub{background:transparent}
 .lg .btn{
   font-family:var(--sans); font-weight:800; font-size:13px; letter-spacing:0.03em;
   border:2px solid var(--ink); border-radius:999px;
@@ -522,8 +727,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .t-name{font-size:17px; font-weight:800; letter-spacing:-0.01em; line-height:1.15}
 .t-meta{display:flex; align-items:center; gap:8px; margin-top:5px; font-size:12px; font-weight:600; color:var(--ink-soft); flex-wrap:wrap}
 .t-meta .cdot{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:1.5px solid var(--ink)}
-.spots{display:inline-flex; align-items:center; gap:4px}
-.spots i{width:7px;height:7px;border-radius:50%;background:var(--pink);display:inline-block}
+.lg .spots{display:inline-flex; align-items:center; gap:4px}
+.lg .spots i{width:7px;height:7px;border-radius:50%;background:var(--pink);display:inline-block}
 .t-act{flex:none; display:flex; align-items:center}
 .mini-stamp{
   font-family:var(--display); font-size:13px; letter-spacing:0.06em;
@@ -728,7 +933,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   border:none; cursor:pointer;
 }
 .sheet-scrim.open{opacity:1; pointer-events:auto}
-.sheet{
+.lg.sheet{
   position:absolute; left:0; right:0; bottom:0; z-index:73;
   max-height:82%;
   background:var(--paper); color:var(--ink);
@@ -737,8 +942,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   transform:translateY(105%);
   transition:transform 0.3s var(--ease);
   display:flex; flex-direction:column;
+  padding:0; box-shadow:none; overflow:visible;
 }
-.sheet.open{transform:translateY(0)}
+.lg.sheet.open{transform:translateY(0)}
 .sheet-grab{
   width:44px; height:5px; border-radius:3px; background:var(--hairline-strong);
   margin:12px auto 0; flex:none;
