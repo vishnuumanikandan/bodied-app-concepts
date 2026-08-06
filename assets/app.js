@@ -142,15 +142,124 @@ function whenLabel(inst){
 }
 
 /* ============ TABS ============ */
+/* Five tabs (concept-06): home · classes (labelled "Schedule") · pricing ·
+   shop · more. The legacy screens that outlive the port have no tab of their
+   own, so they light up the tab they will eventually fold into. */
+const TAB_FOR = { today: 'home', coaches: 'more', you: 'more' };
+
 function tabTo(name){
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.screen === name));
+  const screen = $('#screen-' + name);
+  if(!screen) return;
+  const lit = TAB_FOR[name] || name;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.screen === lit));
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  $('#screen-' + name).classList.add('active');
+  screen.classList.add('active');
+  screen.scrollTop = 0;
   closeDetail();
   closeSheet();
 }
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => tabTo(tab.dataset.screen));
+});
+/* delegated so freshly rendered markup (the home empty state) works too */
+app.addEventListener('click', e => {
+  const go = e.target.closest('[data-go]');
+  if(go) tabTo(go.dataset.go);
+});
+
+/* ============ HOME (concept-06) ============ */
+/* The next reservation is, among the bookings that still hold a place —
+   status 'booked' or 'waitlist' — and whose class has not ended yet, the one
+   that starts soonest. Attended and past bookings are excluded. */
+function homeNext(){
+  const now = new Date();
+  return Object.entries(state.bookings)
+    .filter(([, b]) => b.status === 'booked' || b.status === 'waitlist')
+    .map(([key, b]) => ({ inst: instFromKey(key), b }))
+    .filter(x => x.inst && endOf(x.inst) > now)
+    .sort((a, z) => startOf(a.inst) - startOf(z.inst))[0] || null;
+}
+
+function renderHome(){
+  const wrap = $('#home-next');
+  const next = homeNext();
+
+  if(!next){
+    wrap.innerHTML = `<div class="card">
+      <div class="empty">
+        <h3>Nothing booked yet.</h3>
+        <p>Let's fix that. Pick a class, claim a spot, show up.</p>
+        <button class="btn" data-go="classes">Book a class</button>
+      </div>
+    </div>`;
+  } else {
+    const { inst, b } = next;
+    const c = CLASSES[inst.id];
+    const col = COACH_COLORS[inst.coach];
+    const wait = b.status === 'waitlist';
+    const now = new Date();
+    const canCheckIn = !wait && now >= new Date(startOf(inst).getTime() - 60 * 60000) && now <= endOf(inst);
+    wrap.innerHTML = `<div class="card hi rescard">
+      <div class="stripe"${wait ? ' style="background:var(--royal)"' : ''}></div>
+      <div class="row">
+        <div class="av" style="background:${col.bg};color:${col.fg};width:44px;height:44px;font-size:16px">${esc(inst.coach[0])}</div>
+        <div style="flex:1;min-width:0">
+          <div class="when">${wait ? `Waitlist · no. ${b.pos}` : whenLabel(inst)}</div>
+          <h3>${c.lines.join(' ')}</h3>
+          <div class="meta">${esc(inst.coach)} · ${inst.dur} min</div>
+        </div>
+      </div>
+      <div class="acts">
+        <button id="home-details">Details</button>
+        ${wait
+          ? '<button class="p" disabled>In line</button>'
+          : `<button class="p" id="home-checkin"${canCheckIn ? '' : ' disabled title="Check-in opens 1 hour before class"'}>Check in</button>`}
+      </div>
+    </div>`;
+    $('#home-details').addEventListener('click', () => openDetail(inst));
+    const ci = $('#home-checkin');
+    if(ci && canCheckIn) ci.addEventListener('click', () => {
+      checkIn(inst.key);
+      showStamp('Bodied!');
+      renderAll();
+    });
+  }
+
+  renderHomeStamps();
+}
+
+/* Stamps on home come from real attendance, not the mockup's fixed twelve.
+   Everything earned, then the next two still locked — "Show all" is the
+   full book, and it lands in More when More is ported. */
+function renderHomeStamps(){
+  const attended = attendedList();
+  const n = attended.length;
+  const sixam = attended.some(a => a.h === 6);
+  const pilates = attended.filter(a => a.id === 'pilates-sculpt').length;
+
+  const got = [], locked = [];
+  (n >= 1 ? got : locked).push('First class');
+  (sixam ? got : locked).push('6AM club');
+  MILESTONES.filter(m => m > 1).forEach(m => (n >= m ? got : locked).push(`${m} bodied`));
+  (pilates >= 5 ? got : locked).push('Pilates era');
+  (state.friendSticker ? got : locked).push('Brought a friend');
+
+  const tile = (label, cls) => `<div class="stamp${cls}">${esc(label).replace(' ', '<br>')}</div>`;
+  $('#home-stamps').innerHTML =
+    got.map(g => tile(g, ' got')).join('') + locked.slice(0, 2).map(l => tile(l, '')).join('');
+
+  $('#stamp-count').textContent = n;
+  const since = state.profile ? fromKey(state.profile.since) : null;
+  $('#stamp-caption').textContent = since
+    ? `classes bodied since ${MON_FULL[since.getMonth()]}`
+    : 'classes bodied';
+}
+
+/* paging dots for the two-promo carousel — 310px card + 12px gap */
+$('#carousel').addEventListener('scroll', () => {
+  const el = $('#carousel');
+  const i = Math.round(el.scrollLeft / 322);
+  document.querySelectorAll('#dots i').forEach((d, n) => d.classList.toggle('on', n === Math.min(1, i)));
 });
 
 /* ============ TODAY ============ */
@@ -377,7 +486,8 @@ function openDetail(inst){
   if(!inst) return;
   currentInst = inst;
   const c = CLASSES[inst.id];
-  detail.className = 'detail ' + c.color;
+  /* `lg` keeps the LEGACY-01 styles scoped to this sheet — see app.css */
+  detail.className = 'detail lg ' + c.color;
   $('#d-title').innerHTML = `<div class="display">${c.lines[0]}</div><div class="display outline">${c.lines[1]}</div>`;
   $('#d-when').textContent = `${whenLabel(inst)} · ${inst.dur} MIN`;
   $('#d-coach').innerHTML = `${coachDot(inst.coach, 30)} with Coach ${inst.coach}`;
@@ -783,15 +893,19 @@ function initOnboarding(){
 }
 
 /* ============ THEME ============ */
-function themeColorFor(t){ return t === 'dark' ? '#2a1c25' : '#FBF9EE'; }
+const SUN = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.4M12 18.8v2.4M4.7 4.7l1.7 1.7M17.6 17.6l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.7 19.3l1.7-1.7M17.6 6.4l1.7-1.7"/></svg>';
+const MOON = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
+
+function themeColorFor(t){ return t === 'dark' ? '#0B0B0D' : '#FBF9EE'; }
 let theme = state.theme || 'light';
 if(location.hash.includes('dark')) theme = 'dark';
 function applyTheme(t, persist){
   theme = t;
   if(t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
   else document.documentElement.removeAttribute('data-theme');
-  const tg = $('#theme-toggle');
-  if(tg) tg.textContent = t === 'dark' ? '☀ daylight' : '☾ after dark';
+  const ti = $('#stage-toggle-icon'), tl = $('#stage-toggle-label');
+  if(ti) ti.innerHTML = t === 'dark' ? SUN : MOON;
+  if(tl) tl.textContent = t === 'dark' ? 'daylight' : 'after dark';
   $('#appearance-val').textContent = (t === 'dark' ? 'After dark' : 'Daylight') + ' ›';
   document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColorFor(t));
   if(persist){ state.theme = t; save(); }
@@ -799,6 +913,9 @@ function applyTheme(t, persist){
 const flipTheme = () => applyTheme(theme === 'dark' ? 'light' : 'dark', true);
 $('#theme-toggle').addEventListener('click', flipTheme);
 $('#appearance-row').addEventListener('click', flipTheme);
+/* More is a placeholder this stage, so it hands appearance back to the
+   legacy settings screen until the real More lands in PORT-3. */
+$('#more-appearance').addEventListener('click', () => tabTo('you'));
 
 /* ============ STATUS BAR CLOCK (desktop stage) ============ */
 function tickClock(){
@@ -809,6 +926,7 @@ function tickClock(){
 
 /* ============ RENDER ALL / MINUTE TICK ============ */
 function renderAll(){
+  renderHome();
   renderTodayHead();
   renderUpNext();
   renderWeekStrip();
@@ -842,13 +960,21 @@ renderAll();
 initOnboarding();
 fitPhone();
 
-/* hash deep links: #today #classes #coaches #you #detail=<classId> */
+/* hash deep links: #home #schedule #pricing #shop #more #detail=<classId>,
+   plus the concept-01 hashes, which keep resolving through the tab mapping.
+   Append &dark for the dark theme. */
+const HASH_SCREEN = {
+  home: 'home', today: 'home',
+  schedule: 'classes', classes: 'classes',
+  pricing: 'pricing', shop: 'shop',
+  more: 'more', coaches: 'more', you: 'more',
+};
 (function(){
   const h = decodeURIComponent(location.hash.slice(1));
   if(!h) return;
   const [main] = h.split('&');
   const scr = main.split('=')[0];
-  if(['today', 'classes', 'coaches', 'you'].includes(scr)) tabTo(scr);
+  if(HASH_SCREEN[scr]) tabTo(HASH_SCREEN[scr]);
   if(main.startsWith('detail=')){
     const id = main.split('=')[1];
     if(CLASSES[id]){
