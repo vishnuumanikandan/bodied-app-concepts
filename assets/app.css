@@ -1,149 +1,333 @@
 /* ============================================================
    BODIED SJ · app styles
-   Base = approved concept-01 design system (do not restyle).
-   New app-only surfaces (onboarding, sheets, pricing) extend it
-   with the same tokens and shape language.
+   Base = concept-06 "Studio Standard", the binding system
+   (DESIGN.md). Ported surface by surface; everything not yet
+   ported still wears the superseded concept-01 skin, kept in
+   the marked LEGACY-01 block at the bottom of this file.
    ============================================================ */
 
-/* ============ TOKENS ============ */
+/* ============ TOKENS (concept-06) ============ */
+:root{
+  /* ---- FIXED tokens: never flip. These are foregrounds sitting on
+         saturated brand fills, so they must stay legible in both themes. ---- */
+  --cream:#FBF9EE;        /* text on pink / royal / salmon fills */
+  --on-bright:#101010;    /* text on chartreuse / teal fills */
+  --pink:#FD47AC;
+  --pink-deep:#E33F9A;
+  --chartreuse:#E3F223;
+  --teal:#16D5CC;
+  --salmon:#DB998B;
+
+  /* ---- THEMED tokens: light ("daylight") ---- */
+  --bg:#FBF9EE;           /* the cream paper */
+  --dim:#F3F0E1;          /* recessed wells / section headers */
+  --card:#FFFDF5;
+  --text:#000000;         /* body + heading type */
+  --text-70:rgba(0,0,0,0.68);
+  --text-50:rgba(0,0,0,0.50);
+  --text-32:rgba(0,0,0,0.32);
+  --line:rgba(0,0,0,0.13);
+  --line-2:rgba(0,0,0,0.22);
+  --royal:#15358E;        /* royal blue survives as the secondary-action fill */
+  --pink-wash:rgba(253,71,172,0.10);
+  --scrim-c:rgba(0,0,0,0.42);
+  --shade:rgba(0,0,0,0.22);
+  --stage-bg:#efece0;
+  --stage-word:rgba(0,0,0,0.05);
+  --frame:#111827;
+
+  --head:'Hanken Grotesk','Inter',sans-serif;
+  --body:'Inter','Hanken Grotesk',sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ---- THEMED tokens: dark ("after dark") ---- */
+[data-theme="dark"]{
+  --bg:#0B0B0D;
+  --dim:#18181C;
+  --card:#141417;
+  --text:#FFFFFF;
+  --text-70:rgba(255,255,255,0.72);
+  --text-50:rgba(255,255,255,0.52);
+  --text-32:rgba(255,255,255,0.34);
+  --line:rgba(255,255,255,0.14);
+  --line-2:rgba(255,255,255,0.26);
+  --royal:#3D63D9;        /* lifted so it still reads as a button on near-black */
+  --pink-wash:rgba(253,71,172,0.17);
+  --scrim-c:rgba(0,0,0,0.66);
+  --shade:rgba(0,0,0,0.62);
+  --stage-bg:#08080A;
+  --stage-word:rgba(255,255,255,0.045);
+  --frame:#26262C;        /* bezel must stay lighter than the stage or the phone vanishes */
+}
+
+/* ============ BASE ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--stage-bg); transition:background .25s var(--ease); -webkit-text-size-adjust:100%}
+html,body{height:100%}
+body{background:var(--stage-bg); font-family:var(--body); color:var(--text); overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+/* ============ STAGE (desktop staging only) ============ */
+.stage{
+  position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse 75% 55% at 50% 112%, rgba(253,71,172,0.14), transparent 65%), var(--stage-bg);
+}
+.stage-word{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-family:var(--head); font-weight:800; letter-spacing:-0.04em;
+  font-size:clamp(150px,28vw,420px); color:var(--stage-word);
+  user-select:none; pointer-events:none; white-space:nowrap;
+}
+.stage-note{position:absolute; font-size:13px; font-weight:500; color:var(--text-70)}
+.stage-note.tl{top:24px; left:28px; font-weight:600}
+.stage-note.bl{bottom:22px; left:28px}
+.stage-note.br{bottom:22px; right:28px; font-style:italic}
+.stage-note .dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--pink); margin-right:7px}
+.stage-toggle{
+  position:absolute; top:20px; right:26px; z-index:5;
+  display:flex; align-items:center; gap:9px;
+  padding:9px 16px 9px 12px; border-radius:999px;
+  border:1px solid var(--line-2); color:var(--text-70);
+  font-family:var(--body); font-size:12.5px; font-weight:600; letter-spacing:0.01em;
+  transition:all .18s var(--ease);
+}
+.stage-toggle:hover{border-color:var(--pink); color:var(--pink)}
+.stage-toggle:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.stage-toggle svg{display:block}
+
+/* ============ PHONE ============ */
+.phone{
+  position:relative; width:390px; height:844px; flex:none;
+  background:var(--frame); border-radius:54px; padding:10px;
+  box-shadow:0 60px 100px -25px var(--shade);
+}
+.viewport{position:relative; width:100%; height:100%; background:var(--bg); border-radius:44px; overflow:hidden; isolation:isolate}
+.notch{position:absolute; top:21px; left:50%; transform:translateX(-50%); width:118px; height:32px; background:var(--frame); border-radius:20px; z-index:90}
+.statusbar{
+  position:absolute; top:0; left:0; right:0; height:54px; z-index:88;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 30px 0; font-size:15px; font-weight:600; color:var(--text); pointer-events:none;
+  transition:color .25s var(--ease);
+}
+.statusbar svg{display:block}
+.home-pill{position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:130px; height:5px; border-radius:3px; background:var(--text); opacity:0.28; z-index:86}
+
+/* ============ APP SHELL ============ */
+.app{position:absolute; inset:0; overflow:hidden}
+.screen{
+  position:absolute; inset:0; padding:54px 0 112px;
+  overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  transition:opacity .22s var(--ease), transform .22s var(--ease);
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1; transform:none; pointer-events:auto}
+.pad{padding-left:20px; padding-right:20px}
+
+/* ============ TYPE ============ */
+.title-xl{font-family:var(--head); font-weight:800; font-size:34px; letter-spacing:-0.032em; line-height:1.05}
+.title-lg{font-family:var(--head); font-weight:800; font-size:22px; letter-spacing:-0.025em}
+.title-md{font-family:var(--head); font-weight:700; font-size:17px; letter-spacing:-0.015em}
+.eyebrow{font-size:11px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; color:var(--pink)}
+.meta{font-size:13px; color:var(--text-70); line-height:1.45}
+.meta-sm{font-size:12px; color:var(--text-50)}
+.policy{font-size:12px; line-height:1.55; color:var(--text-50); padding:6px 4px 0}
+
+/* ============ TOP BARS ============ */
+.topbar{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding:10px 20px 14px}
+.topbar .title-xl{padding-bottom:2px}
+.iconbtn{
+  width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  color:var(--pink); flex:none; transition:background .16s var(--ease);
+}
+.iconbtn:active{background:var(--pink-wash)}
+.iconbtn:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.iconbtn.has-dot{position:relative}
+.iconbtn.has-dot::after{
+  content:''; position:absolute; top:5px; right:5px; width:8px; height:8px;
+  border-radius:50%; background:var(--pink); border:2px solid var(--bg);
+}
+
+/* home brand bar */
+.brandbar{display:flex; align-items:center; justify-content:space-between; padding:8px 20px 6px}
+.wordmark{font-family:var(--head); font-weight:800; font-size:20px; letter-spacing:-0.03em; display:flex; align-items:center; gap:8px}
+.wordmark .mark{
+  width:30px; height:30px; border-radius:9px; background:var(--pink); color:var(--cream);
+  display:grid; place-items:center; font-size:12px; font-weight:800; letter-spacing:0.02em;
+}
+.wordmark .sj{color:var(--pink)}
+
+/* ============ SECTIONS + CARDS ============ */
+.section{padding:20px 20px 0}
+.sechead{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px}
+.showall{font-size:13px; font-weight:700; color:var(--pink)}
+.showall:focus-visible{outline:2px solid var(--pink); outline-offset:3px; border-radius:4px}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px;
+}
+.card.hi{border-color:var(--pink); box-shadow:0 4px 18px rgba(253,71,172,0.13)}
+
+/* avatar — flat color field plus an initial, never a photo */
+.av{
+  width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+  font-size:12px; font-weight:800; font-family:var(--head); letter-spacing:-0.01em;
+  border:1.5px solid var(--line);
+}
+
+/* ============ HOME CAROUSEL ============ */
+.carousel{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding:0 20px 12px; scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.promo{
+  flex:none; width:310px; height:172px; border-radius:18px; scroll-snap-align:center;
+  padding:20px; display:flex; flex-direction:column; justify-content:space-between;
+  position:relative; overflow:hidden;
+}
+.promo .kicker{font-size:11px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; opacity:0.85}
+.promo h3{font-family:var(--head); font-size:27px; font-weight:800; letter-spacing:-0.035em; line-height:1.02}
+.promo p{font-size:13px; line-height:1.4; opacity:0.9; max-width:215px}
+.promo .blob{position:absolute; border-radius:50%; opacity:0.28}
+.promo-a{background:var(--pink); color:var(--cream)}
+.promo-b{background:var(--royal); color:var(--cream)}
+.promo-c{background:var(--chartreuse); color:var(--on-bright)}
+.dots{display:flex; gap:6px; justify-content:center; padding:2px 0 4px}
+.dots i{width:6px; height:6px; border-radius:50%; background:var(--text-32); transition:all .2s var(--ease)}
+.dots i.on{background:var(--pink); width:18px; border-radius:3px}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:block; width:100%; padding:15px; border-radius:12px; background:var(--pink); color:var(--cream);
+  font-family:var(--body); font-size:15px; font-weight:700; text-align:center; transition:all .16s var(--ease);
+  box-shadow:0 4px 14px rgba(253,71,172,0.32);
+}
+.btn:active{background:var(--pink-deep); transform:translateY(1px); box-shadow:0 2px 8px rgba(253,71,172,0.3)}
+.btn:focus-visible{outline:2px solid var(--pink); outline-offset:3px}
+.btn.ghost{background:transparent; color:var(--pink); border:1.5px solid var(--pink); box-shadow:none}
+.btn.ghost:active{background:var(--pink-wash)}
+.btn.ink{background:var(--royal); box-shadow:0 4px 14px var(--shade)}
+
+/* ============ RESERVATION CARD ============ */
+.rescard{position:relative; overflow:hidden}
+.rescard .stripe{position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--pink)}
+.rescard .row{display:flex; gap:13px; align-items:flex-start; padding-left:8px}
+.rescard .when{font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--pink); margin-bottom:5px}
+.rescard h3{font-family:var(--head); font-size:20px; font-weight:800; letter-spacing:-0.025em; line-height:1.15; margin-bottom:4px}
+.rescard .acts{display:flex; gap:9px; margin-top:15px; padding-left:8px}
+.rescard .acts button{
+  flex:1; padding:11px; border-radius:10px; font-size:13px; font-weight:700;
+  border:1.5px solid var(--line-2); color:var(--text);
+}
+.rescard .acts button.p{background:var(--pink); border-color:var(--pink); color:var(--cream)}
+/* not in the mockup — the mockup has no check-in, the app does */
+.rescard .acts button[disabled]{opacity:0.5; cursor:default}
+
+/* ============ STAMPS ============ */
+.stamps{display:flex; gap:9px; flex-wrap:wrap}
+.stamp{
+  width:52px; height:52px; border-radius:14px; display:grid; place-items:center;
+  font-family:var(--head); font-size:11px; font-weight:800; text-align:center; line-height:1.05;
+  border:1.5px dashed var(--line-2); color:var(--text-32);
+}
+.stamp.got{border-style:solid; border-color:var(--pink); background:var(--pink-wash); color:var(--pink); transform:rotate(-3deg)}
+.stamp.got:nth-child(even){transform:rotate(3deg)}
+.progline{display:flex; align-items:baseline; gap:8px; margin-bottom:12px}
+.progline b{font-family:var(--head); font-size:30px; font-weight:800; letter-spacing:-0.03em; color:var(--pink)}
+.progline span{font-size:13px; color:var(--text-70)}
+
+/* ============ EMPTY STATE ============ */
+.empty{text-align:center; padding:26px 18px}
+.empty h3{font-family:var(--head); font-size:19px; font-weight:800; letter-spacing:-0.022em; margin-bottom:6px}
+.empty p{font-size:13.5px; color:var(--text-70); line-height:1.5; margin-bottom:18px}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute; left:14px; right:14px; bottom:22px; height:64px; z-index:70;
+  background:var(--card); border:1px solid var(--line); border-radius:999px;
+  display:flex; align-items:center; padding:0 6px;
+  box-shadow:0 10px 30px -8px var(--shade);
+}
+.tab{
+  flex:1; height:52px; border-radius:999px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:3px; color:var(--text-50);
+  font-family:var(--body); transition:all .18s var(--ease);
+}
+.tab svg{display:block}
+.tab span{font-size:10px; font-weight:600; letter-spacing:0.01em}
+.tab.on{color:var(--pink); background:var(--pink-wash)}
+.tab.on span{font-weight:700}
+.tab:focus-visible{outline:2px solid var(--pink); outline-offset:-2px}
+
+/* ============ SMALL SCREEN = the real app ============ */
+@media (max-width:560px){
+  .stage{display:block; background:var(--bg)}
+  .stage-word, .stage-note, .stage-toggle{display:none}
+  .phone{width:100%; height:100%; border-radius:0; padding:0; box-shadow:none; transform:none !important}
+  .viewport{border-radius:0}
+  .notch, .home-pill{display:none}
+  .statusbar{display:none}
+  .screen{padding-top:max(18px, env(safe-area-inset-top))}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important; transition-duration:.01ms !important}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   LEGACY-01 — delete in PORT-3
+   The superseded concept-01 skin, kept verbatim so that every screen
+   not yet ported to concept-06 keeps working on the integration
+   branch. Three selector groups (.btn, .eyebrow, .promo) collide with
+   concept-06 and are scoped to `.lg`, which sits on every legacy
+   container. Shell chrome (stage, phone, statusbar, .screen, .pad,
+   .tabbar) is NOT duplicated here — concept-06 owns the shell now.
+   Deleting this block also means dropping Anton + Instrument Serif
+   from the font link in index.html.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ---- legacy token aliases · light. Every name below is also declared
+        in the [data-theme="dark"] alias block further down. ---- */
 :root{
   --paper: oklch(97.5% 0.015 100);
   --paper-dim: oklch(94% 0.022 97);
   --ink: oklch(32% 0.12 265);
   --ink-soft: oklch(50% 0.06 265);
-  --pink: oklch(67% 0.21 350);
-  --pink-deep: oklch(58% 0.21 352);
-  --chartreuse: oklch(92% 0.2 112);
-  --teal: oklch(78% 0.13 185);
   --teal-deep: oklch(60% 0.11 190);
-  --royal: oklch(32% 0.12 265);          /* fixed royal blue, both themes */
-  --cream: oklch(97.5% 0.015 100);       /* fixed cream, both themes */
-  --on-bright: oklch(32% 0.12 265);      /* text on chartreuse/teal/pink fields */
   --hairline: oklch(32% 0.12 265 / 0.14);
   --hairline-strong: oklch(32% 0.12 265 / 0.45);
   --display: 'Anton', sans-serif;
   --sans: 'Hanken Grotesk', sans-serif;
   --serif: 'Instrument Serif', serif;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --shadow-pop: 4px 4px 0 var(--ink);
   --shadow-pop-sm: 3px 3px 0 var(--ink);
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%}
-html,body{height:100%}
-body{
-  background: var(--paper-dim);
-  font-family: var(--sans);
-  color: var(--ink);
-  overflow:hidden;
+[data-theme="dark"]{
+  --paper: oklch(17% 0.022 345);
+  --paper-dim: oklch(12.5% 0.018 345);
+  --ink: oklch(92% 0.035 350);
+  --ink-soft: oklch(70% 0.05 350);
+  --teal-deep: oklch(60% 0.11 190);
+  --hairline: oklch(92% 0.035 350 / 0.16);
+  --hairline-strong: oklch(92% 0.035 350 / 0.45);
+  --display: 'Anton', sans-serif;
+  --sans: 'Hanken Grotesk', sans-serif;
+  --serif: 'Instrument Serif', serif;
+  --shadow-pop: 4px 4px 0 var(--ink);
+  --shadow-pop-sm: 3px 3px 0 var(--ink);
 }
 
-/* ============ DESKTOP STAGE ============ */
-.stage{
-  position:fixed; inset:0;
-  display:flex; align-items:center; justify-content:center;
-  background:
-    radial-gradient(ellipse 90% 70% at 50% 110%, oklch(92% 0.05 100), transparent 60%),
-    var(--paper-dim);
-}
-.stage-word{
-  position:absolute; left:50%; top:50%;
-  transform:translate(-50%,-50%);
-  font-family:var(--display);
-  font-size: clamp(180px, 34vw, 520px);
-  letter-spacing:-0.01em;
-  color: oklch(32% 0.12 265 / 0.05);
-  user-select:none; pointer-events:none;
-  white-space:nowrap;
-}
-.stage-note{
-  position:absolute; font-size:13px; font-weight:600; color:var(--ink-soft);
-  letter-spacing:0.02em;
-}
-.stage-note.tl{top:24px;left:28px}
-.stage-note.br{bottom:22px;right:28px; font-family:var(--serif); font-style:italic; font-size:16px;}
-.theme-toggle{
-  position:absolute; top:18px; right:24px; z-index:5;
-  font-family:var(--sans); font-weight:800; font-size:12px; letter-spacing:0.05em;
-  text-transform:uppercase;
-  border:2px solid var(--ink); border-radius:999px;
-  background:var(--paper); color:var(--ink);
-  padding:8px 15px; cursor:pointer;
-  box-shadow:var(--shadow-pop-sm);
-  transition:transform 0.12s var(--ease), box-shadow 0.12s var(--ease);
-}
-.theme-toggle:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
-.theme-toggle:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
-.stage-note.bl{bottom:22px;left:28px}
-.stage-note .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pink);margin-right:7px;vertical-align:1px}
+/* Legacy containers opt back into the 01 face and ink. Without this
+   they would inherit --body/--text from the concept-06 base. */
+.lg{font-family:var(--sans); color:var(--ink)}
+.screen.lg{background:var(--paper)}
 
-/* ============ PHONE ============ */
-.phone{
-  position:relative;
-  width:390px; height:844px;
-  flex:none;
-  background:var(--ink);
-  border-radius:54px;
-  padding:10px;
-  box-shadow:
-    0 60px 100px -20px oklch(32% 0.12 265 / 0.35),
-    0 30px 50px -25px oklch(32% 0.12 265 / 0.4);
-}
-.viewport{
-  position:relative; width:100%; height:100%;
-  background:var(--paper);
-  border-radius:44px;
-  overflow:hidden;
-  isolation:isolate;
-}
-/* riso paper grain */
-.viewport::after{
-  content:""; position:absolute; inset:0; z-index:99; pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  opacity:0.05; mix-blend-mode:multiply;
-  border-radius:44px;
-}
-.notch{
-  position:absolute; top:21px; left:50%; transform:translateX(-50%);
-  width:118px; height:32px; background:var(--ink); border-radius:20px; z-index:60;
-}
-.statusbar{
-  position:absolute; top:0; left:0; right:0; height:58px; z-index:75;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 30px 0;
-  font-size:15px; font-weight:700; color:var(--ink);
-  pointer-events:none;
-  transition: color 0.25s var(--ease);
-  background:linear-gradient(to bottom, var(--paper) 45%, oklch(97.5% 0.015 100 / 0) 100%);
-}
-.app.detail-light .statusbar{background:none}
-.statusbar svg{display:block}
+/* status bar + home pill contrast over the color-drenched legacy detail sheet */
 .app.detail-light .statusbar{color:var(--cream)}
-.app.detail-bright .statusbar{color:var(--on-bright); background:none}
-.home-pill{
-  position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
-  width:130px; height:5px; border-radius:3px; background:var(--ink); opacity:0.35; z-index:60;
-  transition: background 0.25s var(--ease), opacity 0.25s var(--ease);
-}
+.app.detail-bright .statusbar{color:var(--on-bright)}
 .app.detail-light .home-pill{background:var(--cream); opacity:0.6}
 .app.detail-bright .home-pill{background:var(--on-bright); opacity:0.5}
 
-/* ============ APP SHELL ============ */
-.app{position:absolute; inset:0; overflow:hidden}
-.screen{
-  position:absolute; inset:0;
-  padding:64px 0 96px;
-  overflow-y:auto; overflow-x:hidden;
-  scrollbar-width:none;
-  opacity:0; transform:translateY(10px);
-  pointer-events:none;
-  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
-}
-.screen::-webkit-scrollbar{display:none}
-.screen.active{opacity:1; transform:translateY(0); pointer-events:auto}
-
 /* ============ TYPE HELPERS ============ */
-.eyebrow{
+.lg .eyebrow{
   font-size:11px; font-weight:800; letter-spacing:0.14em; color:var(--ink-soft);
   text-transform:uppercase;
 }
@@ -151,7 +335,6 @@ body{
 .aside{font-family:var(--serif); font-style:italic; color:var(--ink-soft)}
 
 /* ============ TODAY ============ */
-.pad{padding-left:22px; padding-right:22px}
 .today-head{display:flex; align-items:flex-end; justify-content:space-between; margin-top:10px}
 .today-head h1{font-size:34px; font-weight:800; letter-spacing:-0.02em; line-height:1.05; margin-top:6px}
 .today-head h1 em{font-family:var(--serif); font-weight:400; font-style:italic; letter-spacing:0}
@@ -220,7 +403,7 @@ body{
 .ticket-stub .eyebrow{font-size:9px; text-align:center}
 .ticket.empty{border-style:dashed; box-shadow:none; background:transparent}
 .ticket.empty .ticket-stub{background:transparent}
-.btn{
+.lg .btn{
   font-family:var(--sans); font-weight:800; font-size:13px; letter-spacing:0.03em;
   border:2px solid var(--ink); border-radius:999px;
   background:var(--pink); color:var(--paper);
@@ -229,14 +412,15 @@ body{
   transition:transform 0.12s var(--ease), box-shadow 0.12s var(--ease), background 0.15s;
   text-transform:uppercase;
   text-decoration:none; display:inline-block; text-align:center;
+  width:auto;
 }
-.btn:active{transform:translate(3px,3px); box-shadow:0 0 0 var(--ink)}
-.btn:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
-.btn.ghost{background:var(--paper); color:var(--ink)}
-.btn.stamped{background:var(--chartreuse); color:var(--on-bright)}
-.btn.sm{padding:7px 13px; font-size:11px; box-shadow:2px 2px 0 var(--ink)}
-.btn.sm:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
-.btn[disabled]{opacity:0.45; cursor:default; pointer-events:none}
+.lg .btn:active{transform:translate(3px,3px); box-shadow:0 0 0 var(--ink)}
+.lg .btn:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+.lg .btn.ghost{background:var(--paper); color:var(--ink); border:2px solid var(--ink); box-shadow:var(--shadow-pop-sm)}
+.lg .btn.stamped{background:var(--chartreuse); color:var(--on-bright)}
+.lg .btn.sm{padding:7px 13px; font-size:11px; box-shadow:2px 2px 0 var(--ink)}
+.lg .btn.sm:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
+.lg .btn[disabled]{opacity:0.45; cursor:default; pointer-events:none}
 
 /* week strip */
 .week{
@@ -285,7 +469,7 @@ body{
 .poster .pburst{position:absolute; top:10px; right:10px; width:34px; height:34px; opacity:0.9}
 
 /* promo */
-.promo{
+.lg .promo{
   margin:8px 22px 26px; position:relative;
   background:var(--ink); color:var(--paper);
   border-radius:16px; border:2px solid var(--ink);
@@ -294,16 +478,17 @@ body{
   overflow:hidden;
   display:block; width:calc(100% - 44px); text-align:left;
   font-family:var(--sans); cursor:pointer;
+  height:auto; flex:0 1 auto;
 }
-.promo:focus-visible{outline:3px solid var(--pink); outline-offset:3px}
-.promo .display{font-size:26px}
-.promo p{font-size:13px; font-weight:500; margin-top:7px; opacity:0.85; line-height:1.45}
-.promo .aside{color:oklch(85% 0.06 100)}
-.promo-burst{
+.lg .promo:focus-visible{outline:3px solid var(--pink); outline-offset:3px}
+.lg .promo .display{font-size:26px}
+.lg .promo p{font-size:13px; font-weight:500; margin-top:7px; opacity:0.85; line-height:1.45; max-width:none}
+.lg .promo .aside{color:oklch(85% 0.06 100)}
+.lg .promo-burst{
   position:absolute; right:-14px; top:50%; transform:translateY(-50%) rotate(8deg);
   width:108px; height:108px;
 }
-.promo-burst text{font-family:var(--display); font-size:30px}
+.lg .promo-burst text{font-family:var(--display); font-size:30px}
 
 /* ============ CLASSES / SCHEDULE ============ */
 .sched-head{margin-top:10px}
@@ -397,14 +582,14 @@ body{
 .d-tags{display:flex; gap:8px; margin-top:20px; flex-wrap:wrap}
 .d-tags .chip{background:transparent; color:inherit; border-color:currentColor}
 .d-spacer{flex:1; min-height:26px}
-.d-book{
+.lg .btn.d-book{
   width:100%; padding:17px; font-size:16px;
   background:var(--paper); color:var(--ink);
   border:2px solid var(--ink); box-shadow:var(--shadow-pop);
 }
-.detail.c-chartreuse .d-book{background:var(--on-bright); color:var(--chartreuse); box-shadow:4px 4px 0 var(--cream)}
-.d-book.stamped{background:var(--chartreuse); color:var(--on-bright)}
-.d-book[disabled]{opacity:0.55}
+.detail.c-chartreuse .btn.d-book{background:var(--on-bright); color:var(--chartreuse); box-shadow:4px 4px 0 var(--cream)}
+.lg .btn.d-book.stamped{background:var(--chartreuse); color:var(--on-bright)}
+.lg .btn.d-book[disabled]{opacity:0.55}
 .d-note{margin-top:12px; text-align:center; font-size:12px; font-weight:600; opacity:0.8}
 .d-actions{margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
 .d-linkbtn{
@@ -534,33 +719,6 @@ body{
 .studio-foot .aside{font-size:17px}
 .studio-foot p{font-size:12px; font-weight:600; color:var(--ink-soft); margin-top:6px}
 
-/* ============ TAB BAR ============ */
-.tabbar{
-  position:absolute; left:0; right:0; bottom:0; z-index:50;
-  height:84px; padding:10px 14px 26px;
-  background:var(--paper);
-  border-top:2px solid var(--ink);
-  display:flex;
-}
-.tab{
-  flex:1; background:none; border:none; cursor:pointer;
-  display:flex; flex-direction:column; align-items:center; gap:3px;
-  font-family:var(--sans); font-size:10px; font-weight:800; letter-spacing:0.06em;
-  color:var(--ink-soft); text-transform:uppercase;
-  border-radius:12px; padding:4px 0;
-  transition:color 0.15s;
-}
-.tab svg{display:block}
-.tab .ic{stroke:var(--ink-soft); transition:stroke 0.15s}
-.tab.active{color:var(--ink)}
-.tab.active .ic{stroke:var(--ink)}
-.tab .tab-pill{
-  width:26px; height:5px; border-radius:3px; background:transparent;
-  transition:background 0.18s;
-}
-.tab.active .tab-pill{background:var(--chartreuse); outline:1.5px solid var(--ink)}
-.tab:focus-visible{outline:3px solid var(--pink); outline-offset:-2px}
-
 /* ============ BOTTOM SHEETS (pricing, contact, etc.) ============ */
 .sheet-scrim{
   position:absolute; inset:0; z-index:72;
@@ -603,7 +761,7 @@ body{
 .sheet-close:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
 .sheet-copy{font-size:14px; font-weight:500; line-height:1.55; margin-top:8px}
 .sheet-actions{display:flex; flex-direction:column; gap:12px; margin-top:18px}
-.sheet-actions .btn{width:100%; padding:14px; font-size:14px}
+.lg .sheet-actions .btn{width:100%; padding:14px; font-size:14px}
 .sheet .section-label{margin-left:0; margin-right:0}
 
 /* pricing rows */
@@ -661,37 +819,11 @@ body{
 .plan-chip.sel{background:var(--chartreuse); color:var(--on-bright); box-shadow:2px 2px 0 var(--ink)}
 .plan-chip:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
 .ob-spacer{flex:1; min-height:26px}
-.ob-start{width:100%; padding:17px; font-size:16px}
+.lg .btn.ob-start{width:100%; padding:17px; font-size:16px}
 .ob-note{margin-top:12px; text-align:center; font-size:12px; font-weight:600; color:var(--ink-soft)}
 .ob-burst{position:absolute; top:66px; right:22px; width:74px; height:74px; transform:rotate(9deg)}
 
 /* ============ AFTER DARK (black + pink) ============ */
-[data-theme="dark"]{
-  --paper: oklch(17% 0.022 345);
-  --paper-dim: oklch(12.5% 0.018 345);
-  --ink: oklch(92% 0.035 350);
-  --ink-soft: oklch(70% 0.05 350);
-  --on-bright: oklch(16% 0.03 340);
-  --hairline: oklch(92% 0.035 350 / 0.16);
-  --hairline-strong: oklch(92% 0.035 350 / 0.45);
-}
-[data-theme="dark"] .stage{
-  background:
-    radial-gradient(ellipse 90% 70% at 50% 110%, oklch(35% 0.13 350 / 0.55), transparent 60%),
-    var(--paper-dim);
-}
-[data-theme="dark"] .stage-word{color:oklch(92% 0.035 350 / 0.05)}
-[data-theme="dark"] .phone{
-  background:oklch(10% 0.012 340);
-  box-shadow:
-    0 60px 100px -20px oklch(67% 0.21 350 / 0.3),
-    0 30px 50px -25px oklch(0% 0 0 / 0.6);
-}
-[data-theme="dark"] .notch{background:oklch(10% 0.012 340)}
-[data-theme="dark"] .viewport::after{mix-blend-mode:screen; opacity:0.07}
-[data-theme="dark"] .statusbar{background:linear-gradient(to bottom, var(--paper) 45%, oklch(17% 0.022 345 / 0) 100%)}
-[data-theme="dark"] .app.detail-light .statusbar,
-[data-theme="dark"] .app.detail-bright .statusbar{background:none}
 [data-theme="dark"] .marquee{background:var(--pink); border-color:var(--pink)}
 [data-theme="dark"] .marquee span{color:var(--cream)}
 [data-theme="dark"] .ticket-stub{background:oklch(24% 0.05 350)}
@@ -699,38 +831,20 @@ body{
 [data-theme="dark"] .trow:active{background:oklch(22% 0.035 350)}
 [data-theme="dark"] .daychip.sel{background:var(--pink); color:var(--cream)}
 [data-theme="dark"] .plan-chip.sel{background:var(--pink); color:var(--cream)}
-[data-theme="dark"] .tab.active .tab-pill{background:var(--pink)}
 [data-theme="dark"] .member-card{background:var(--pink); color:var(--cream); box-shadow:4px 4px 0 var(--ink)}
 [data-theme="dark"] .member-card .barcode{opacity:0.95}
-[data-theme="dark"] .promo{background:oklch(25% 0.06 348); color:var(--ink)}
+[data-theme="dark"] .lg .promo{background:oklch(25% 0.06 348); color:var(--ink)}
 [data-theme="dark"] .sheet-scrim{background:oklch(5% 0.02 340 / 0.6)}
 
 /* ============ MOBILE FULL-BLEED (the real app) ============ */
 @media (max-width:560px){
-  .stage{display:block; background:var(--paper)}
-  .stage-word,.stage-note,.theme-toggle{display:none}
-  .phone{
-    width:100%; height:100%; border-radius:0; padding:0; box-shadow:none;
-    transform:none !important;
-  }
-  .viewport{border-radius:0}
-  .viewport::after{border-radius:0}
-  .notch{display:none}
-  .statusbar{display:none}
-  .home-pill{display:none}
-  .screen{
-    padding-top:max(18px, env(safe-area-inset-top));
-    padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px));
-  }
   .detail{
     padding-top:max(24px, env(safe-area-inset-top));
     padding-bottom:calc(30px + env(safe-area-inset-bottom, 0px));
   }
   .onboard{padding-top:max(56px, calc(env(safe-area-inset-top) + 34px))}
   .ob-burst{top:max(48px, calc(env(safe-area-inset-top) + 26px))}
-  .tabbar{height:auto; padding-bottom:max(26px, calc(env(safe-area-inset-bottom) + 8px))}
 }
 @media (prefers-reduced-motion:reduce){
   .marquee-track{animation:none}
-  *{transition-duration:0.01ms !important; animation-duration:0.01ms !important}
 }

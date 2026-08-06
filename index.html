@@ -15,7 +15,10 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<!-- Anton + Instrument Serif are LEGACY-01 faces, still loaded for the screens
+     that have not been ported to concept-06 yet. They go with the legacy CSS
+     block in PORT-3. -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
@@ -23,9 +26,12 @@
 <div class="stage">
   <div class="stage-word" aria-hidden="true">BODIED</div>
   <div class="stage-note tl"><span class="dot"></span>BODIED SJ · the app</div>
-  <button class="theme-toggle" id="theme-toggle">☾ after dark</button>
-  <div class="stage-note br">install it on your phone: open this page → share → add to home screen</div>
   <div class="stage-note bl">strength · power · sisterhood</div>
+  <div class="stage-note br">install it on your phone: open this page → share → add to home screen</div>
+  <button class="stage-toggle" id="theme-toggle" aria-label="Toggle appearance">
+    <span id="stage-toggle-icon"></span>
+    <span id="stage-toggle-label">after dark</span>
+  </button>
 
   <div class="phone" id="phone">
     <div class="viewport">
@@ -45,9 +51,109 @@
             <rect x="62" y="4.5" width="2" height="4" rx="1" fill="currentColor"/>
           </svg>
         </div>
+        <div class="home-pill" aria-hidden="true"></div>
 
-        <!-- ============ TODAY ============ -->
-        <section class="screen active" id="screen-today">
+        <!-- ============ HOME (concept-06) ============ -->
+        <section class="screen active" id="screen-home">
+          <div class="brandbar">
+            <div class="wordmark"><span class="mark">B</span>BODIED <span class="sj">SJ</span></div>
+            <button class="iconbtn has-dot" data-go="more" aria-label="Account">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20a7.4 7.4 0 0 1 14.4 0"/></svg>
+            </button>
+          </div>
+
+          <div class="section" style="padding-bottom:12px">
+            <div class="sechead"><h2 class="title-lg">What's good</h2></div>
+          </div>
+          <div class="carousel" id="carousel">
+            <div class="promo promo-a">
+              <div class="blob" style="width:150px;height:150px;right:-42px;top:-48px;background:#fff"></div>
+              <div class="kicker">New here?</div>
+              <div>
+                <h3>Try 7 days<br>for $7.</h3>
+                <p style="margin-top:7px">Unlimited classes for a week. Come as you are.</p>
+              </div>
+            </div>
+            <div class="promo promo-b">
+              <div class="blob" style="width:130px;height:130px;right:-30px;bottom:-46px;background:var(--pink);opacity:.55"></div>
+              <div class="kicker" style="color:var(--pink);opacity:1">The signature</div>
+              <div>
+                <h3>Muscle Mami<br>Full Body HIIT</h3>
+                <p style="margin-top:7px">Volume at eleven. Valeria's got you.</p>
+              </div>
+            </div>
+          </div>
+          <div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i></div>
+
+          <div class="section">
+            <div class="sechead"><h2 class="title-lg">Your next class</h2></div>
+            <div id="home-next"></div>
+          </div>
+
+          <div class="section">
+            <div class="sechead">
+              <h2 class="title-lg">Your stamps</h2>
+              <button class="showall" data-go="more">Show all</button>
+            </div>
+            <div class="card">
+              <div class="progline"><b id="stamp-count">0</b><span id="stamp-caption">classes bodied</span></div>
+              <div class="stamps" id="home-stamps"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ SCHEDULE — LEGACY-01 classes screen, untouched ============ -->
+        <section class="screen lg" id="screen-classes">
+          <div class="pad sched-head">
+            <div class="eyebrow">Class schedule</div>
+            <div class="display">Pick your<br>fight</div>
+          </div>
+          <div class="daychips" id="daychips" role="tablist" aria-label="Day"></div>
+          <div class="timetable" id="timetable"></div>
+        </section>
+
+        <!-- ============ PRICING — placeholder until PORT-2 ============ -->
+        <section class="screen" id="screen-pricing">
+          <div class="topbar"><h1 class="title-xl">Pricing</h1></div>
+          <div class="section">
+            <div class="card">
+              <div class="empty">
+                <h3>This screen is being rebuilt.</h3>
+                <p>Pricing arrives with the next porting stage. Plans and the policy line live on bodiedsj.com in the meantime.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ SHOP — placeholder until PORT-2 ============ -->
+        <section class="screen" id="screen-shop">
+          <div class="topbar"><h1 class="title-xl">Shop</h1></div>
+          <div class="section">
+            <div class="card">
+              <div class="empty">
+                <h3>This screen is being rebuilt.</h3>
+                <p>The studio sells nothing online yet. This tab stays a coming-soon state.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ MORE — placeholder until PORT-3 ============ -->
+        <section class="screen" id="screen-more">
+          <div class="topbar"><h1 class="title-xl">More</h1></div>
+          <div class="section">
+            <div class="card">
+              <div class="empty">
+                <h3>This screen is being rebuilt.</h3>
+                <p>Reservations, stamps, the coaches and studio info land here in the next porting stages. Until then, appearance lives on the old settings screen.</p>
+                <button class="btn ghost" id="more-appearance">Appearance</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ TODAY — LEGACY-01, no longer routed to. Deleted in PORT-3 ============ -->
+        <section class="screen lg" id="screen-today">
           <div class="pad today-head">
             <div>
               <div class="eyebrow" id="today-date"></div>
@@ -83,18 +189,8 @@
           </button>
         </section>
 
-        <!-- ============ CLASSES ============ -->
-        <section class="screen" id="screen-classes">
-          <div class="pad sched-head">
-            <div class="eyebrow">Class schedule</div>
-            <div class="display">Pick your<br>fight</div>
-          </div>
-          <div class="daychips" id="daychips" role="tablist" aria-label="Day"></div>
-          <div class="timetable" id="timetable"></div>
-        </section>
-
-        <!-- ============ COACHES ============ -->
-        <section class="screen" id="screen-coaches">
+        <!-- ============ COACHES — LEGACY-01, folds into More in PORT-3 ============ -->
+        <section class="screen lg" id="screen-coaches">
           <div class="pad sched-head">
             <div class="eyebrow">Meet the team</div>
             <div class="display" style="font-size:42px">The<br>headliners</div>
@@ -103,8 +199,8 @@
           <div class="coach-list" id="coach-list"></div>
         </section>
 
-        <!-- ============ YOU ============ -->
-        <section class="screen" id="screen-you">
+        <!-- ============ YOU — LEGACY-01, carries the appearance toggle until More lands ============ -->
+        <section class="screen lg" id="screen-you">
           <div class="pad sched-head">
             <div class="eyebrow">Your card</div>
             <div class="display" id="you-name" style="font-size:42px"></div>
@@ -149,8 +245,35 @@
           </div>
         </section>
 
-        <!-- ============ CLASS DETAIL ============ -->
-        <section class="detail" id="detail" aria-hidden="true">
+        <!-- ============ TAB BAR (concept-06) ============
+             Sits before the overlays on purpose: .tabbar and the legacy
+             .detail sheet are both z-index:70, so DOM order is what keeps
+             the sheet above the bar. -->
+        <nav class="tabbar" aria-label="Main">
+          <button class="tab on" data-screen="home">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>
+            <span>Home</span>
+          </button>
+          <button class="tab" data-screen="classes">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+            <span>Schedule</span>
+          </button>
+          <button class="tab" data-screen="pricing">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8h15l-1.2 11.2a1.6 1.6 0 0 1-1.6 1.4H7.3a1.6 1.6 0 0 1-1.6-1.4Z"/><path d="M8.7 8V6.2a3.3 3.3 0 0 1 6.6 0V8"/></svg>
+            <span>Pricing</span>
+          </button>
+          <button class="tab" data-screen="shop">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.1a1.6 1.6 0 0 0 1.6-1.3L20.5 8H6"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>
+            <span>Shop</span>
+          </button>
+          <button class="tab" data-screen="more">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18" cy="12" r="1.7"/></svg>
+            <span>More</span>
+          </button>
+        </nav>
+
+        <!-- ============ CLASS DETAIL — LEGACY-01 ============ -->
+        <section class="detail lg" id="detail" aria-hidden="true">
           <button class="d-back" id="d-back" aria-label="Back">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 3L5 9l6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
@@ -169,15 +292,15 @@
           <div class="d-actions" id="d-actions"></div>
         </section>
 
-        <!-- ============ BOTTOM SHEET ============ -->
+        <!-- ============ BOTTOM SHEET — LEGACY-01 ============ -->
         <button class="sheet-scrim" id="sheet-scrim" aria-label="Close sheet" tabindex="-1"></button>
-        <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true">
+        <section class="sheet lg" id="sheet" role="dialog" aria-modal="true" aria-hidden="true">
           <div class="sheet-grab" aria-hidden="true"></div>
           <div class="sheet-body" id="sheet-body"></div>
         </section>
 
-        <!-- ============ ONBOARDING ============ -->
-        <section class="onboard" id="onboard" hidden>
+        <!-- ============ ONBOARDING — LEGACY-01 ============ -->
+        <section class="onboard lg" id="onboard" hidden>
           <svg class="ob-burst" viewBox="0 0 74 74" aria-hidden="true">
             <path d="M37 2l5.5 9.5 9.5-5.5-0.7 11 11 0.7-5.5 9.5 9.5 5.5-9.5 5.5 5.5 9.5-11 0.7 0.7 11-9.5-5.5L37 72l-5.5-9.5-9.5 5.5 0.7-11-11-0.7 5.5-9.5L7.7 41.3l9.5-5.5-5.5-9.5 11-0.7-0.7-11 9.5 5.5z" fill="var(--chartreuse)" stroke="var(--ink)" stroke-width="2"/>
             <text x="37" y="44" text-anchor="middle" fill="var(--on-bright)" style="font-family:var(--display);font-size:16px">HI!</text>
@@ -198,29 +321,9 @@
           <div class="ob-note">Booking lives on this phone. Payments &amp; sign-up happen at bodiedsj.com or in studio.</div>
         </section>
 
-        <div class="stamp-overlay" id="stamp-overlay" aria-hidden="true">
+        <div class="stamp-overlay lg" id="stamp-overlay" aria-hidden="true">
           <div class="stamp-inner" id="stamp-text">Booked!</div>
         </div>
-
-        <!-- ============ TAB BAR ============ -->
-        <nav class="tabbar" aria-label="Main">
-          <button class="tab active" data-screen="today">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path class="ic" d="M11 2v3M11 17v3M2 11h3M17 11h3M4.6 4.6l2.1 2.1M15.3 15.3l2.1 2.1M4.6 17.4l2.1-2.1M15.3 6.7l2.1-2.1" stroke-width="2" stroke-linecap="round"/><circle class="ic" cx="11" cy="11" r="3.4" stroke-width="2"/></svg>
-            Today<span class="tab-pill"></span>
-          </button>
-          <button class="tab" data-screen="classes">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect class="ic" x="3" y="4" width="16" height="15" rx="3" stroke-width="2"/><path class="ic" d="M3 9h16M7.5 2v4M14.5 2v4" stroke-width="2" stroke-linecap="round"/><path class="ic" d="M7 13.5h3M7 16h5" stroke-width="2" stroke-linecap="round"/></svg>
-            Classes<span class="tab-pill"></span>
-          </button>
-          <button class="tab" data-screen="coaches">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path class="ic" d="M3 9l11-5v14L3 13z" stroke-width="2" stroke-linejoin="round"/><path class="ic" d="M14 7c2.5 0 5 1.5 5 4s-2.5 4-5 4M6 13.5V18a1.5 1.5 0 003 0v-3.5" stroke-width="2" stroke-linecap="round"/></svg>
-            Coaches<span class="tab-pill"></span>
-          </button>
-          <button class="tab" data-screen="you">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle class="ic" cx="11" cy="7.5" r="4" stroke-width="2"/><path class="ic" d="M3.5 19.5c1.2-4 4-6 7.5-6s6.3 2 7.5 6" stroke-width="2" stroke-linecap="round"/></svg>
-            You<span class="tab-pill"></span>
-          </button>
-        </nav>
 
       </div>
     </div>
