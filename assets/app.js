@@ -442,28 +442,34 @@ function toast(msg){
 }
 
 /* ============ SCHEDULE (concept-06) ============ */
-/* The strip is the current Sunday-to-Saturday week, so past days can exist
-   and carry the 06 `.past` treatment. In-memory only — nothing persists. */
+/* The strip is a rolling window — today plus the next six days — so the
+   booking horizon is the same seven days whatever the weekday, and no listed
+   day is ever in the past. `selDay` is an offset from today, 0..6, held
+   against the date it was picked on. In-memory only — nothing persists.
+   (Concept-06 draws a fixed Sun–Sat week; this is a reviewed deviation, to
+   be recorded in DESIGN.md during PORT-3.) */
 let seg = 'classes';
 let filters = { coach: null, cls: null, time: null };
-let selDay = new Date().getDay();
-let selWeek = null;
+let selDay = 0;
+let selAnchor = null;
 
-function weekStart(){
+function dayAt(i){
   const d = new Date();
   d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() - d.getDay());
+  d.setDate(d.getDate() + i);
   return d;
 }
-function dayAt(i){ const d = weekStart(); d.setDate(d.getDate() + i); return d; }
 
-/* Keeps the selection honest across midnight: a new week resets to today,
-   and within a week the selection never falls behind today. */
+/* Keeps the selection honest across midnight: the window rolls forward, so
+   the member keeps the day they picked for as long as it is still in it. */
 function normalizeDay(){
-  const ws = dateKeyOf(weekStart());
-  const today = new Date().getDay();
-  if(selWeek !== ws){ selWeek = ws; selDay = today; }
-  else if(selDay < today) selDay = today;
+  const tk = todayKey();
+  if(selAnchor === tk) return;
+  if(selAnchor){
+    const elapsed = Math.round((fromKey(tk) - fromKey(selAnchor)) / 86400000);
+    selDay = Math.min(6, Math.max(0, selDay - elapsed));
+  }
+  selAnchor = tk;
 }
 
 /* The row state machine. `ended` outranks everything — a finished class reads
@@ -495,13 +501,13 @@ function passesFilter(inst){
 const activeFilters = () => Object.values(filters).filter(Boolean).length;
 function syncFilterDot(){ $('#filter-btn').classList.toggle('has-dot', activeFilters() > 0); }
 
+/* Labels follow the rolling dates, so the rest-day dot travels with Sunday
+   wherever it lands in the window. No `.past` day: the window starts today. */
 function renderDayStrip(){
-  const tk = todayKey();
   $('#daystrip').innerHTML = [0, 1, 2, 3, 4, 5, 6].map(i => {
     const d = dayAt(i);
-    const past = dateKeyOf(d) < tk;
     const rest = WEEK_TEMPLATE[d.getDay()] === 'rest';
-    return `<button class="day${i === selDay ? ' on' : ''}${past ? ' past' : ''}" data-day="${i}" role="tab" aria-selected="${i === selDay}">
+    return `<button class="day${i === selDay ? ' on' : ''}" data-day="${i}" role="tab" aria-selected="${i === selDay}">
       <span class="dow">${DAY_FULL[d.getDay()].slice(0, 3)}</span>
       <span class="num">${d.getDate()}</span>
       ${rest ? '<span class="rest-dot" aria-hidden="true"></span>' : ''}
