@@ -14,15 +14,26 @@ Keep it this way: any change that adds a build step or a dependency is wrong by 
 
 | File | Role |
 |---|---|
-| `index.html` | App shell: desktop stage + phone frame, all four screens' static skeleton, detail sheet, bottom sheet, onboarding overlay, tab bar, PWA meta |
-| `assets/app.css` | All styles. Top half is the approved concept-01 system verbatim; app-only surfaces (sheets, onboarding, pricing) extend it with the same tokens |
-| `assets/data.js` | Content only: `STUDIO`, `COACH_COLORS`, `CLASSES`, `WEEK_TEMPLATE`, `COACHES`, `PLANS`, `PRICING_POLICY`, `CAPACITY`, `MILESTONES`. All content is real, studio-authored, from bodiedsj.com — never invent |
+| `index.html` | App shell: desktop stage + phone frame, the five screens' static skeleton, the class-detail and More full screens, the bottom sheet, onboarding, tab bar, PWA meta |
+| `assets/app.css` | All styles. Concept-06 is the only system; rules the mockup does not have are marked "not in the mockup" and built from its tokens |
+| `assets/data.js` | Content only: `STUDIO`, `COACH_COLORS`, `CLASSES`, `WEEK_TEMPLATE`, `COACHES`, `PLANS`, `PLAN_GROUPS`, `PRICING_POLICY`, `CAPACITY`, `MILESTONES`. All content is real, studio-authored, from bodiedsj.com — never invent |
 | `assets/app.js` | All logic: state, schedule instances, booking lifecycle, renderers, sheets, onboarding, theme, ICS export, SW registration |
 | `sw.js` | Service worker (must stay at repo root for scope) |
 | `manifest.webmanifest` | PWA manifest (relative `start_url`/`scope` for the Pages subpath) |
 | `assets/icons/` | PNG icons, generated — don't hand-edit; regenerate with `node tools/gen-icons.mjs assets/icons` |
-| `concept-01.html` … `concept-05.html`, `compare.html` | Frozen design mockups + gallery. Never modify (except gallery links) |
+| `concept-01.html` … `concept-06.html`, `compare.html` | Frozen design mockups + gallery. Never modify (except gallery links). `concept-06.html` is the binding one — the app is its port |
 | `docs/superpowers/specs/` | Historical design specs |
+
+## Screens
+
+Five tabs, one screen each: **Home** (promos, next reservation, stamps), **Schedule**
+(`#screen-classes`, the rolling 7-day strip and the class list), **Pricing** (underline
+tabs over the nine plans, plus the link-out to the studio), **Shop** (a permanent
+"merch is coming" state), **More** (profile card, sub-screens, appearance, contact).
+
+More opens three full-screen sub-screens from `#more-fs` — *My reservations*, *Stamps &
+milestones*, *Meet the coaches* — and the class detail (`#detail`) sits above them, so a
+class opened from a reservation returns to the list.
 
 ## Runtime model (app.js)
 
@@ -45,16 +56,23 @@ Keep it this way: any change that adds a build step or a dependency is wrong by 
 - **Renderers** are small `render*()` functions that write `innerHTML` and rebind
   listeners; `renderAll()` refreshes everything and is cheap. A `setInterval` minute
   tick + `visibilitychange` keep countdowns/ended states honest, including day rollover.
-- **Sheets**: `SHEETS[name]()` returns HTML, `openSheet(name)` mounts it (pricing,
-  contact, payment, notifications, profile). Class detail is a separate full-screen
-  color-drenched sheet (`openDetail(inst)` / `renderDetailState()`).
+- **Sheets**: one bottom sheet (`#confirm-sheet`) carries all of them — filters, the
+  booking confirmation, plan details, name & plan — via `openSheet06(html)` /
+  `closeSheet06()`. No sheet or More sub-screen pushes a history entry; closing returns
+  to the screen that opened it. Only `openDetail(inst)` pushes one entry, and Back at
+  any stage of the booking flow dismisses the whole stack.
 - **User input** is escaped with `esc()` before hitting `innerHTML` — keep it that way.
-- **Theme**: `data-theme="dark"` on `<html>`, persisted only on explicit toggle;
-  `--royal`/`--cream` never flip (see DESIGN.md).
+- **Theme**: `data-theme="dark"` on `<html>`, persisted only on explicit toggle from
+  More → Appearance or the desktop stage toggle; `#dark` deep-links into it. The brand
+  fills and `--cream`/`--on-bright` never flip; `--royal` does (see DESIGN.md).
+- **Hash routes**: `#home #schedule #pricing #shop #more #detail=<classId>`, `&dark` as a
+  flag. The older `#today #classes #coaches #you` still resolve but are aliases —
+  `history.replaceState` rewrites them to the canonical hash, adding no history entry.
 
 ## Service worker (sw.js)
 
-- Precache list `SHELL` + cache name `CACHE = 'bodied-v1'`.
+- Precache list `SHELL` + cache name `CACHE = 'bodied-v2'`. Activation deletes every
+  other cache, so a bumped name is the whole update mechanism.
 - Navigations: network-first, fallback to cached `index.html` (offline).
 - Google Fonts: cache-first forever.
 - Same-origin assets: **stale-while-revalidate** — installed phones get updates on the
@@ -74,7 +92,11 @@ python3 -m http.server 8471   # from repo root → http://127.0.0.1:8471/
 
 ## Invariants (beyond DESIGN.md's)
 
-- Only real content: 6 classes, 4 coaches, 7 real price plans. Content is
+- Concept-06 is the only visual system in the app — there is no legacy skin left to
+  fall back on.
+- Only real content: 6 classes, 4 coaches, 9 real price plans in 4 groups (`PLANS` is one
+  flat array; `group` is a field and the Pricing tabs filter on it). Plan ids are frozen —
+  `profile.plan` stores them on members' phones. Content is
   studio-authored bodiedsj.com content only, verbatim; no customer-generated content
   (reviews/testimonials/ratings); never invent. Sunday is rest day.
 - No payments, accounts, or push notifications in-app — link out to the studio

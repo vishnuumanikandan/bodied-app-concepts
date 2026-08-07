@@ -1,9 +1,8 @@
 /* ============================================================
    BODIED SJ · app styles
-   Base = concept-06 "Studio Standard", the binding system
-   (DESIGN.md). Ported surface by surface; everything not yet
-   ported still wears the superseded concept-01 skin, kept in
-   the marked LEGACY-01 block at the bottom of this file.
+   Concept-06 "Studio Standard" (DESIGN.md) is the system. Rules
+   the mockup does not have are marked "not in the mockup" and
+   are built from its tokens only.
    ============================================================ */
 
 /* ============ TOKENS (concept-06) ============ */
@@ -202,6 +201,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   display:block; width:100%; padding:15px; border-radius:12px; background:var(--pink); color:var(--cream);
   font-family:var(--body); font-size:15px; font-weight:700; text-align:center; transition:all .16s var(--ease);
   box-shadow:0 4px 14px rgba(253,71,172,0.32);
+  text-decoration:none;   /* the app has link buttons; the mockup had none */
 }
 .btn:active{background:var(--pink-deep); transform:translateY(1px); box-shadow:0 2px 8px rgba(253,71,172,0.3)}
 .btn:focus-visible{outline:2px solid var(--pink); outline-offset:3px}
@@ -459,6 +459,139 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
    already-attended classes need a CTA that reads as unavailable. */
 .btn[disabled]{opacity:0.5; box-shadow:none; cursor:default; pointer-events:none}
 
+/* ============ PRICING ============ */
+.utabs{display:flex; gap:22px; padding:0 20px; border-bottom:1px solid var(--line); overflow-x:auto; scrollbar-width:none}
+.utabs::-webkit-scrollbar{display:none}
+.utabs button{
+  padding:0 0 11px; font-family:var(--body); font-size:15px; font-weight:600; color:var(--text-50);
+  border-bottom:2.5px solid transparent; margin-bottom:-1px; white-space:nowrap;
+}
+.utabs button.on{color:var(--pink); font-weight:700; border-color:var(--pink)}
+.utabs button:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+.plan{
+  border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:14px;
+  background:var(--card); position:relative; display:block; width:100%; text-align:left;
+}
+.plan.feature{border-color:var(--pink); background:linear-gradient(180deg, var(--pink-wash), var(--card) 55%)}
+.plan:focus-visible{outline:2px solid var(--pink); outline-offset:3px}
+.plan .tag{
+  position:absolute; top:-9px; left:16px; background:var(--pink); color:var(--cream);
+  font-size:10px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;
+  padding:4px 9px; border-radius:999px;
+}
+.plan .picon{width:26px; height:26px; color:var(--pink); margin-bottom:12px}
+.plan h3{font-family:var(--head); font-size:18px; font-weight:700; letter-spacing:-0.02em; margin-bottom:12px; line-height:1.25}
+.priceline{display:flex; align-items:center; gap:10px; margin-bottom:14px}
+.priceline .circ{
+  width:26px; height:26px; border-radius:50%; border:1.5px solid var(--pink); color:var(--pink);
+  display:grid; place-items:center; font-size:13px; font-weight:700; flex:none;
+}
+.priceline b{font-family:var(--head); font-size:23px; font-weight:800; letter-spacing:-0.03em}
+.priceline span{font-size:14px; color:var(--text-50)}
+.plan .details{font-size:14px; font-weight:700; color:var(--pink)}
+/* the plan's inclusion list, inside the Details sheet */
+.incl{margin:6px 0 18px}
+.incl div{display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:14px}
+.incl svg{flex:none; margin-top:1px; color:var(--pink)}
+
+/* ============ SHOP ============ */
+.shop-empty{padding:56px 26px 20px; text-align:center}
+.shop-empty .glyph{
+  width:88px; height:88px; margin:0 auto 20px; border-radius:26px;
+  background:var(--pink-wash); border:1.5px dashed var(--pink); color:var(--pink);
+  display:grid; place-items:center; transform:rotate(-4deg);
+}
+.shop-empty h2{font-family:var(--head); font-size:25px; font-weight:800; letter-spacing:-0.03em; line-height:1.12; margin-bottom:10px}
+.shop-empty p{font-size:14px; color:var(--text-70); line-height:1.55; margin-bottom:22px}
+.ghostgrid{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:26px 20px 0}
+.ghostcard{border:1px dashed var(--line-2); border-radius:14px; padding:14px; text-align:left}
+.ghostcard .sq{height:78px; border-radius:10px; background:var(--dim); margin-bottom:10px}
+.ghostcard .l1{height:9px; width:72%; border-radius:4px; background:var(--dim); margin-bottom:6px}
+.ghostcard .l2{height:9px; width:42%; border-radius:4px; background:var(--dim)}
+
+/* ============ LIST (More) ============ */
+.list{background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden}
+.li{
+  display:flex; align-items:center; gap:13px; padding:15px 16px; width:100%; text-align:left;
+  border-bottom:1px solid var(--line); transition:background .16s var(--ease);
+  font-family:var(--body); color:var(--text);
+}
+.li:last-child{border-bottom:none}
+.li:active{background:var(--pink-wash)}
+.li:focus-visible{outline:2px solid var(--pink); outline-offset:-2px}
+.li .ic{width:34px; height:34px; border-radius:10px; background:var(--pink-wash); color:var(--pink); display:grid; place-items:center; flex:none}
+.li .lb{flex:1; font-size:15px; font-weight:600}
+.li .rt{font-size:13px; color:var(--text-50)}
+.li .chev{color:var(--text-32); display:grid; place-items:center}
+.profilecard{
+  display:flex; align-items:center; gap:14px; padding:18px; border-radius:16px;
+  background:var(--royal); color:var(--cream); margin-bottom:18px; position:relative; overflow:hidden;
+}
+.profilecard .blob{position:absolute; right:-30px; top:-30px; width:130px; height:130px; border-radius:50%; background:var(--pink); opacity:0.5}
+.profilecard .av-lg{
+  width:52px; height:52px; border-radius:50%; background:var(--pink); color:var(--cream);
+  display:grid; place-items:center; font-family:var(--head); font-size:19px; font-weight:800; flex:none; z-index:1;
+}
+.profilecard .who{z-index:1; min-width:0}
+.profilecard h3{font-family:var(--head); font-size:19px; font-weight:800; letter-spacing:-0.02em}
+.profilecard p{font-size:12.5px; opacity:0.8; margin-top:2px}
+/* not in the mockup — the mockup's profile card is static, the app's opens
+   the name & plan sheet */
+.pc-edit{
+  margin-left:auto; z-index:1; width:34px; height:34px; border-radius:50%;
+  display:grid; place-items:center; color:var(--cream); flex:none;
+  transition:background .16s var(--ease);
+}
+.pc-edit:active{background:rgba(255,255,255,0.16)}
+.pc-edit:focus-visible{outline:2px solid var(--cream); outline-offset:2px}
+
+/* ============ INFO BLOCKS ============ */
+.infoblock{padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--card); margin-bottom:12px}
+.infoblock .k{font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-50); margin-bottom:5px}
+.infoblock .v{font-size:15px; font-weight:600; line-height:1.45}
+/* the app's blocks are real links out — the mockup's were static text */
+a.infoblock{display:block; color:inherit; text-decoration:none; transition:background .16s var(--ease)}
+a.infoblock:active{background:var(--pink-wash)}
+a.infoblock:focus-visible{outline:2px solid var(--pink); outline-offset:2px}
+
+/* ============ COACH FAVOURITES ============ */
+/* not in the mockup — favourites are an app feature that predates it */
+.fave{width:38px; height:38px; border-radius:50%; display:grid; place-items:center; color:var(--text-32); flex:none; transition:all .16s var(--ease)}
+.fave svg{display:block}
+.fave .heart{fill:transparent; stroke:currentColor; transition:fill .16s var(--ease)}
+.fave.on{color:var(--pink)}
+.fave.on .heart{fill:var(--pink)}
+.fave:active{background:var(--pink-wash)}
+.fave:focus-visible{outline:2px solid var(--pink); outline-offset:-2px}
+
+/* ============ ONBOARDING ============ */
+/* not in the mockup — concept-06 has no first-run flow and no text input.
+   Built from 06 tokens: cream paper, hairline field, .chip picker, .btn. */
+.onboard{
+  position:absolute; inset:0; z-index:106; background:var(--bg); color:var(--text);
+  display:flex; flex-direction:column;
+  padding:64px 20px calc(30px + env(safe-area-inset-bottom, 0px));
+  overflow-y:auto; scrollbar-width:none;
+  transition:opacity .3s var(--ease), transform .3s var(--ease);
+}
+.onboard::-webkit-scrollbar{display:none}
+.onboard.closing{opacity:0; transform:translateY(14px); pointer-events:none}
+.onboard[hidden]{display:none}
+.ob-mark{margin-bottom:26px}
+.ob-title{margin-bottom:8px}
+.ob-tag{max-width:270px}
+.ob-field{margin-top:28px}
+.ob-field label{display:block; margin-bottom:9px}
+.ob-input{
+  width:100%; padding:14px 16px; border-radius:14px;
+  font-family:var(--body); font-size:16px; font-weight:600; color:var(--text);
+  background:var(--card); border:1px solid var(--line-2);
+}
+.ob-input::placeholder{color:var(--text-32); font-weight:400}
+.ob-input:focus{outline:none; border-color:var(--pink); box-shadow:0 0 0 3px var(--pink-wash)}
+.ob-spacer{flex:1; min-height:30px}
+.ob-note{text-align:center; padding-top:12px}
+
 /* ============ SMALL SCREEN = the real app ============ */
 @media (max-width:560px){
   .stage{display:block; background:var(--bg)}
@@ -471,586 +604,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   .fs-nav{padding-top:max(20px, env(safe-area-inset-top))}
   .fs-foot{padding-bottom:calc(30px + env(safe-area-inset-bottom, 0px))}
   .sheet{padding-bottom:calc(26px + env(safe-area-inset-bottom, 0px))}
+  .onboard{padding-top:max(40px, calc(env(safe-area-inset-top) + 22px))}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important; transition-duration:.01ms !important}
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   LEGACY-01 — delete in PORT-3
-   The superseded concept-01 skin, kept verbatim so that every screen
-   not yet ported to concept-06 keeps working on the integration
-   branch. Three selector groups (.btn, .eyebrow, .promo) collide with
-   concept-06 and are scoped to `.lg`, which sits on every legacy
-   container. Shell chrome (stage, phone, statusbar, .screen, .pad,
-   .tabbar) is NOT duplicated here — concept-06 owns the shell now.
-   Deleting this block also means dropping Anton + Instrument Serif
-   from the font link in index.html.
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ---- legacy token aliases · light. Every name below is also declared
-        in the [data-theme="dark"] alias block further down. ---- */
-:root{
-  --paper: oklch(97.5% 0.015 100);
-  --paper-dim: oklch(94% 0.022 97);
-  --ink: oklch(32% 0.12 265);
-  --ink-soft: oklch(50% 0.06 265);
-  --teal-deep: oklch(60% 0.11 190);
-  --hairline: oklch(32% 0.12 265 / 0.14);
-  --hairline-strong: oklch(32% 0.12 265 / 0.45);
-  --display: 'Anton', sans-serif;
-  --sans: 'Hanken Grotesk', sans-serif;
-  --serif: 'Instrument Serif', serif;
-  --shadow-pop: 4px 4px 0 var(--ink);
-  --shadow-pop-sm: 3px 3px 0 var(--ink);
-}
-[data-theme="dark"]{
-  --paper: oklch(17% 0.022 345);
-  --paper-dim: oklch(12.5% 0.018 345);
-  --ink: oklch(92% 0.035 350);
-  --ink-soft: oklch(70% 0.05 350);
-  --teal-deep: oklch(60% 0.11 190);
-  --hairline: oklch(92% 0.035 350 / 0.16);
-  --hairline-strong: oklch(92% 0.035 350 / 0.45);
-  --display: 'Anton', sans-serif;
-  --sans: 'Hanken Grotesk', sans-serif;
-  --serif: 'Instrument Serif', serif;
-  --shadow-pop: 4px 4px 0 var(--ink);
-  --shadow-pop-sm: 3px 3px 0 var(--ink);
-}
-
-/* Legacy containers opt back into the 01 face and ink. Without this
-   they would inherit --body/--text from the concept-06 base. */
-.lg{font-family:var(--sans); color:var(--ink)}
-.screen.lg{background:var(--paper)}
-
-/* status bar + home pill contrast over the color-drenched legacy detail sheet */
-.app.detail-light .statusbar{color:var(--cream)}
-.app.detail-bright .statusbar{color:var(--on-bright)}
-.app.detail-light .home-pill{background:var(--cream); opacity:0.6}
-.app.detail-bright .home-pill{background:var(--on-bright); opacity:0.5}
-
-/* ============ TYPE HELPERS ============ */
-.lg .eyebrow{
-  font-size:11px; font-weight:800; letter-spacing:0.14em; color:var(--ink-soft);
-  text-transform:uppercase;
-}
-.display{font-family:var(--display); text-transform:uppercase; line-height:0.92; letter-spacing:0.01em}
-.aside{font-family:var(--serif); font-style:italic; color:var(--ink-soft)}
-
-/* ============ TODAY ============ */
-.today-head{display:flex; align-items:flex-end; justify-content:space-between; margin-top:10px}
-.today-head h1{font-size:34px; font-weight:800; letter-spacing:-0.02em; line-height:1.05; margin-top:6px}
-.today-head h1 em{font-family:var(--serif); font-weight:400; font-style:italic; letter-spacing:0}
-.avatar{
-  width:46px; height:46px; border-radius:50%;
-  background:var(--pink); color:var(--cream);
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800; font-size:16px;
-  border:2px solid var(--ink); box-shadow:var(--shadow-pop-sm);
-  flex:none;
-}
-
-/* marquee */
-.marquee{
-  margin:18px 0 0; background:var(--chartreuse);
-  border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);
-  overflow:hidden; white-space:nowrap;
-  padding:7px 0;
-}
-.marquee-track{display:inline-block; animation:marq 26s linear infinite}
-.marquee span{
-  font-family:var(--display); font-size:15px; letter-spacing:0.08em;
-  color:var(--on-bright); text-transform:uppercase;
-}
-.marquee .star{margin:0 14px; font-family:var(--sans); font-weight:800}
-@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* ticket */
-.section-label{margin:24px 22px 12px; display:flex; align-items:baseline; gap:10px}
-.lg .ticket{
-  margin:0 22px; position:relative;
-  background:var(--paper); border:2px solid var(--ink); border-radius:16px;
-  box-shadow:var(--shadow-pop);
-  display:flex;
-  overflow:hidden;
-  text-align:left; font-family:var(--sans); color:var(--ink); width:calc(100% - 44px);
-}
-.ticket-main{flex:1; padding:18px 14px 16px 18px; min-width:0; cursor:pointer; background:none; border:none; text-align:left; font-family:var(--sans); color:inherit}
-.ticket-main .display{font-size:33px; color:var(--ink)}
-.ticket-main:focus-visible{outline:3px solid var(--pink); outline-offset:-4px; border-radius:14px}
-.ticket-meta{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
-.lg .chip{
-  display:inline-flex; align-items:center; gap:6px;
-  font-size:12px; font-weight:700;
-  border:1.5px solid var(--ink); border-radius:999px;
-  padding:4px 10px; color:var(--ink); background:var(--paper);
-}
-.lg .chip.fill-pink{background:var(--pink); color:var(--paper)}
-.coach-dot{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex:none}
-.ticket-perf{
-  position:relative; width:0;
-  border-left:2px dashed var(--hairline-strong);
-}
-.ticket-perf::before,.ticket-perf::after{
-  content:""; position:absolute; left:-9px; width:16px; height:16px;
-  background:var(--paper-dim); border:2px solid var(--ink); border-radius:50%;
-}
-.ticket-perf::before{top:-10px}
-.ticket-perf::after{bottom:-10px}
-.ticket-stub{
-  width:104px; flex:none; padding:14px 12px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-  background:oklch(96% 0.04 108);
-}
-.ticket-stub .spot{font-family:var(--display); font-size:26px; color:var(--ink)}
-.ticket-stub .eyebrow{font-size:9px; text-align:center}
-.lg .ticket.empty{border-style:dashed; box-shadow:none; background:transparent}
-.lg .ticket.empty .ticket-stub{background:transparent}
-.lg .btn{
-  font-family:var(--sans); font-weight:800; font-size:13px; letter-spacing:0.03em;
-  border:2px solid var(--ink); border-radius:999px;
-  background:var(--pink); color:var(--paper);
-  padding:9px 16px; cursor:pointer;
-  box-shadow:var(--shadow-pop-sm);
-  transition:transform 0.12s var(--ease), box-shadow 0.12s var(--ease), background 0.15s;
-  text-transform:uppercase;
-  text-decoration:none; display:inline-block; text-align:center;
-  width:auto;
-}
-.lg .btn:active{transform:translate(3px,3px); box-shadow:0 0 0 var(--ink)}
-.lg .btn:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
-.lg .btn.ghost{background:var(--paper); color:var(--ink); border:2px solid var(--ink); box-shadow:var(--shadow-pop-sm)}
-.lg .btn.stamped{background:var(--chartreuse); color:var(--on-bright)}
-.lg .btn.sm{padding:7px 13px; font-size:11px; box-shadow:2px 2px 0 var(--ink)}
-.lg .btn.sm:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
-.lg .btn[disabled]{opacity:0.45; cursor:default; pointer-events:none}
-
-/* week strip */
-.week{
-  margin:0 22px; display:grid; grid-template-columns:repeat(7,1fr); gap:6px;
-}
-.day-cell{
-  text-align:center; padding:9px 0 7px;
-  border-radius:12px; border:1.5px solid transparent;
-  position:relative;
-}
-.day-cell .d{font-size:10px; font-weight:800; letter-spacing:0.1em; color:var(--ink-soft)}
-.day-cell .n{font-size:15px; font-weight:700; margin-top:2px}
-.day-cell.today{border-color:var(--ink); background:var(--paper); box-shadow:2px 2px 0 var(--ink)}
-.day-cell .stamp-star{
-  position:absolute; top:50%; left:50%; width:34px; height:34px;
-  transform:translate(-50%,-44%) rotate(12deg);
-  z-index:0;
-}
-.day-cell .d,.day-cell .n{position:relative; z-index:1}
-.day-cell.done .n{color:var(--ink)}
-
-/* poster rail */
-.rail{
-  display:flex; gap:14px; overflow-x:auto; padding:6px 22px 14px;
-  scrollbar-width:none; scroll-snap-type:x mandatory;
-}
-.rail::-webkit-scrollbar{display:none}
-.poster{
-  flex:none; width:150px; height:200px; border-radius:14px;
-  border:2px solid var(--ink); box-shadow:var(--shadow-pop);
-  padding:14px 13px; position:relative; overflow:hidden;
-  display:flex; flex-direction:column; justify-content:space-between;
-  cursor:pointer; scroll-snap-align:start;
-  transition:transform 0.15s var(--ease);
-  text-align:left; font-family:var(--sans);
-}
-.poster:active{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink)}
-.poster:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
-.poster .display{font-size:27px; word-break:break-word}
-.poster .ptime{font-size:11px; font-weight:800; letter-spacing:0.06em; opacity:0.85}
-.poster .pcoach{font-size:11px; font-weight:700; opacity:0.85}
-.poster.c-pink{background:var(--pink); color:var(--paper)}
-.poster.c-blue{background:var(--royal); color:var(--cream); box-shadow:4px 4px 0 var(--pink)}
-.poster.c-chartreuse{background:var(--chartreuse); color:var(--on-bright)}
-.poster.c-teal{background:var(--teal); color:var(--on-bright)}
-.poster .pburst{position:absolute; top:10px; right:10px; width:34px; height:34px; opacity:0.9}
-
-/* promo */
-.lg .promo{
-  margin:8px 22px 26px; position:relative;
-  background:var(--ink); color:var(--paper);
-  border-radius:16px; border:2px solid var(--ink);
-  padding:20px 110px 20px 20px;
-  box-shadow:4px 4px 0 var(--pink);
-  overflow:hidden;
-  display:block; width:calc(100% - 44px); text-align:left;
-  font-family:var(--sans); cursor:pointer;
-  height:auto; flex:0 1 auto;
-}
-.lg .promo:focus-visible{outline:3px solid var(--pink); outline-offset:3px}
-.lg .promo .display{font-size:26px}
-.lg .promo p{font-size:13px; font-weight:500; margin-top:7px; opacity:0.85; line-height:1.45; max-width:none}
-.lg .promo .aside{color:oklch(85% 0.06 100)}
-.lg .promo-burst{
-  position:absolute; right:-14px; top:50%; transform:translateY(-50%) rotate(8deg);
-  width:108px; height:108px;
-}
-.lg .promo-burst text{font-family:var(--display); font-size:30px}
-
-/* ============ CLASSES / SCHEDULE ============ */
-.sched-head{margin-top:10px}
-.sched-head .display{font-size:42px}
-.daychips{display:flex; gap:8px; overflow-x:auto; padding:16px 22px 4px; scrollbar-width:none}
-.daychips::-webkit-scrollbar{display:none}
-.daychip{
-  flex:none; border:2px solid var(--ink); border-radius:999px;
-  background:var(--paper); padding:8px 14px;
-  font-family:var(--sans); font-weight:800; font-size:12px; letter-spacing:0.05em;
-  color:var(--ink); cursor:pointer;
-  transition:background 0.15s, box-shadow 0.15s, transform 0.15s var(--ease);
-  text-transform:uppercase;
-}
-.daychip.sel{background:var(--chartreuse); color:var(--on-bright); box-shadow:2px 2px 0 var(--ink)}
-.daychip:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
-.timetable{margin:14px 0 10px}
-.trow{
-  display:flex; gap:14px; padding:14px 22px;
-  border-bottom:1.5px solid var(--hairline);
-  cursor:pointer; position:relative;
-  transition:background 0.15s;
-}
-.trow:active{background:oklch(96% 0.04 108)}
-.trow:last-child{border-bottom:none}
-.trow.ended{opacity:0.45}
-.t-time{width:62px; flex:none; padding-top:2px}
-.t-time .h{font-family:var(--display); font-size:19px; line-height:1}
-.t-time .ap{font-size:10px; font-weight:800; letter-spacing:0.1em; color:var(--ink-soft)}
-.t-main{flex:1; min-width:0}
-.t-name{font-size:17px; font-weight:800; letter-spacing:-0.01em; line-height:1.15}
-.t-meta{display:flex; align-items:center; gap:8px; margin-top:5px; font-size:12px; font-weight:600; color:var(--ink-soft); flex-wrap:wrap}
-.t-meta .cdot{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:1.5px solid var(--ink)}
-.lg .spots{display:inline-flex; align-items:center; gap:4px}
-.lg .spots i{width:7px;height:7px;border-radius:50%;background:var(--pink);display:inline-block}
-.t-act{flex:none; display:flex; align-items:center}
-.mini-stamp{
-  font-family:var(--display); font-size:13px; letter-spacing:0.06em;
-  background:var(--chartreuse); color:var(--on-bright);
-  border:2px solid var(--ink); border-radius:8px;
-  padding:5px 10px; transform:rotate(-4deg);
-  display:inline-block; text-transform:uppercase;
-}
-.mini-stamp.wl{background:var(--pink); color:var(--cream)}
-.full-tag{font-size:11px; font-weight:800; letter-spacing:0.08em; color:var(--ink-soft); text-transform:uppercase; text-align:right}
-.rest-state{padding:70px 40px; text-align:center}
-.rest-state .display{font-size:36px; margin-top:18px}
-.rest-state p{margin-top:10px; font-size:16px}
-
-/* ============ DETAIL SHEET ============ */
-.detail{
-  position:absolute; inset:0; z-index:70;
-  transform:translateY(102%);
-  transition:transform 0.3s var(--ease);
-  display:flex; flex-direction:column;
-  padding:64px 24px 30px;
-  overflow-y:auto; scrollbar-width:none;
-}
-.detail::-webkit-scrollbar{display:none}
-.detail.open{transform:translateY(0)}
-.detail.c-pink{background:var(--pink); color:var(--paper)}
-.detail.c-blue{background:var(--royal); color:var(--cream)}
-.detail.c-teal{background:var(--teal-deep); color:var(--cream)}
-.detail.c-chartreuse{background:var(--chartreuse); color:var(--on-bright)}
-.d-back{
-  width:42px; height:42px; border-radius:50%; flex:none;
-  border:2px solid currentColor; background:transparent; color:inherit;
-  display:flex; align-items:center; justify-content:center; cursor:pointer;
-  transition:transform 0.12s var(--ease);
-}
-.d-back:active{transform:scale(0.92)}
-.d-back:focus-visible{outline:3px solid currentColor; outline-offset:2px}
-.d-title{margin-top:26px}
-.d-title .display{font-size:64px; line-height:0.88}
-.d-title .outline{
-  color:transparent;
-  -webkit-text-stroke:2px currentColor;
-}
-.detail.c-pink .d-title .outline{-webkit-text-stroke-color:var(--paper)}
-.detail.c-blue .d-title .outline,.detail.c-teal .d-title .outline{-webkit-text-stroke-color:var(--cream)}
-.detail.c-chartreuse .d-title .outline{-webkit-text-stroke-color:var(--on-bright)}
-.d-when{margin-top:18px; font-size:14px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; opacity:0.95}
-.d-coachline{display:flex; align-items:center; gap:10px; margin-top:14px; font-size:15px; font-weight:700}
-.d-coachline .cdot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid currentColor}
-.d-effort{margin-top:22px; display:flex; align-items:center; gap:10px}
-.d-effort .eyebrow{color:inherit; opacity:0.75}
-.d-effort .stars{font-size:18px; letter-spacing:4px}
-.d-vibe{margin-top:24px}
-.d-vibe .eyebrow{color:inherit; opacity:0.75}
-.d-vibe p{font-family:var(--serif); font-style:italic; font-size:21px; line-height:1.35; max-width:30ch; margin-top:8px}
-.d-tags{display:flex; gap:8px; margin-top:20px; flex-wrap:wrap}
-.d-tags .chip{background:transparent; color:inherit; border-color:currentColor}
-.d-spacer{flex:1; min-height:26px}
-.lg .btn.d-book{
-  width:100%; padding:17px; font-size:16px;
-  background:var(--paper); color:var(--ink);
-  border:2px solid var(--ink); box-shadow:var(--shadow-pop);
-}
-.detail.c-chartreuse .btn.d-book{background:var(--on-bright); color:var(--chartreuse); box-shadow:4px 4px 0 var(--cream)}
-.lg .btn.d-book.stamped{background:var(--chartreuse); color:var(--on-bright)}
-.lg .btn.d-book[disabled]{opacity:0.55}
-.d-note{margin-top:12px; text-align:center; font-size:12px; font-weight:600; opacity:0.8}
-.d-actions{margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
-.d-linkbtn{
-  font-family:var(--sans); font-weight:800; font-size:11px; letter-spacing:0.06em;
-  text-transform:uppercase;
-  background:transparent; color:inherit;
-  border:2px solid currentColor; border-radius:999px;
-  padding:8px 14px; cursor:pointer;
-  transition:transform 0.12s var(--ease);
-}
-.d-linkbtn:active{transform:translate(1px,1px)}
-.d-linkbtn:focus-visible{outline:3px solid currentColor; outline-offset:2px}
-
-/* booked stamp overlay */
-.stamp-overlay{
-  position:absolute; top:38%; left:50%; z-index:88;
-  transform:translate(-50%,-50%) rotate(-9deg) scale(1.6);
-  opacity:0; pointer-events:none;
-}
-.stamp-overlay.show{
-  animation:stampdown 0.42s var(--ease) forwards;
-}
-@keyframes stampdown{
-  0%{opacity:0; transform:translate(-50%,-50%) rotate(-16deg) scale(1.7)}
-  60%{opacity:1; transform:translate(-50%,-50%) rotate(-9deg) scale(0.96)}
-  100%{opacity:1; transform:translate(-50%,-50%) rotate(-9deg) scale(1)}
-}
-.stamp-inner{
-  font-family:var(--display); font-size:44px; letter-spacing:0.04em;
-  color:var(--on-bright); background:var(--chartreuse);
-  border:3px solid var(--ink); border-radius:14px;
-  padding:10px 26px; box-shadow:6px 6px 0 var(--ink);
-  text-transform:uppercase;
-}
-
-/* ============ COACHES ============ */
-.coach-sub{margin-top:8px; font-size:19px}
-.coach-list{margin-top:22px}
-.coach-row{
-  display:flex; gap:16px; padding:20px 22px;
-  border-top:2px solid var(--ink);
-  align-items:flex-start;
-}
-.coach-row:last-of-type{border-bottom:2px solid var(--ink)}
-.coach-row.flip{flex-direction:row-reverse; text-align:right}
-.coach-row.flip .coach-tags{justify-content:flex-end}
-.coach-row.flip .coach-name-row{flex-direction:row-reverse}
-.coach-block{
-  width:88px; height:104px; flex:none; border-radius:14px;
-  border:2px solid var(--ink); box-shadow:var(--shadow-pop-sm);
-  display:flex; align-items:center; justify-content:center;
-  font-family:var(--display); font-size:44px;
-  position:relative; overflow:hidden;
-}
-.coach-info{flex:1; min-width:0}
-.coach-name-row{display:flex; align-items:center; gap:10px}
-.coach-info .display{font-size:30px}
-.coach-role{font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-soft); margin-top:5px}
-.coach-bio{font-size:13px; line-height:1.5; margin-top:8px; color:var(--ink); font-weight:500; max-width:42ch}
-.coach-tags{display:flex; gap:6px; margin-top:10px; flex-wrap:wrap}
-.coach-tags .chip{font-size:10px; padding:3px 9px}
-.fave{
-  background:none; border:none; cursor:pointer; padding:4px; flex:none;
-  transition:transform 0.15s var(--ease);
-}
-.fave:active{transform:scale(1.25)}
-.fave:focus-visible{outline:3px solid var(--pink); outline-offset:2px; border-radius:8px}
-.fave svg{display:block}
-.fave .heart-fill{fill:transparent; transition:fill 0.15s}
-.fave.on .heart-fill{fill:var(--pink)}
-
-/* ============ YOU ============ */
-.member-card{
-  margin:18px 22px 0; padding:20px;
-  background:var(--ink); color:var(--paper);
-  border-radius:18px; border:2px solid var(--ink);
-  box-shadow:4px 4px 0 var(--pink);
-  position:relative; overflow:hidden;
-}
-.member-card .display{font-size:30px}
-.mc-row{display:flex; justify-content:space-between; align-items:flex-end; margin-top:26px; gap:10px}
-.mc-label{font-size:9px; font-weight:800; letter-spacing:0.16em; opacity:0.6; text-transform:uppercase}
-.mc-val{font-size:14px; font-weight:700; margin-top:3px}
-.barcode{
-  margin-top:18px; height:34px; border-radius:4px;
-  background:repeating-linear-gradient(90deg,
-    var(--paper) 0 2px, transparent 2px 5px,
-    var(--paper) 5px 9px, transparent 9px 11px,
-    var(--paper) 11px 12px, transparent 12px 16px);
-  opacity:0.9;
-}
-.mc-spark{position:absolute; top:14px; right:16px; width:30px; height:30px}
-.bodied-line{margin:20px 22px 0; font-size:15px; font-weight:600; line-height:1.5}
-.bodied-line strong{font-weight:800}
-.sticker-book{
-  margin:14px 22px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
-}
-.sticker{
-  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
-  position:relative; text-align:center;
-  background:none; border:none; font-family:var(--sans); cursor:default;
-}
-.sticker.claimable{cursor:pointer}
-.sticker.claimable:focus-visible{outline:3px solid var(--pink); outline-offset:2px; border-radius:14px}
-.sticker svg{position:absolute; inset:0; width:100%; height:100%}
-.sticker .s-label{
-  position:relative; font-family:var(--display); font-size:11px; line-height:1.05;
-  text-transform:uppercase; max-width:62%; letter-spacing:0.03em;
-}
-.sticker.locked{opacity:0.55}
-.sticker.locked .s-label{color:var(--ink-soft); font-family:var(--sans); font-weight:800; font-size:10px}
-.plan-row,.settings-row{
-  margin:0 22px; padding:16px 4px;
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  border-bottom:1.5px solid var(--hairline);
-}
-.plan-row .pr-main{font-size:15px; font-weight:800}
-.plan-row .pr-sub{font-size:12px; font-weight:600; color:var(--ink-soft); margin-top:3px}
-.settings-row{
-  cursor:pointer; font-size:15px; font-weight:700;
-  width:calc(100% - 44px); background:none; border-top:none; border-left:none; border-right:none;
-  font-family:var(--sans); color:var(--ink); text-align:left;
-}
-.settings-row .arrow{color:var(--ink-soft); font-weight:800}
-.settings-row:focus-visible{outline:3px solid var(--pink); outline-offset:-3px; border-radius:10px}
-.studio-foot{margin:26px 22px 10px; text-align:center}
-.studio-foot .aside{font-size:17px}
-.studio-foot p{font-size:12px; font-weight:600; color:var(--ink-soft); margin-top:6px}
-
-/* ============ BOTTOM SHEETS (pricing, contact, etc.) ============ */
-.sheet-scrim{
-  position:absolute; inset:0; z-index:72;
-  background:oklch(15% 0.03 300 / 0.45);
-  opacity:0; pointer-events:none;
-  transition:opacity 0.25s var(--ease);
-  border:none; cursor:pointer;
-}
-.sheet-scrim.open{opacity:1; pointer-events:auto}
-.lg.sheet{
-  position:absolute; left:0; right:0; bottom:0; z-index:73;
-  max-height:82%;
-  background:var(--paper); color:var(--ink);
-  border:2px solid var(--ink); border-bottom:none;
-  border-radius:22px 22px 0 0;
-  transform:translateY(105%);
-  transition:transform 0.3s var(--ease);
-  display:flex; flex-direction:column;
-  padding:0; box-shadow:none; overflow:visible;
-}
-.lg.sheet.open{transform:translateY(0)}
-.sheet-grab{
-  width:44px; height:5px; border-radius:3px; background:var(--hairline-strong);
-  margin:12px auto 0; flex:none;
-}
-.sheet-body{
-  overflow-y:auto; scrollbar-width:none;
-  padding:14px 22px calc(26px + env(safe-area-inset-bottom, 0px));
-}
-.sheet-body::-webkit-scrollbar{display:none}
-.sheet-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:6px}
-.sheet-head .display{font-size:34px; margin-top:4px}
-.sheet-close{
-  width:38px; height:38px; border-radius:50%; flex:none;
-  border:2px solid var(--ink); background:var(--paper); color:var(--ink);
-  font-size:16px; font-weight:800; cursor:pointer;
-  box-shadow:2px 2px 0 var(--ink);
-  transition:transform 0.12s var(--ease), box-shadow 0.12s var(--ease);
-}
-.sheet-close:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
-.sheet-close:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
-.sheet-copy{font-size:14px; font-weight:500; line-height:1.55; margin-top:8px}
-.sheet-actions{display:flex; flex-direction:column; gap:12px; margin-top:18px}
-.lg .sheet-actions .btn{width:100%; padding:14px; font-size:14px}
-.sheet .section-label{margin-left:0; margin-right:0}
-
-/* pricing rows */
-.price-row{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:14px 0; border-bottom:1.5px solid var(--hairline);
-}
-.price-row .nm{font-size:15px; font-weight:800}
-.price-row .sb{font-size:12px; font-weight:600; color:var(--ink-soft); margin-top:2px}
-.price-row .pr{font-family:var(--display); font-size:24px; flex:none}
-.price-row .pr .per{font-family:var(--sans); font-size:12px; font-weight:700; color:var(--ink-soft)}
-.price-badge{
-  display:inline-block; font-family:var(--display); font-size:11px; letter-spacing:0.06em;
-  background:var(--chartreuse); color:var(--on-bright);
-  border:1.5px solid var(--ink); border-radius:6px;
-  padding:2px 8px; margin-left:8px; transform:rotate(-3deg);
-  text-transform:uppercase; vertical-align:2px;
-}
-.policy-line{font-size:12px; font-weight:600; color:var(--ink-soft); line-height:1.6; margin-top:14px}
-
-/* ============ ONBOARDING ============ */
-.onboard{
-  position:absolute; inset:0; z-index:76;
-  background:var(--paper); color:var(--ink);
-  display:flex; flex-direction:column;
-  padding:80px 26px calc(30px + env(safe-area-inset-bottom, 0px));
-  overflow-y:auto; scrollbar-width:none;
-  transition:opacity 0.3s var(--ease), transform 0.3s var(--ease);
-}
-.onboard::-webkit-scrollbar{display:none}
-.onboard.closing{opacity:0; transform:translateY(14px); pointer-events:none}
-.onboard[hidden]{display:none}
-.ob-title{font-size:64px; margin-top:10px}
-.ob-title .accent{color:var(--pink)}
-.ob-tag{font-size:19px; margin-top:12px}
-.ob-field{margin-top:30px}
-.ob-field label{display:block; margin-bottom:9px}
-.ob-input{
-  width:100%; padding:14px 16px;
-  font-family:var(--sans); font-size:17px; font-weight:700; color:var(--ink);
-  background:var(--paper); border:2px solid var(--ink); border-radius:14px;
-  box-shadow:var(--shadow-pop-sm);
-}
-.ob-input:focus{outline:3px solid var(--pink); outline-offset:2px}
-.ob-input::placeholder{color:var(--ink-soft); font-weight:500}
-.plan-chips{display:flex; flex-wrap:wrap; gap:8px}
-.plan-chip{
-  border:2px solid var(--ink); border-radius:999px;
-  background:var(--paper); color:var(--ink);
-  font-family:var(--sans); font-weight:800; font-size:12px; letter-spacing:0.03em;
-  padding:8px 13px; cursor:pointer;
-  transition:background 0.15s, box-shadow 0.15s;
-  text-transform:uppercase;
-}
-.plan-chip.sel{background:var(--chartreuse); color:var(--on-bright); box-shadow:2px 2px 0 var(--ink)}
-.plan-chip:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
-.ob-spacer{flex:1; min-height:26px}
-.lg .btn.ob-start{width:100%; padding:17px; font-size:16px}
-.ob-note{margin-top:12px; text-align:center; font-size:12px; font-weight:600; color:var(--ink-soft)}
-.ob-burst{position:absolute; top:66px; right:22px; width:74px; height:74px; transform:rotate(9deg)}
-
-/* ============ AFTER DARK (black + pink) ============ */
-[data-theme="dark"] .marquee{background:var(--pink); border-color:var(--pink)}
-[data-theme="dark"] .marquee span{color:var(--cream)}
-[data-theme="dark"] .ticket-stub{background:oklch(24% 0.05 350)}
-[data-theme="dark"] .ticket.empty .ticket-stub{background:transparent}
-[data-theme="dark"] .trow:active{background:oklch(22% 0.035 350)}
-[data-theme="dark"] .daychip.sel{background:var(--pink); color:var(--cream)}
-[data-theme="dark"] .plan-chip.sel{background:var(--pink); color:var(--cream)}
-[data-theme="dark"] .member-card{background:var(--pink); color:var(--cream); box-shadow:4px 4px 0 var(--ink)}
-[data-theme="dark"] .member-card .barcode{opacity:0.95}
-[data-theme="dark"] .lg .promo{background:oklch(25% 0.06 348); color:var(--ink)}
-[data-theme="dark"] .sheet-scrim{background:oklch(5% 0.02 340 / 0.6)}
-
-/* ============ MOBILE FULL-BLEED (the real app) ============ */
-@media (max-width:560px){
-  .detail{
-    padding-top:max(24px, env(safe-area-inset-top));
-    padding-bottom:calc(30px + env(safe-area-inset-bottom, 0px));
-  }
-  .onboard{padding-top:max(56px, calc(env(safe-area-inset-top) + 34px))}
-  .ob-burst{top:max(48px, calc(env(safe-area-inset-top) + 26px))}
-}
-@media (prefers-reduced-motion:reduce){
-  .marquee-track{animation:none}
 }
