@@ -769,7 +769,9 @@ function planLabel(){
 }
 
 /* ============ PRICING (concept-06) ============ */
-/* Nine plans, four groups. PLANS is one flat array — the tabs filter it. */
+/* Nine plans, four groups. PLANS is one flat array — the tabs filter it, then
+   sort by `order` so the list reads in the mockup's order regardless of how the
+   array happens to be arranged. */
 let ptab = PLAN_GROUPS[0].key;
 
 const PLAN_ICON = '<svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 4.5-9 4.5-9-4.5Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg>';
@@ -780,7 +782,9 @@ function renderPricing(){
     `<button class="${g.key === ptab ? 'on' : ''}" data-ptab="${g.key}" role="tab" aria-selected="${g.key === ptab}">${esc(g.label)}</button>`
   ).join('');
 
-  $('#plan-list').innerHTML = PLANS.filter(p => p.group === ptab).map(p => `
+  $('#plan-list').innerHTML = PLANS.filter(p => p.group === ptab)
+    .sort((a, b) => a.order - b.order)
+    .map(p => `
     <button class="plan${p.badge ? ' feature' : ''}" data-plan="${p.id}">
       ${p.badge ? `<span class="tag">${esc(p.badge)}</span>` : ''}
       ${PLAN_ICON}
