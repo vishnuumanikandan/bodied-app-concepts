@@ -1,5 +1,5 @@
 /* BODIED SJ · service worker — precache the shell, keep fonts, work offline */
-const CACHE = 'bodied-v1';
+const CACHE = 'bodied-v2';
 const SHELL = [
   './',
   'index.html',

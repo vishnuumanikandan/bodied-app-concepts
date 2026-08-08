@@ -1,8 +1,11 @@
 # BODIED SJ · The App
 
 The full BODIED SJ companion app — [bodiedsj.com](https://bodiedsj.com) in your pocket.
-Built from the approved **concept-01** design (riso-print poster energy: cream paper,
-royal-blue ink, hot pink, chartreuse stamps).
+Built from the approved **concept-06 "Studio Standard"** design: the structure of a
+boutique-fitness booking app wearing the BODIED SJ skin — cream paper, black type, hot
+pink doing every highlight, royal blue as the cooler second voice, and a full after-dark
+theme. No photography anywhere: coaches are initials on their brand colour, classes are
+flat colour fields.
 
 **[Open the app → index.html](https://vishnuumanikandan.github.io/bodied-app-concepts/)**
 
@@ -14,17 +17,21 @@ royal-blue ink, hot pink, chartreuse stamps).
 
 ## What it does
 
-- **Today** — real date & greeting, your next ticket with check-in, week stamp strip, poster rail, $7 trial promo
-- **Classes** — rolling 7-day schedule, book / cancel / waitlist, class detail sheets, add booked classes to your calendar (.ics)
-- **Coaches** — the headliners, favorites persist
-- **You** — member card, sticker book that earns itself from real attendance, real pricing, after-dark theme
+Five tabs:
+
+- **Home** — what's on at the club, your next reservation with check-in, the stamps you've earned
+- **Schedule** — rolling 7-day strip, filters, book / waitlist / cancel, class detail, add a booked class to your calendar (.ics)
+- **Pricing** — the nine real plans in four groups, what each includes, and the policy line
+- **Shop** — the studio sells nothing online yet, so this is an honest coming-soon state
+- **More** — your card, reservations, the stamp book, the four coaches (favourites persist), appearance, and the studio's address, phone, text and email
 - Everything is saved on-device (localStorage). No backend: payments & sign-up link out to the studio.
 
 ## Design concepts (the originals)
 
-Five interactive mockups live alongside the app — **[open the gallery → compare.html](https://vishnuumanikandan.github.io/bodied-app-concepts/compare.html)**
+Six interactive mockups live alongside the app — **[open the gallery → compare.html](https://vishnuumanikandan.github.io/bodied-app-concepts/compare.html)**
 
-Concept 01 was approved and became the app.
+Concept 01 ("Club Poster") was the app's first skin; concept 06 replaced it and is the
+binding system now. The mockups stay frozen as history.
 
 ## Docs
 

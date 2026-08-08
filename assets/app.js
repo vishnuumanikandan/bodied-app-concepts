@@ -101,33 +101,6 @@ function attendedList(){
 }
 
 /* ============ SHARED SNIPPETS ============ */
-const starSVG = `<svg class="stamp-star" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 1l2.4 6.1L20 8.4l-5 4.2 1.6 6.4L11 15.4 5.4 19l1.6-6.4-5-4.2 6.6-1.3z" fill="var(--chartreuse)" stroke="var(--ink)" stroke-width="1.6"/></svg>`;
-const burstSVG = `<svg class="pburst" viewBox="0 0 34 34" aria-hidden="true"><path d="M17 1l2 6 6-2-2 6 6 2-6 2 2 6-6-2-2 6-2-6-6 2 2-6-6-2 6-2-2-6 6 2z" fill="currentColor" opacity="0.85"/></svg>`;
-
-function showStamp(text){
-  $('#stamp-text').textContent = text;
-  const so = $('#stamp-overlay');
-  so.classList.remove('show');
-  void so.offsetWidth;
-  so.classList.add('show');
-  setTimeout(() => so.classList.remove('show'), 1600);
-}
-
-/* Countdown phrasing for the "Up next" aside */
-function countdownText(inst){
-  const now = new Date(), start = startOf(inst), end = endOf(inst);
-  if(now >= start && now <= end) return 'happening now';
-  const mins = Math.round((start - now) / 60000);
-  if(mins < 60) return `in ${Math.max(mins, 1)} min`;
-  if(inst.dateKey === todayKey()){
-    const hrs = Math.round(mins / 60);
-    return `in ${hrs} hour${hrs === 1 ? '' : 's'}`;
-  }
-  const days = Math.round((fromKey(inst.dateKey) - fromKey(todayKey())) / 86400000);
-  if(days <= 1) return 'mañana';
-  return `in ${days} days`;
-}
-
 function whenLabel(inst){
   const { t, ap } = time12(inst.h, inst.m);
   const dk = inst.dateKey, d = fromKey(dk);
@@ -139,20 +112,17 @@ function whenLabel(inst){
 
 /* ============ TABS ============ */
 /* Five tabs (concept-06): home · classes (labelled "Schedule") · pricing ·
-   shop · more. The legacy screens that outlive the port have no tab of their
-   own, so they light up the tab they will eventually fold into. */
-const TAB_FOR = { today: 'home', coaches: 'more', you: 'more' };
-
+   shop · more. */
 function tabTo(name){
   const screen = $('#screen-' + name);
   if(!screen) return;
-  const lit = TAB_FOR[name] || name;
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.screen === lit));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.screen === name));
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
   screen.scrollTop = 0;
   closeDetail();
-  closeSheet();
+  closeMoreFs();
+  closeSheet06();
 }
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => tabTo(tab.dataset.screen));
@@ -216,18 +186,18 @@ function renderHome(){
     const ci = $('#home-checkin');
     if(ci && canCheckIn) ci.addEventListener('click', () => {
       checkIn(inst.key);
-      showStamp('Bodied!');
       renderAll();
+      toast("Checked in. Bodied, mami.");
     });
   }
 
   renderHomeStamps();
 }
 
-/* Stamps on home come from real attendance, not the mockup's fixed twelve.
-   Everything earned, then the next two still locked — "Show all" is the
-   full book, and it lands in More when More is ported. */
-function renderHomeStamps(){
+/* Stamps come from real attendance, not the mockup's fixed twelve. The whole
+   book lives in More → Stamps & milestones; home shows everything earned plus
+   the next two still locked. */
+function stampBook(){
   const attended = attendedList();
   const n = attended.length;
   const sixam = attended.some(a => a.h === 6);
@@ -239,6 +209,11 @@ function renderHomeStamps(){
   MILESTONES.filter(m => m > 1).forEach(m => (n >= m ? got : locked).push(`${m} bodied`));
   (pilates >= 5 ? got : locked).push('Pilates era');
   (state.friendSticker ? got : locked).push('Brought a friend');
+  return { n, got, locked };
+}
+
+function renderHomeStamps(){
+  const { n, got, locked } = stampBook();
 
   const tile = (label, cls) => `<div class="stamp${cls}">${esc(label).replace(' ', '<br>')}</div>`;
   $('#home-stamps').innerHTML =
@@ -258,158 +233,7 @@ $('#carousel').addEventListener('scroll', () => {
   document.querySelectorAll('#dots i').forEach((d, n) => d.classList.toggle('on', n === Math.min(1, i)));
 });
 
-/* ============ TODAY ============ */
-function renderTodayHead(){
-  const now = new Date();
-  $('#today-date').textContent = `${DAY_FULL[now.getDay()]}, ${MON_FULL[now.getMonth()]} ${now.getDate()}`;
-  const h = now.getHours();
-  const salute = h < 12 ? 'Buenos días' : h < 18 ? 'Buenas tardes' : 'Buenas noches';
-  const name = state.profile ? state.profile.name : 'mami';
-  const first = name.split(/\s+/)[0];
-  $('#greeting').innerHTML = `${salute},<br><em>${esc(first)}</em>`;
-  const initials = name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'B';
-  $('#avatar').textContent = initials;
-}
-
-function nextBookings(){
-  const now = new Date();
-  return Object.entries(state.bookings)
-    .map(([key, b]) => ({ inst: instFromKey(key), b }))
-    .filter(x => x.inst && endOf(x.inst) >= now)
-    .sort((a, z) => startOf(a.inst) - startOf(z.inst));
-}
-
-function renderUpNext(){
-  const wrap = $('#upnext-wrap');
-  const next = nextBookings()[0];
-  if(!next){
-    wrap.innerHTML = `
-      <div class="section-label"><span class="eyebrow">Up next</span></div>
-      <div class="ticket empty">
-        <div class="ticket-main">
-          <div class="display" style="font-size:28px">Nothing<br>booked</div>
-          <div class="ticket-meta"><span class="aside" style="font-size:15px">your next class is waiting, mami</span></div>
-        </div>
-        <div class="ticket-perf" aria-hidden="true"></div>
-        <div class="ticket-stub"><button class="btn sm" id="goto-classes">Book</button></div>
-      </div>`;
-    $('#goto-classes').addEventListener('click', () => tabTo('classes'));
-    return;
-  }
-  const { inst, b } = next;
-  const c = CLASSES[inst.id];
-  const { t, ap } = time12(inst.h, inst.m);
-  const now = new Date();
-  const canCheckIn = b.status === 'booked' && now >= new Date(startOf(inst).getTime() - 60 * 60000) && now <= endOf(inst);
-
-  let stub;
-  if(b.status === 'attended'){
-    stub = `<div><div class="eyebrow">Spot</div><div class="spot">${pad(b.spot || 1)}</div></div>
-            <button class="btn sm stamped" disabled>In ★</button>`;
-  } else if(b.status === 'waitlist'){
-    stub = `<div><div class="eyebrow">Waitlist</div><div class="spot">#${b.pos}</div></div>
-            <button class="btn sm ghost" disabled>In line</button>`;
-  } else {
-    stub = `<div><div class="eyebrow">Spot</div><div class="spot">${pad(b.spot)}</div></div>
-            <button class="btn sm" id="checkin-btn" ${canCheckIn ? '' : 'disabled title="Check-in opens 1 hour before class"'}>Check in</button>`;
-  }
-  wrap.innerHTML = `
-    <div class="section-label">
-      <span class="eyebrow">Up next</span>
-      <span class="aside" style="font-size:15px">${countdownText(inst)}</span>
-    </div>
-    <div class="ticket">
-      <button class="ticket-main" data-key="${inst.key}">
-        <div class="display">${c.lines.join('<br>')}</div>
-        <div class="ticket-meta">
-          <span class="chip">${whenLabel(inst)} · ${inst.dur} min</span>
-          <span class="chip">${coachDotSmall(inst.coach)}${inst.coach}</span>
-        </div>
-      </button>
-      <div class="ticket-perf" aria-hidden="true"></div>
-      <div class="ticket-stub">${stub}</div>
-    </div>`;
-  wrap.querySelector('.ticket-main').addEventListener('click', () => openDetail(inst));
-  const ci = $('#checkin-btn');
-  if(ci) ci.addEventListener('click', e => {
-    e.stopPropagation();
-    checkIn(inst.key);
-    showStamp('Bodied!');
-    renderAll();
-  });
-}
-function coachDotSmall(name){
-  const c = COACH_COLORS[name];
-  return `<span class="coach-dot" style="background:${c.bg};color:${c.fg}">${name[0]}</span>`;
-}
-
-function renderWeekStrip(){
-  const now = new Date();
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-  const attendedDays = new Set(attendedList().map(a => a.dateKey));
-  const cells = [];
-  for(let i = 0; i < 7; i++){
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    const dk = dateKeyOf(d);
-    const done = attendedDays.has(dk);
-    const isToday = dk === todayKey();
-    cells.push(`<div class="day-cell ${done ? 'done' : ''} ${isToday ? 'today' : ''}">
-      ${done ? starSVG : ''}
-      <div class="d">${DAY_ABBR[d.getDay()][0]}</div><div class="n">${d.getDate()}</div>
-    </div>`);
-  }
-  $('#week-strip').innerHTML = cells.join('');
-}
-
-function renderPosterRail(){
-  const now = new Date();
-  const upcoming = [];
-  for(const id of Object.keys(CLASSES)){
-    let found = null;
-    for(let i = 0; i < 7 && !found; i++){
-      const d = new Date(); d.setDate(d.getDate() + i);
-      const day = instancesFor(d);
-      if(day === 'rest') continue;
-      found = day.find(inst => inst.id === id && startOf(inst) >= now) || null;
-    }
-    if(found) upcoming.push(found);
-  }
-  upcoming.sort((a, z) => startOf(a) - startOf(z));
-  $('#poster-rail').innerHTML = upcoming.map(inst => {
-    const c = CLASSES[inst.id];
-    const { t, ap } = time12(inst.h, inst.m);
-    const d = fromKey(inst.dateKey);
-    const days = Math.round((d - fromKey(todayKey())) / 86400000);
-    const dayTag = days === 0 ? 'TODAY' : days === 1 ? 'MAÑANA' : DAY_ABBR[d.getDay()];
-    return `<button class="poster ${c.color}" data-key="${inst.key}">
-      ${burstSVG}
-      <span class="ptime">${dayTag} ${t} ${ap}</span>
-      <span>
-        <span class="display">${c.lines.join('<br>')}</span>
-        <span class="pcoach" style="display:block;margin-top:6px">with ${inst.coach}</span>
-      </span>
-    </button>`;
-  }).join('');
-  document.querySelectorAll('#poster-rail .poster').forEach(p => {
-    p.addEventListener('click', () => openDetail(instCache[p.dataset.key]));
-  });
-}
-
 /* ============ CONCEPT-06 CONTENT BRIDGES ============ */
-/* data.js is content-only and fenced. These maps carry the presentation
-   facts concept-06 needs that have no field in data.js. */
-
-/* DESIGN.md §3 "Imagery": each class is a flat colour field. */
-const CLASS_HERO = {
-  'full-body-hiit': '#15358E',
-  'booty-abs': '#FD47AC',
-  'arms-abs': '#DB998B',
-  'pilates-sculpt': '#16D5CC',
-  'mommy-me': '#16D5CC',
-  'muscle-mami': '#FD47AC',
-};
 /* Bright fills take dark text; everything else takes cream. */
 const BRIGHT_HERO = ['#E3F223', '#16D5CC'];
 /* data.js scores effort 1-4; concept-06 prints a word. */
@@ -423,7 +247,7 @@ function fmt06(h, m){
   const hh = h % 12 === 0 ? 12 : h % 12;
   return `${hh}:${pad(m)}${ap}`;
 }
-/* "Today · 6:00am" — sentence case, unlike the LEGACY-01 whenLabel(). */
+/* "Today · 6:00am" — sentence case, unlike whenLabel()'s tracked caps. */
 function when06(inst){
   const d = fromKey(inst.dateKey);
   const days = Math.round((d - fromKey(todayKey())) / 86400000);
@@ -446,8 +270,8 @@ function toast(msg){
    booking horizon is the same seven days whatever the weekday, and no listed
    day is ever in the past. `selDay` is an offset from today, 0..6, held
    against the date it was picked on. In-memory only — nothing persists.
-   (Concept-06 draws a fixed Sun–Sat week; this is a reviewed deviation, to
-   be recorded in DESIGN.md during PORT-3.) */
+   (Concept-06 draws a fixed Sun–Sat week; the rolling window is a recorded
+   deviation — see DESIGN.md.) */
 let seg = 'classes';
 let filters = { coach: null, cls: null, time: null };
 let selDay = 0;
@@ -483,7 +307,7 @@ function rowState(inst){
   if(startOf(inst) <= now) return 'live';    /* in progress */
   return seededLeft(inst.key) === 0 ? 'full' : 'open';
 }
-/* The detail foot keeps the LEGACY-01 precedence: a class you attended still
+/* The detail foot has its own precedence: a class you attended still
    says so after it ends, and an ended reservation loses its cancel button. */
 function footState(inst){
   const b = bookingOf(inst.key);
@@ -622,9 +446,9 @@ document.querySelectorAll('#seg button').forEach(b => b.addEventListener('click'
   renderSchedule();
 }));
 
-/* ============ CONCEPT-06 BOTTOM SHEET ============ */
-/* Its own surface: the LEGACY-01 #sheet still carries pricing / contact /
-   payment / profile until PORT-3. */
+/* ============ BOTTOM SHEET ============ */
+/* One surface for every sheet in the app: filters, booking confirmation,
+   plan details, name & plan. None of them push a history entry. */
 const c6sheet = $('#confirm-sheet'), c6scrim = $('#scrim');
 
 function openSheet06(html){
@@ -692,7 +516,7 @@ let detailInst = null;
 let detailPushed = false;
 
 const FOOT = {
-  attended: { cls: 'btn', label: 'Checked in', off: true, note: "This one's in your sticker book." },
+  attended: { cls: 'btn', label: 'Checked in', off: true, note: "This one's in your stamp book." },
   ended:    { cls: 'btn', label: 'Class ended', off: true, note: 'Catch the next one — same energy.' },
   live:     { cls: 'btn', label: 'Class in progress', off: true, note: 'This one is already running. Catch the next one.' },
   booked:   { cls: 'btn ghost', label: 'Cancel this reservation' },
@@ -705,7 +529,7 @@ function detailBodyHTML(inst){
   const c = CLASSES[inst.id];
   const col = COACH_COLORS[inst.coach];
   const coach = COACHES.find(x => x.name === inst.coach);
-  const hero = CLASS_HERO[inst.id];
+  const hero = c.hero;
   const left = seededLeft(inst.key);
   const full = left === 0;
   return `
@@ -925,35 +749,7 @@ function downloadICS(inst){
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
 }
 
-/* ============ COACHES ============ */
-function renderCoaches(){
-  $('#coach-list').innerHTML = COACHES.map((c, i) => {
-    const col = COACH_COLORS[c.name];
-    const on = !!state.faves[c.name];
-    return `<div class="coach-row ${i % 2 ? 'flip' : ''}">
-      <div class="coach-block" style="background:${col.bg};color:${col.fg}">${c.name[0]}</div>
-      <div class="coach-info">
-        <div class="coach-name-row">
-          <span class="display">${c.name}</span>
-          <button class="fave ${on ? 'on' : ''}" data-name="${c.name}" aria-label="Favorite ${c.name}" aria-pressed="${on}">
-            <svg width="20" height="20" viewBox="0 0 20 20"><path class="heart-fill" d="M10 17.5C5 13.5 2 10.6 2 7.3 2 4.9 3.9 3 6.3 3c1.5 0 2.9 0.8 3.7 2 0.8-1.2 2.2-2 3.7-2C16.1 3 18 4.9 18 7.3c0 3.3-3 6.2-8 10.2z" stroke="var(--ink)" stroke-width="1.8"/></svg>
-          </button>
-        </div>
-        <div class="coach-role">${c.role}</div>
-        <div class="coach-bio">${c.bio}</div>
-        <div class="coach-tags">${c.tags.map(t => `<span class="chip">${t}</span>`).join('')}</div>
-      </div>
-    </div>`;
-  }).join('');
-  document.querySelectorAll('.fave').forEach(f => f.addEventListener('click', () => {
-    state.faves[f.dataset.name] = !state.faves[f.dataset.name];
-    save();
-    f.classList.toggle('on', state.faves[f.dataset.name]);
-    f.setAttribute('aria-pressed', String(!!state.faves[f.dataset.name]));
-  }));
-}
-
-/* ============ YOU ============ */
+/* ============ MEMBERSHIP HELPERS ============ */
 function planById(id){ return PLANS.find(p => p.id === id) || PLANS[0]; }
 
 function trialDay(){
@@ -962,231 +758,305 @@ function trialDay(){
   return Math.floor((fromKey(todayKey()) - since) / 86400000) + 1;
 }
 
-function renderYou(){
-  if(!state.profile) return;
+/* What the profile card calls the member's plan. The trial is the one plan
+   that reads as a countdown rather than a name. */
+function planLabel(){
+  if(!state.profile) return '';
+  const plan = planById(state.profile.plan);
+  if(plan.id !== 'trial') return plan.short;
+  const d = trialDay();
+  return d > 7 ? 'Trial · ended' : `Trial · day ${d} of 7`;
+}
+
+/* ============ PRICING (concept-06) ============ */
+/* Nine plans, four groups. PLANS is one flat array — the tabs filter it, then
+   sort by `order` so the list reads in the mockup's order regardless of how the
+   array happens to be arranged. */
+let ptab = PLAN_GROUPS[0].key;
+
+const PLAN_ICON = '<svg class="picon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 4.5-9 4.5-9-4.5Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg>';
+const CHECK_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+
+function renderPricing(){
+  $('#ptabs').innerHTML = PLAN_GROUPS.map(g =>
+    `<button class="${g.key === ptab ? 'on' : ''}" data-ptab="${g.key}" role="tab" aria-selected="${g.key === ptab}">${esc(g.label)}</button>`
+  ).join('');
+
+  $('#plan-list').innerHTML = PLANS.filter(p => p.group === ptab)
+    .sort((a, b) => a.order - b.order)
+    .map(p => `
+    <button class="plan${p.badge ? ' feature' : ''}" data-plan="${p.id}">
+      ${p.badge ? `<span class="tag">${esc(p.badge)}</span>` : ''}
+      ${PLAN_ICON}
+      <h3>${esc(p.name)}</h3>
+      <div class="priceline">
+        <span class="circ" aria-hidden="true">$</span>
+        <b>${esc(p.price)}</b>
+        <span>${esc(p.per)}</span>
+      </div>
+      <span class="details">Details</span>
+    </button>`).join('');
+
+  $('#policy').textContent = PRICING_POLICY;
+
+  /* No payments in-app, ever: joining links out to the studio. */
+  $('#pricing-join').innerHTML = `
+    <a class="btn" href="${STUDIO.site}" target="_blank" rel="noopener">Join at bodiedsj.com</a>
+    <a class="btn ghost" style="margin-top:10px" href="${STUDIO.tel}">Call the studio</a>
+    <p class="policy" style="text-align:center">Plans are set up at the front desk or on bodiedsj.com — nothing is ever charged through this app.</p>`;
+}
+
+$('#ptabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-ptab]');
+  if(!b) return;
+  ptab = b.dataset.ptab;
+  renderPricing();
+  $('#screen-pricing').scrollTop = 0;
+});
+$('#plan-list').addEventListener('click', e => {
+  const el = e.target.closest('[data-plan]');
+  if(el) openPlanSheet(planById(el.dataset.plan));
+});
+
+function openPlanSheet(p){
+  openSheet06(`
+    <h2>${esc(p.name)}</h2>
+    <div class="priceline" style="margin-top:12px">
+      <span class="circ" aria-hidden="true">$</span><b>${esc(p.price)}</b><span>${esc(p.per)}</span>
+    </div>
+    <div class="incl">
+      ${p.incl.map(x => `<div>${CHECK_ICON}<span>${esc(x)}</span></div>`).join('')}
+    </div>
+    <a class="btn" href="${STUDIO.site}" target="_blank" rel="noopener">Get this plan</a>
+    <p class="policy" style="padding-top:14px">${esc(PRICING_POLICY)}</p>`);
+}
+
+/* ============ MORE (concept-06) ============ */
+/* Carries the profile card, the coaches and the stamp book. */
+
+/* Every place still held — booked or waitlisted, class not over yet. */
+function myBookings(){
+  const now = new Date();
+  return Object.entries(state.bookings)
+    .filter(([, b]) => b.status === 'booked' || b.status === 'waitlist')
+    .map(([key, b]) => ({ inst: instFromKey(key), b }))
+    .filter(x => x.inst && endOf(x.inst) > now)
+    .sort((a, z) => startOf(a.inst) - startOf(z.inst));
+}
+
+function renderMore(){
   const p = state.profile;
-  const plan = planById(p.plan);
-  $('#you-name').textContent = p.name;
-  const since = fromKey(p.since);
-  $('#mc-since').textContent = `Member since ${MON_SHORT[since.getMonth()]} ${since.getFullYear()}`;
-  let planVal = plan.short;
-  if(plan.id === 'trial'){
-    const d = trialDay();
-    planVal = d > 7 ? 'Trial · ended' : `Trial · day ${d} of 7`;
-  }
-  $('#mc-plan').textContent = planVal;
-  $('#mc-no').textContent = p.no;
-
-  const attended = attendedList();
-  const n = attended.length;
-  const line = $('#bodied-line');
-  if(n === 0){
-    line.innerHTML = `<strong>Zero classes bodied — for now.</strong> Your first stamp is one booking away, mami.`;
+  const first = (p ? p.name : 'mami').split(/\s+/)[0];
+  $('#pc-av').textContent = (first[0] || 'B').toUpperCase();
+  $('#pc-name').textContent = `Hey, ${first}`;
+  if(p){
+    const since = fromKey(p.since);
+    $('#pc-plan').textContent = `${planLabel()} · since ${MON_SHORT[since.getMonth()]} ${since.getFullYear()}`;
   } else {
-    line.innerHTML = `<strong>${n} class${n === 1 ? '' : 'es'} bodied</strong> since ${MON_FULL[since.getMonth()]}. Valeria says you're not allowed to stop now.`;
+    $('#pc-plan').textContent = '';
   }
 
-  renderStickers(attended);
+  $('#res-count').textContent = myBookings().length;
+  $('#stamp-total').textContent = stampBook().got.length;
 
-  /* membership row */
-  if(plan.id === 'trial'){
-    const d = trialDay();
-    $('#plan-main').textContent = '7 days for $7';
-    $('#plan-sub').textContent = d > 7 ? 'Trial over · pick a plan, mami' : `Day ${d} of 7 · then from $102/mo`;
-  } else {
-    $('#plan-main').textContent = `${plan.short} · ${plan.price}${plan.per}`;
-    $('#plan-sub').textContent = plan.id === 'pack-20' ? '20 classes · 6-month expiry' : 'Renews monthly · pause anytime by email';
-  }
+  $('#more-info').innerHTML = `
+    <a class="infoblock" href="${STUDIO.maps}" target="_blank" rel="noopener">
+      <div class="k">Address</div><div class="v">${esc(STUDIO.addr)}</div></a>
+    <a class="infoblock" href="${STUDIO.tel}">
+      <div class="k">Call</div><div class="v">${esc(STUDIO.phone)}</div></a>
+    <a class="infoblock" href="${STUDIO.sms}">
+      <div class="k">Text</div><div class="v">${esc(STUDIO.text)}</div></a>
+    <a class="infoblock" href="mailto:${STUDIO.email}">
+      <div class="k">Email</div><div class="v">${esc(STUDIO.email)}</div></a>`;
+
+  $('#more-foot').innerHTML =
+    `${esc(STUDIO.name)} · ${esc(STUDIO.addr)}<br>Booking lives on this phone. Payments &amp; sign-up happen at bodiedsj.com or in studio.`;
 }
 
-function stickerSVG(s){
-  if(s.shape === 'dashed') return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="var(--ink-soft)" stroke-width="2" stroke-dasharray="6 6"/></svg>`;
-  if(s.shape === 'burst') return `<svg viewBox="0 0 100 100" style="transform:rotate(${s.rot}deg)"><path d="M50 4l7 15 15-7-3 16 17 2-10 13 14 9-15 6 6 15-16-3-2 17-13-11-9 14-6-15-15 6 3-16-17-2 11-13-14-9 16-6-6-15 16 3 2-17 13 11z" fill="${s.color}" stroke="var(--ink)" stroke-width="2.5"/></svg>`;
-  if(s.shape === 'star') return `<svg viewBox="0 0 100 100" style="transform:rotate(${s.rot}deg)"><path d="M50 5l11 28 30 2-23 19 8 29-26-17-26 17 8-29L9 35l30-2z" fill="${s.color}" stroke="var(--ink)" stroke-width="2.5"/></svg>`;
-  return `<svg viewBox="0 0 100 100" style="transform:rotate(${s.rot}deg)"><circle cx="50" cy="50" r="44" fill="${s.color}" stroke="var(--ink)" stroke-width="2.5"/></svg>`;
-}
+/* ---- More's sub-screens: reservations · stamps · coaches ---- */
+const moreFs = $('#more-fs');
+let moreFsName = null;
 
-function renderStickers(attended){
-  const n = attended.length;
-  const sixam = attended.some(a => a.h === 6);
-  const pilates = attended.filter(a => a.id === 'pilates-sculpt').length;
-  const palette = [
-    { color: 'var(--pink)', text: 'var(--paper)' },
-    { color: 'var(--chartreuse)', text: 'var(--on-bright)' },
-    { color: 'var(--ink)', text: 'var(--paper)' },
-    { color: 'var(--teal)', text: 'var(--on-bright)' },
-  ];
-  const shapes = ['burst', 'circle', 'star'];
-  const earned = [];
-  if(n >= 1) earned.push({ label: 'First class', shape: 'burst', ...palette[0], rot: -5 });
-  if(sixam) earned.push({ label: '6AM club', shape: 'circle', ...palette[1], rot: 4 });
-  MILESTONES.filter(m => m > 1 && n >= m).forEach((m, i) => {
-    earned.push({ label: `${m} bodied`, shape: shapes[(i + 2) % 3], ...palette[(i + 2) % 4], rot: i % 2 ? 5 : -4 });
-  });
-  if(pilates >= 5) earned.push({ label: 'Pilates era', shape: 'circle', ...palette[3], rot: 6 });
-  if(state.friendSticker) earned.push({ label: 'Brought a friend', shape: 'burst', ...palette[1], rot: -7 });
+const HEART = '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="heart" d="M12 20.5C6.5 16.2 3.5 13.1 3.5 9.6 3.5 7 5.6 4.9 8.2 4.9c1.6 0 3 .8 3.8 2 .8-1.2 2.2-2 3.8-2 2.6 0 4.7 2.1 4.7 4.7 0 3.5-3 6.6-8.5 10.9Z" stroke-width="1.8" stroke-linejoin="round"/></svg>';
 
-  const locked = [];
-  if(n < 1) locked.push({ label: 'First class', hint: 'book one' });
-  if(!sixam) locked.push({ label: '6AM club', hint: 'attend a 6AM' });
-  if(pilates < 5) locked.push({ label: 'Pilates era', hint: `${5 - pilates} pilates to go` });
-  const nextM = MILESTONES.find(m => m > n && m > 1);
-  if(nextM) locked.push({ label: `${nextM} bodied`, hint: `${nextM - n} to go` });
-
-  let html = earned.map(s => `
-    <div class="sticker">
-      ${stickerSVG(s)}
-      <span class="s-label" style="color:${s.text};transform:rotate(${s.rot}deg)">${s.label}</span>
-    </div>`).join('');
-  if(!state.friendSticker){
-    html += `<button class="sticker locked claimable" id="claim-friend" title="Tap to claim when you bring a friend">
-      ${stickerSVG({ shape: 'dashed' })}
-      <span class="s-label">Brought a friend? tap it</span>
-    </button>`;
-  }
-  html += locked.map(s => `
-    <div class="sticker locked">
-      ${stickerSVG({ shape: 'dashed' })}
-      <span class="s-label">${s.label} · ${s.hint}</span>
-    </div>`).join('');
-  $('#sticker-book').innerHTML = html;
-  const claim = $('#claim-friend');
-  if(claim) claim.addEventListener('click', () => {
-    state.friendSticker = true;
-    save();
-    showStamp('Claimed!');
-    renderYou();
-  });
-}
-
-/* ============ BOTTOM SHEETS ============ */
-const sheet = $('#sheet'), sheetBody = $('#sheet-body'), sheetScrim = $('#sheet-scrim');
-
-function sheetHead(eyebrow, title){
-  return `<div class="sheet-head">
-    <div><div class="eyebrow">${eyebrow}</div><div class="display">${title}</div></div>
-    <button class="sheet-close" aria-label="Close">✕</button>
-  </div>`;
-}
-
-const SHEETS = {
-  pricing(){
-    const rows = PLANS.map(p => `
-      <div class="price-row">
-        <span><div class="nm">${p.name}${p.badge ? `<span class="price-badge">${p.badge}</span>` : ''}</div><div class="sb">${p.sub}</div></span>
-        <span class="pr">${p.price}<span class="per">${p.per}</span></span>
-      </div>`).join('');
-    return `${sheetHead('Membership', 'Pick your plan')}
-      ${rows}
-      <p class="policy-line">${PRICING_POLICY}</p>
-      <div class="sheet-actions">
-        <a class="btn" href="${STUDIO.site}" target="_blank" rel="noopener">Join at bodiedsj.com</a>
-        <a class="btn ghost" href="${STUDIO.tel}">Call the studio</a>
-      </div>
-      <p class="policy-line" style="text-align:center">Purchases happen on the site or in studio — this app keeps your spot.</p>`;
-  },
-  contact(){
-    return `${sheetHead('Help & contact', 'Say hi')}
-      <p class="sheet-copy">The front desk answers fast — for anything about your plan, bookings, or bringing your little one along.</p>
-      <p class="sheet-copy"><strong>${STUDIO.addr}</strong><br>${STUDIO.phone}<br>${STUDIO.email}</p>
-      <div class="sheet-actions">
-        <a class="btn" href="${STUDIO.tel}">Call ${STUDIO.phone}</a>
-        <a class="btn ghost" href="${STUDIO.maps}" target="_blank" rel="noopener">Directions to Lincoln Ave</a>
-        <a class="btn ghost" href="mailto:${STUDIO.email}">Email us</a>
-      </div>
-      <p class="policy-line" style="text-align:center"><span class="aside" style="font-size:15px">see you on the floor, mami.</span></p>`;
-  },
-  payment(){
-    return `${sheetHead('Membership', 'Payments')}
-      <p class="sheet-copy">Your plan and payments are handled by BODIED SJ directly — nothing is ever charged through this app.</p>
-      <p class="sheet-copy">To start, change, pause, or cancel a plan: grab it on the site, call, or email <strong>${STUDIO.email}</strong>.</p>
-      <div class="sheet-actions">
-        <a class="btn" href="${STUDIO.site}" target="_blank" rel="noopener">Manage at bodiedsj.com</a>
-        <a class="btn ghost" href="${STUDIO.tel}">Call the studio</a>
+const MORE_FS = {
+  reservations(){
+    const mine = myBookings();
+    if(!mine.length){
+      return { title: 'My reservations', html: `<div class="restday" style="padding-top:60px">
+        <div class="glyph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></div>
+        <h3>Nothing booked</h3>
+        <p>Your reserved classes show up here. Claim one and it's yours.</p>
+      </div>` };
+    }
+    return { title: 'My reservations', html: `<div class="pad">${mine.map(({ inst, b }) => {
+      const c = CLASSES[inst.id];
+      const col = COACH_COLORS[inst.coach];
+      const wait = b.status === 'waitlist';
+      return `<div class="card hi rescard" style="margin-bottom:12px">
+        <div class="stripe"${wait ? ' style="background:var(--royal)"' : ''}></div>
+        <div class="row">
+          <div class="av" style="background:${col.bg};color:${col.fg};width:44px;height:44px;font-size:16px">${esc(inst.coach[0])}</div>
+          <div style="flex:1;min-width:0">
+            <div class="when">${wait ? `Waitlist · no. ${b.pos}` : whenLabel(inst)}</div>
+            <h3>${esc(className(inst.id))}</h3>
+            <div class="meta">${esc(inst.coach)} · ${inst.dur} min</div>
+          </div>
+        </div>
+        <div class="acts"><button data-open="${inst.key}">Details</button></div>
       </div>`;
+    }).join('')}</div>` };
   },
-  notifications(){
-    return `${sheetHead('Reminders', 'Never miss it')}
-      <p class="sheet-copy">The reminder that always works: put the class on your calendar.</p>
-      <p class="sheet-copy">Open any <strong>booked ticket</strong> and tap <strong>+ Add to calendar</strong> — your phone pings you 2 hours before class. No permissions, no spam.</p>
-      <div class="sheet-actions">
-        <button class="btn" id="nf-go">See my next ticket</button>
-      </div>`;
+
+  stamps(){
+    const { n, got, locked } = stampBook();
+    const since = state.profile ? fromKey(state.profile.since) : null;
+    const nextM = MILESTONES.find(m => m > n && m > 1);
+    const line = n === 0
+      ? 'Your first stamp is one booking away, mami.'
+      : nextM
+        ? `${nextM - n} more and you hit the ${nextM} club. Consistency is the whole thing, mami.`
+        : "Every stamp in the book. Valeria says you're not allowed to stop now.";
+    const tile = label => `<div class="stamp got">${esc(label).replace(' ', '<br>')}</div>`;
+    const lockedTile = label => label === 'Brought a friend'
+      ? `<button class="stamp" id="claim-friend" title="Tap to claim when you bring a friend">Brought<br>a friend</button>`
+      : `<div class="stamp">${esc(label).replace(' ', '<br>')}</div>`;
+    return { title: 'Stamps & milestones', html: `
+      <div class="pad">
+        <div class="card" style="margin-bottom:16px">
+          <div class="progline"><b>${n}</b><span>${since ? `classes bodied since ${MON_FULL[since.getMonth()]}` : 'classes bodied'}</span></div>
+          <p class="meta">${line}</p>
+        </div>
+        ${got.length ? `<div class="sechead"><h2 class="title-lg">Earned</h2></div>
+        <div class="stamps" style="margin-bottom:22px">${got.map(tile).join('')}</div>` : ''}
+        ${locked.length ? `<div class="sechead"><h2 class="title-lg">Still locked</h2></div>
+        <div class="stamps">${locked.map(lockedTile).join('')}</div>` : ''}
+      </div>` };
   },
-  profile(){
-    const p = state.profile || { name: '', plan: 'trial' };
-    return `${sheetHead('Your card', 'Name & plan')}
-      <div class="ob-field" style="margin-top:16px">
-        <label class="eyebrow" for="pf-name">Your name</label>
-        <input class="ob-input" id="pf-name" type="text" maxlength="30" value="${esc(p.name)}">
-      </div>
-      <div class="ob-field">
-        <label class="eyebrow" id="pf-chips-label">Your plan</label>
-        <div class="plan-chips" id="pf-chips" role="radiogroup" aria-labelledby="pf-chips-label">${planChipsHTML(p.plan)}</div>
-      </div>
-      <div class="sheet-actions">
-        <button class="btn" id="pf-save">Save</button>
+
+  coaches(){
+    return { title: 'Meet the coaches', html: `<div class="pad">${COACHES.map(c => {
+      const col = COACH_COLORS[c.name];
+      const on = !!state.faves[c.name];
+      return `<div class="card" style="margin-bottom:12px">
+        <div style="display:flex;gap:13px;align-items:center;margin-bottom:12px">
+          <div class="av" style="background:${col.bg};color:${col.fg};width:46px;height:46px;font-size:17px">${esc(c.name[0])}</div>
+          <div style="flex:1;min-width:0">
+            <h3 style="font-family:var(--head);font-size:18px;font-weight:800;letter-spacing:-0.022em">${esc(c.name)}</h3>
+            <div class="meta-sm">${esc(c.role)}</div>
+          </div>
+          <button class="fave${on ? ' on' : ''}" data-fave="${esc(c.name)}" aria-label="Favourite ${esc(c.name)}" aria-pressed="${on}">${HEART}</button>
+        </div>
+        <p class="meta" style="margin-bottom:12px">${esc(c.bio)}</p>
+        <div class="chips">${c.tags.map(t => `<span class="chip">${esc(t)}</span>`).join('')}</div>
       </div>`;
+    }).join('')}</div>` };
   },
 };
 
-function openSheet(name){
-  sheetBody.innerHTML = SHEETS[name]();
-  sheetBody.scrollTop = 0;
-  sheet.classList.add('open');
-  sheet.setAttribute('aria-hidden', 'false');
-  sheetScrim.classList.add('open');
-  sheetBody.querySelector('.sheet-close').addEventListener('click', closeSheet);
-  if(name === 'notifications'){
-    $('#nf-go').addEventListener('click', () => {
-      closeSheet();
-      const next = nextBookings()[0];
-      if(next) openDetail(next.inst);
-      else tabTo('classes');
-    });
-  }
-  if(name === 'profile'){
-    wirePlanChips($('#pf-chips'));
-    $('#pf-save').addEventListener('click', () => {
-      const name2 = $('#pf-name').value.trim();
-      if(name2) state.profile.name = name2;
-      state.profile.plan = $('#pf-chips .plan-chip.sel').dataset.plan;
-      save();
-      closeSheet();
-      renderAll();
-    });
-  }
+function openMoreFs(name, keepScroll){
+  const body = $('#more-fs-body');
+  const top = body.scrollTop;
+  const { title, html } = MORE_FS[name]();
+  moreFsName = name;
+  $('#more-fs-title').textContent = title;
+  body.innerHTML = html;
+  moreFs.classList.add('on');
+  moreFs.setAttribute('aria-hidden', 'false');
+  body.scrollTop = keepScroll ? top : 0;
 }
-function closeSheet(){
-  sheet.classList.remove('open');
-  sheet.setAttribute('aria-hidden', 'true');
-  sheetScrim.classList.remove('open');
+function closeMoreFs(){
+  moreFs.classList.remove('on');
+  moreFs.setAttribute('aria-hidden', 'true');
+  moreFsName = null;
 }
-sheetScrim.addEventListener('click', closeSheet);
+$('#more-fs-back').addEventListener('click', closeMoreFs);
 
-document.querySelectorAll('[data-sheet]').forEach(el => {
-  el.addEventListener('click', () => openSheet(el.dataset.sheet));
+/* One delegated listener on a container that never gets replaced. */
+$('#more-fs-body').addEventListener('click', e => {
+  const open = e.target.closest('[data-open]');
+  if(open){ openDetail(instFromKey(open.dataset.open)); return; }
+  const fav = e.target.closest('[data-fave]');
+  if(fav){
+    const name = fav.dataset.fave;
+    state.faves[name] = !state.faves[name];
+    save();
+    fav.classList.toggle('on', !!state.faves[name]);
+    fav.setAttribute('aria-pressed', String(!!state.faves[name]));
+    return;
+  }
+  if(e.target.closest('#claim-friend')){
+    state.friendSticker = true;
+    save();
+    renderAll();   /* re-renders this sub-screen too */
+    toast('Stamp claimed. Bring her again, mami.');
+  }
 });
-$('#promo').addEventListener('click', () => openSheet('pricing'));
-$('#plan-manage').addEventListener('click', () => openSheet('pricing'));
 
+$('#screen-more').addEventListener('click', e => {
+  const row = e.target.closest('[data-fs]');
+  if(row) openMoreFs(row.dataset.fs);
+});
+/* Home's "Show all" is the full stamp book, which lives in More. */
+$('#home-showall').addEventListener('click', () => {
+  tabTo('more');
+  openMoreFs('stamps');
+});
+
+/* ---- name & plan ---- */
+$('#profile-edit').addEventListener('click', openProfileSheet);
+
+function openProfileSheet(){
+  const p = state.profile || { name: '', plan: 'trial' };
+  openSheet06(`
+    <h2>Name &amp; plan</h2>
+    <p class="meta" style="margin-bottom:18px">What the app calls you, and the plan it shows on your card.</p>
+    <div class="ob-field" style="margin-top:0">
+      <label class="eyebrow" for="pf-name">Your name</label>
+      <input class="ob-input" id="pf-name" type="text" maxlength="30" value="${esc(p.name)}">
+    </div>
+    <div class="ob-field">
+      <label class="eyebrow" id="pf-chips-label">Your plan</label>
+      <div class="chips" id="pf-chips" role="radiogroup" aria-labelledby="pf-chips-label">${planChipsHTML(p.plan)}</div>
+    </div>
+    <button class="btn" style="margin-top:24px" id="pf-save">Save</button>`);
+
+  wirePlanChips($('#pf-chips'));
+  $('#pf-save').addEventListener('click', () => {
+    const name = $('#pf-name').value.trim();
+    if(!state.profile) return closeSheet06();
+    if(name) state.profile.name = name;
+    state.profile.plan = $('#pf-chips .chip.on').dataset.plan;
+    save();
+    closeSheet06();
+    renderAll();
+  });
+}
+
+/* ============ SHOP (concept-06) ============ */
+/* A permanent empty state — the studio sells nothing online. */
+$('#shop-cta').addEventListener('click', () => toast("We'll shout the second it drops."));
+
+/* ============ ESCAPE ============ */
 document.addEventListener('keydown', e => {
   if(e.key !== 'Escape') return;
-  /* topmost first: confirmed → confirm sheet → detail → legacy sheet */
+  /* topmost first: confirmed → bottom sheet → class detail → More sub-screen */
   if($('#done').classList.contains('on')) tabTo('classes');
   else if(c6sheet.classList.contains('on')) closeSheet06();
   else if(detail.classList.contains('on')) closeDetail();
-  else if(sheet.classList.contains('open')) closeSheet();
+  else if(moreFs.classList.contains('on')) closeMoreFs();
 });
 
 /* ============ ONBOARDING ============ */
+/* Two steps, one profile write, and a first-run trigger that is simply the
+   absence of the state doc. */
 function planChipsHTML(sel){
-  return PLANS.map(p => `<button class="plan-chip ${p.id === sel ? 'sel' : ''}" data-plan="${p.id}" role="radio" aria-checked="${p.id === sel}">${p.short}</button>`).join('');
+  return PLANS.map(p => `<button class="chip${p.id === sel ? ' on' : ''}" data-plan="${p.id}" role="radio" aria-checked="${p.id === sel}">${esc(p.short)}</button>`).join('');
 }
 function wirePlanChips(container){
-  container.querySelectorAll('.plan-chip').forEach(ch => ch.addEventListener('click', () => {
-    container.querySelectorAll('.plan-chip').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-checked', 'false'); });
-    ch.classList.add('sel');
+  container.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => {
+    container.querySelectorAll('.chip').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-checked', 'false'); });
+    ch.classList.add('on');
     ch.setAttribute('aria-checked', 'true');
   }));
 }
@@ -1199,7 +1069,7 @@ function initOnboarding(){
   wirePlanChips($('#plan-chips'));
   $('#ob-start').addEventListener('click', () => {
     const name = $('#ob-name').value.trim() || 'Mami';
-    const plan = $('#plan-chips .plan-chip.sel').dataset.plan;
+    const plan = $('#plan-chips .chip.on').dataset.plan;
     state.profile = {
       name,
       plan,
@@ -1208,9 +1078,9 @@ function initOnboarding(){
     };
     save();
     renderAll();
-    showStamp("Let's go!");
     ob.classList.add('closing');
     setTimeout(() => { ob.hidden = true; }, 400);
+    toast("Let's go, mami.");
   });
   $('#ob-name').addEventListener('keydown', e => { if(e.key === 'Enter') $('#ob-start').click(); });
 }
@@ -1229,16 +1099,19 @@ function applyTheme(t, persist){
   const ti = $('#stage-toggle-icon'), tl = $('#stage-toggle-label');
   if(ti) ti.innerHTML = t === 'dark' ? SUN : MOON;
   if(tl) tl.textContent = t === 'dark' ? 'daylight' : 'after dark';
-  $('#appearance-val').textContent = (t === 'dark' ? 'After dark' : 'Daylight') + ' ›';
+  /* More → Appearance: the row shows the theme you are in, the icon the
+     one you came from — same as the mockup. */
+  $('#theme-icon').innerHTML = t === 'dark' ? MOON : SUN;
+  $('#theme-value').textContent = t === 'dark' ? 'After dark' : 'Daylight';
   document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColorFor(t));
   if(persist){ state.theme = t; save(); }
 }
 const flipTheme = () => applyTheme(theme === 'dark' ? 'light' : 'dark', true);
 $('#theme-toggle').addEventListener('click', flipTheme);
-$('#appearance-row').addEventListener('click', flipTheme);
-/* More is a placeholder this stage, so it hands appearance back to the
-   legacy settings screen until the real More lands in PORT-3. */
-$('#more-appearance').addEventListener('click', () => tabTo('you'));
+$('#theme-row').addEventListener('click', () => {
+  flipTheme();
+  toast(theme === 'dark' ? 'After dark. Club lighting, mami.' : 'Back to daylight.');
+});
 
 /* ============ STATUS BAR CLOCK (desktop stage) ============ */
 function tickClock(){
@@ -1250,16 +1123,15 @@ function tickClock(){
 /* ============ RENDER ALL / MINUTE TICK ============ */
 function renderAll(){
   renderHome();
-  renderTodayHead();
-  renderUpNext();
-  renderWeekStrip();
-  renderPosterRail();
   renderDayStrip();
   renderSchedule();
   syncFilterDot();
+  renderPricing();
+  renderMore();
   /* keeps an open detail honest about spots, ended and in-progress */
   if(detailInst) renderDetail();
-  renderYou();
+  /* and an open More sub-screen honest about bookings and stamps */
+  if(moreFsName) openMoreFs(moreFsName, true);
   tickClock();
 }
 
@@ -1280,27 +1152,33 @@ window.addEventListener('resize', fitPhone);
 
 /* ============ BOOT ============ */
 applyTheme(theme, false);
-renderCoaches();
 normalizeDay();
 renderAll();
 initOnboarding();
 fitPhone();
 
-/* hash deep links: #home #schedule #pricing #shop #more #detail=<classId>,
-   plus the concept-01 hashes, which keep resolving through the tab mapping.
-   Append &dark for the dark theme. */
-const HASH_SCREEN = {
-  home: 'home', today: 'home',
-  schedule: 'classes', classes: 'classes',
-  pricing: 'pricing', shop: 'shop',
-  more: 'more', coaches: 'more', you: 'more',
-};
+/* Hash deep links: #home #schedule #pricing #shop #more #detail=<classId>.
+   Append &dark for the dark theme.
+   The older hashes still resolve, but they are aliases: the URL is rewritten
+   to the canonical hash with replaceState, so no history entry is added and
+   Back still leaves the app the way it came in. */
+const HASH_SCREEN = { home: 'home', schedule: 'classes', pricing: 'pricing', shop: 'shop', more: 'more' };
+const HASH_ALIAS = { today: 'home', classes: 'schedule', coaches: 'more', you: 'more' };
+
 (function(){
   const h = decodeURIComponent(location.hash.slice(1));
   if(!h) return;
-  const [main] = h.split('&');
+  const parts = h.split('&');
+  const main = parts[0];
   const scr = main.split('=')[0];
-  if(HASH_SCREEN[scr]) tabTo(HASH_SCREEN[scr]);
+
+  if(HASH_ALIAS[scr]){
+    parts[0] = HASH_ALIAS[scr];
+    history.replaceState(history.state, '', '#' + parts.join('&'));
+  }
+  const canonical = HASH_ALIAS[scr] || scr;
+  if(HASH_SCREEN[canonical]) tabTo(HASH_SCREEN[canonical]);
+
   if(main.startsWith('detail=')){
     const id = main.split('=')[1];
     if(CLASSES[id]){

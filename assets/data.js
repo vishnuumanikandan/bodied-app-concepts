@@ -9,6 +9,8 @@ const STUDIO = {
   addr: '2293 Lincoln Ave, San Jose, CA 95125',
   phone: '(408) 337-2160',
   tel: 'tel:+14083372160',
+  text: '408-539-1264',
+  sms: 'sms:+14085391264',
   email: 'hello@bodiedsj.com',
   site: 'https://bodiedsj.com',
   maps: 'https://maps.google.com/?q=2293+Lincoln+Ave,+San+Jose,+CA',
@@ -21,23 +23,25 @@ const COACH_COLORS = {
   Kimber: { bg: 'var(--chartreuse)', fg: 'var(--on-bright)' },
 };
 
+/* `hero` is the flat colour field the class wears in the detail sheet —
+   concept-06 has no photography (DESIGN.md §3 "Imagery"). */
 const CLASSES = {
-  'booty-abs': { lines: ['Booty', '& Abs'], color: 'c-pink', effort: 3,
+  'booty-abs': { lines: ['Booty', '& Abs'], hero: '#FD47AC', effort: 3,
     vibe: 'Reggaeton up loud. Your glutes will know about it mañana.',
     tags: ['Mat provided', 'Bring water', 'All levels'] },
-  'full-body-hiit': { lines: ['Full Body', 'HIIT'], color: 'c-blue', effort: 4,
+  'full-body-hiit': { lines: ['Full Body', 'HIIT'], hero: '#15358E', effort: 4,
     vibe: 'Cardio and strength in one sweaty hour. The fan favorite.',
     tags: ['Bring water', 'Towel', 'All levels'] },
-  'arms-abs': { lines: ['Arms', '& Abs'], color: 'c-chartreuse', effort: 3,
+  'arms-abs': { lines: ['Arms', '& Abs'], hero: '#DB998B', effort: 3,
     vibe: 'Upper body day. Tank top season is every season here.',
     tags: ['Dumbbells provided', 'Bring water'] },
-  'pilates-sculpt': { lines: ['Pilates', 'Sculpt'], color: 'c-teal', effort: 2,
+  'pilates-sculpt': { lines: ['Pilates', 'Sculpt'], hero: '#16D5CC', effort: 2,
     vibe: 'Slow burn, deep core, shaky legs. In the best way.',
     tags: ['Grip socks', 'Mat provided', 'Low impact'] },
-  'mommy-me': { lines: ['Mommy', '& Me'], color: 'c-teal', effort: 1,
+  'mommy-me': { lines: ['Mommy', '& Me'], hero: '#16D5CC', effort: 1,
     vibe: 'Move with your little one. Chaos welcome, strollers too.',
     tags: ['Kids welcome', 'Stroller friendly'] },
-  'muscle-mami': { lines: ['Muscle', 'Mami'], color: 'c-pink', effort: 4,
+  'muscle-mami': { lines: ['Muscle', 'Mami'], hero: '#FD47AC', effort: 4,
     vibe: 'The signature. Full body HIIT with the volume at eleven.',
     tags: ['Bring water', 'Towel', 'Brave face'] },
 };
@@ -93,16 +97,39 @@ const COACHES = [
   { name: 'Kimber', role: 'NASM Certified Personal Trainer & Group Fitness Instructor', bio: 'After becoming a mom, she found her passion in fitness, and now she thrives on providing a safe space for other women to fall in love with fitness and what their bodies are capable of.', tags: ['Confidence', 'Pilates', 'Moms'] },
 ];
 
-/* Real pricing from bodiedsj.com */
+/* Real pricing from bodiedsj.com — nine plans in four groups.
+   One FLAT array: `group` is a field, and the Pricing tabs derive their
+   lists by filtering it. Never nest it — every consumer looks plans up by id.
+   `incl` is the plan's inclusion list, shown in the Details sheet.
+   `order` is the mockup's display position within the group — the Pricing list
+   sorts by it, so new plans can be appended here without disturbing anything. */
 // Plan ids are opaque/historical — NEVER rename: profile.plan stores them in members' localStorage.
 const PLANS = [
-  { id: 'trial', name: '7 days for $7', sub: 'Unlimited classes for a week', price: '$7', per: '', short: '7-day trial', badge: 'Start here' },
-  { id: 'unlimited', name: 'Unlimited · month to month', sub: 'Every class, every week', price: '$215', per: '/mo', short: 'Unlimited' },
-  { id: 'unlimited-6', name: '6 months unlimited', sub: 'Commit a little, save a little', price: '$199', per: '/mo', short: 'Unlimited · 6 mo' },
-  { id: 'unlimited-12', name: '12 months unlimited', sub: 'Best value all year', price: '$184', per: '/mo', short: 'Unlimited · 12 mo' },
-  { id: 'classes-10', name: 'Consistency Tier', sub: '8 classes/mo · for the regulars', price: '$150', per: '/mo', short: '8 classes/mo' },
-  { id: 'classes-5', name: 'Flex Tier', sub: '4 classes/mo · ease into it', price: '$102', per: '/mo', short: '4 classes/mo' },
-  { id: 'pack-20', name: '20-class pack', sub: '6 month expiry', price: '$479', per: '', short: '20-class pack' },
+  { id: 'trial', group: 'memberships', order: 1, name: '7 days for $7', sub: 'Unlimited classes for a week', price: '$7', per: '', short: '7-day trial', badge: 'Start here',
+    incl: ['Unlimited classes for 7 days', 'Every class on the schedule', 'No commitment after'] },
+  { id: 'unlimited', group: 'unlimited', order: 1, name: 'Unlimited · month to month', sub: 'Every class, every week', price: '$215', per: '/mo', short: 'Unlimited',
+    incl: ['Every class, every week', 'No commitment', 'Cancel by email any time'] },
+  { id: 'unlimited-6', group: 'unlimited', order: 2, name: '6 months unlimited', sub: 'Commit a little, save a little', price: '$199', per: '/mo', short: 'Unlimited · 6 mo', badge: 'Most popular',
+    incl: ['Every class, every week', '6-month term', 'Commit a little, save a little'] },
+  { id: 'unlimited-12', group: 'unlimited', order: 3, name: '12 months unlimited', sub: 'Best value all year', price: '$184', per: '/mo', short: 'Unlimited · 12 mo',
+    incl: ['Every class, every week', '12-month term', 'Best value all year'] },
+  { id: 'classes-10', group: 'memberships', order: 2, name: 'Consistency Tier', sub: '8 classes/mo · for the regulars', price: '$150', per: '/mo', short: '8 classes/mo',
+    incl: ['8 classes each month', 'Book up to 7 days ahead', 'Cancel free up to 12h before'] },
+  { id: 'classes-5', group: 'memberships', order: 3, name: 'Flex Tier', sub: '4 classes/mo · ease into it', price: '$102', per: '/mo', short: '4 classes/mo',
+    incl: ['4 classes each month', 'Book up to 7 days ahead', 'Cancel free up to 12h before'] },
+  { id: 'pack-20', group: 'packages', order: 2, name: '20-class pack', sub: '6 month expiry', price: '$479', per: '', short: '20-class pack',
+    incl: ['20 classes', '6-month expiry', 'Share nothing, it is yours'] },
+  { id: 'dropin', group: 'packages', order: 1, name: '1 Drop-in Class', sub: 'One class, any time', price: '$28', per: 'per class', short: 'Drop-in',
+    incl: ['One class, any time', 'No membership needed'] },
+  { id: 'semi-private', group: 'private', order: 1, name: 'Semi-Private Group Training', sub: 'Small group coaching', price: '$50', per: 'per session', short: 'Semi-private',
+    incl: ['Small group coaching', 'Programmed for your goals', 'Book at the front desk'] },
+];
+/* Pricing tab order and labels. Every plan's `group` is one of these keys. */
+const PLAN_GROUPS = [
+  { key: 'memberships', label: 'Memberships' },
+  { key: 'unlimited', label: 'Unlimited' },
+  { key: 'packages', label: 'Packages' },
+  { key: 'private', label: 'Private' },
 ];
 const PRICING_POLICY = 'All sales are final. Cancellations/pauses for recurring monthly memberships can be done by emailing us at hello@bodiedsj.com';
 
